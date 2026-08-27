@@ -4,13 +4,8 @@ package core;
 
 option go_package = "github.com/ns9ryan/p9_core/rpc/pb/core";
 
-import "types/ping.proto";
 import "types/base.proto";
 
 service BaseService {
-  rpc initDatabase(Empty) returns (BaseResp);
-}
-
-service PingService {
-  rpc Ping(PingRequest) returns (PingResponse);
+  rpc InitDatabase(InitDatabaseRequest) returns (InitDatabaseResponse);
 }

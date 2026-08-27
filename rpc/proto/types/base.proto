@@ -4,9 +4,6 @@ package core;
 
 option go_package = "github.com/ns9ryan/p9_core/rpc/pb/core";
 
-// base message
-message Empty {}
+message InitDatabaseRequest {}
 
-message BaseResp {
-  string msg = 1;
-}
+message InitDatabaseResponse {}

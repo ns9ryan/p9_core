@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package core;
+package base;
 
-option go_package = "github.com/ns9ryan/p9_core/rpc/pb/core";
+option go_package = "github.com/ns9ryan/p9_core/rpc/pb/core/base";
 
 message InitDatabaseRequest {}
 

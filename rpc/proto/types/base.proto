@@ -6,4 +6,6 @@ option go_package = "github.com/ns9ryan/p9_core/rpc/pb/core/base";
 
 message InitDatabaseRequest {}
 
-message InitDatabaseResponse {}
+message InitDatabaseResponse {
+  string msg = 1;
+}

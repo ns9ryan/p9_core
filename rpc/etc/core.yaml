@@ -1,6 +1,16 @@
 Name: core.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:19000
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - 127.0.0.1:12379
   Key: core.rpc
+
+Log:
+  ServiceName: coreRpcLogger
+  Mode: console
+  Path: /runtime/logs
+  Encoding: plain
+  Level: debug
+  Compress: false
+  KeepDays: 7
+  StackCoolDownMillis: 100

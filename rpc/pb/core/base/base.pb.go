@@ -59,6 +59,7 @@ func (*InitDatabaseRequest) Descriptor() ([]byte, []int) {
 
 type InitDatabaseResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Msg           string                 `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -93,13 +94,21 @@ func (*InitDatabaseResponse) Descriptor() ([]byte, []int) {
 	return file_types_base_proto_rawDescGZIP(), []int{1}
 }
 
+func (x *InitDatabaseResponse) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
 var File_types_base_proto protoreflect.FileDescriptor
 
 const file_types_base_proto_rawDesc = "" +
 	"\n" +
 	"\x10types/base.proto\x12\x04base\"\x15\n" +
-	"\x13InitDatabaseRequest\"\x16\n" +
-	"\x14InitDatabaseResponseB-Z+github.com/ns9ryan/p9_core/rpc/pb/core/baseb\x06proto3"
+	"\x13InitDatabaseRequest\"(\n" +
+	"\x14InitDatabaseResponse\x12\x10\n" +
+	"\x03msg\x18\x01 \x01(\tR\x03msgB-Z+github.com/ns9ryan/p9_core/rpc/pb/core/baseb\x06proto3"
 
 var (
 	file_types_base_proto_rawDescOnce sync.Once

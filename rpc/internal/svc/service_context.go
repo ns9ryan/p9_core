@@ -1,13 +1,17 @@
 package svc
 
-import "github.com/ns9ryan/p9_core/rpc/internal/config"
+import (
+	"github.com/ns9ryan/p9_core/rpc/internal/config"
+)
 
 type ServiceContext struct {
 	Config config.Config
+	//Redis  redis.UniversalClient
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config: c,
+		//Redis:  c.RedisConf.MustNewUniversalRedis(),
 	}
 }

@@ -1,0 +1,55 @@
+package schema
+
+import (
+	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/field"
+	"github.com/ns9ryan/common/orm/ent/mixins"
+)
+
+// Department holds the schema definition for the Department entity.
+type Department struct {
+	ent.Schema
+}
+
+// Fields of the Department.
+func (Department) Fields() []ent.Field {
+	return []ent.Field{
+		field.String("name").
+			Comment("Department name | 部门名称"),
+		field.String("ancestors").Optional().
+			Comment("Parents' IDs | 父级列表"),
+		field.String("leader").
+			Comment("Department leader | 部门负责人").Optional(),
+		field.String("phone").
+			Comment("Leader's phone number | 负责人电话").Optional(),
+		field.String("email").
+			Comment("Leader's email | 部门负责人电子邮箱").Optional(),
+		field.String("remark").Optional().
+			Comment("Remark | 备注"),
+		field.Uint64("parent_id").Optional().Default(0).
+			Comment("Parent department ID | 父级部门ID"),
+	}
+}
+
+// Edges of the Department.
+func (Department) Edges() []ent.Edge {
+	return nil
+}
+
+func (Department) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		mixins.IDMixin{},
+		mixins.StatusMixin{},
+		mixins.SortMixin{},
+	}
+}
+
+func (Department) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.WithComments(true),
+		schema.Comment("Department Table | 部门表"),
+		entsql.Annotation{Table: "sys_departments"},
+	}
+}

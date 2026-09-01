@@ -14,7 +14,16 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ns9ryan/p9_core/rpc/ent/api"
 	"github.com/ns9ryan/p9_core/rpc/ent/configuration"
+	"github.com/ns9ryan/p9_core/rpc/ent/department"
+	"github.com/ns9ryan/p9_core/rpc/ent/dictionary"
+	"github.com/ns9ryan/p9_core/rpc/ent/dictionarydetail"
 	"github.com/ns9ryan/p9_core/rpc/ent/language"
+	"github.com/ns9ryan/p9_core/rpc/ent/menu"
+	"github.com/ns9ryan/p9_core/rpc/ent/oauthprovider"
+	"github.com/ns9ryan/p9_core/rpc/ent/position"
+	"github.com/ns9ryan/p9_core/rpc/ent/role"
+	"github.com/ns9ryan/p9_core/rpc/ent/token"
+	"github.com/ns9ryan/p9_core/rpc/ent/user"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -75,9 +84,18 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			api.Table:           api.ValidColumn,
-			configuration.Table: configuration.ValidColumn,
-			language.Table:      language.ValidColumn,
+			api.Table:              api.ValidColumn,
+			configuration.Table:    configuration.ValidColumn,
+			department.Table:       department.ValidColumn,
+			dictionary.Table:       dictionary.ValidColumn,
+			dictionarydetail.Table: dictionarydetail.ValidColumn,
+			language.Table:         language.ValidColumn,
+			menu.Table:             menu.ValidColumn,
+			oauthprovider.Table:    oauthprovider.ValidColumn,
+			position.Table:         position.ValidColumn,
+			role.Table:             role.ValidColumn,
+			token.Table:            token.ValidColumn,
+			user.Table:             user.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

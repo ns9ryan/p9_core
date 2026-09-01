@@ -16,8 +16,26 @@ type Tx struct {
 	API *APIClient
 	// Configuration is the client for interacting with the Configuration builders.
 	Configuration *ConfigurationClient
+	// Department is the client for interacting with the Department builders.
+	Department *DepartmentClient
+	// Dictionary is the client for interacting with the Dictionary builders.
+	Dictionary *DictionaryClient
+	// DictionaryDetail is the client for interacting with the DictionaryDetail builders.
+	DictionaryDetail *DictionaryDetailClient
 	// Language is the client for interacting with the Language builders.
 	Language *LanguageClient
+	// Menu is the client for interacting with the Menu builders.
+	Menu *MenuClient
+	// OauthProvider is the client for interacting with the OauthProvider builders.
+	OauthProvider *OauthProviderClient
+	// Position is the client for interacting with the Position builders.
+	Position *PositionClient
+	// Role is the client for interacting with the Role builders.
+	Role *RoleClient
+	// Token is the client for interacting with the Token builders.
+	Token *TokenClient
+	// User is the client for interacting with the User builders.
+	User *UserClient
 
 	// lazily loaded.
 	client     *Client
@@ -151,7 +169,16 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.API = NewAPIClient(tx.config)
 	tx.Configuration = NewConfigurationClient(tx.config)
+	tx.Department = NewDepartmentClient(tx.config)
+	tx.Dictionary = NewDictionaryClient(tx.config)
+	tx.DictionaryDetail = NewDictionaryDetailClient(tx.config)
 	tx.Language = NewLanguageClient(tx.config)
+	tx.Menu = NewMenuClient(tx.config)
+	tx.OauthProvider = NewOauthProviderClient(tx.config)
+	tx.Position = NewPositionClient(tx.config)
+	tx.Role = NewRoleClient(tx.config)
+	tx.Token = NewTokenClient(tx.config)
+	tx.User = NewUserClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

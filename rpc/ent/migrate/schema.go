@@ -62,6 +62,65 @@ var (
 			},
 		},
 	}
+	// SysDepartmentsColumns holds the columns for the "sys_departments" table.
+	SysDepartmentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true, Comment: "主键 ID"},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间"},
+		{Name: "status", Type: field.TypeUint8, Nullable: true, Comment: "状态：1 正常，2 停用", Default: 1},
+		{Name: "sort", Type: field.TypeUint32, Comment: "排序编号", Default: 1},
+		{Name: "name", Type: field.TypeString, Comment: "Department name | 部门名称"},
+		{Name: "ancestors", Type: field.TypeString, Nullable: true, Comment: "Parents' IDs | 父级列表"},
+		{Name: "leader", Type: field.TypeString, Nullable: true, Comment: "Department leader | 部门负责人"},
+		{Name: "phone", Type: field.TypeString, Nullable: true, Comment: "Leader's phone number | 负责人电话"},
+		{Name: "email", Type: field.TypeString, Nullable: true, Comment: "Leader's email | 部门负责人电子邮箱"},
+		{Name: "remark", Type: field.TypeString, Nullable: true, Comment: "Remark | 备注"},
+		{Name: "parent_id", Type: field.TypeUint64, Nullable: true, Comment: "Parent department ID | 父级部门ID", Default: 0},
+	}
+	// SysDepartmentsTable holds the schema information for the "sys_departments" table.
+	SysDepartmentsTable = &schema.Table{
+		Name:       "sys_departments",
+		Comment:    "Department Table | 部门表",
+		Columns:    SysDepartmentsColumns,
+		PrimaryKey: []*schema.Column{SysDepartmentsColumns[0]},
+	}
+	// SysDictionariesColumns holds the columns for the "sys_dictionaries" table.
+	SysDictionariesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true, Comment: "主键 ID"},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间"},
+		{Name: "status", Type: field.TypeUint8, Nullable: true, Comment: "状态：1 正常，2 停用", Default: 1},
+		{Name: "title", Type: field.TypeString, Comment: "The title shown in the ui | 展示名称 （建议配合i18n）"},
+		{Name: "name", Type: field.TypeString, Unique: true, Comment: "The name of dictionary for search | 字典搜索名称"},
+		{Name: "desc", Type: field.TypeString, Nullable: true, Comment: "The description of dictionary | 字典的描述"},
+		{Name: "is_public", Type: field.TypeBool, Comment: "Whether to be public for everyone | 是否公开词典，无需登录即可访问", Default: false},
+	}
+	// SysDictionariesTable holds the schema information for the "sys_dictionaries" table.
+	SysDictionariesTable = &schema.Table{
+		Name:       "sys_dictionaries",
+		Comment:    "Dictionary Table | 字典信息表",
+		Columns:    SysDictionariesColumns,
+		PrimaryKey: []*schema.Column{SysDictionariesColumns[0]},
+	}
+	// SysDictionaryDetailsColumns holds the columns for the "sys_dictionary_details" table.
+	SysDictionaryDetailsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true, Comment: "主键 ID"},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间"},
+		{Name: "status", Type: field.TypeUint8, Nullable: true, Comment: "状态：1 正常，2 停用", Default: 1},
+		{Name: "sort", Type: field.TypeUint32, Comment: "排序编号", Default: 1},
+		{Name: "title", Type: field.TypeString, Comment: "The title shown in the ui | 展示名称 （建议配合i18n）"},
+		{Name: "key", Type: field.TypeString, Comment: "key | 键"},
+		{Name: "value", Type: field.TypeString, Comment: "value | 值"},
+		{Name: "dictionary_id", Type: field.TypeUint64, Nullable: true, Comment: "Dictionary ID | 字典ID"},
+	}
+	// SysDictionaryDetailsTable holds the schema information for the "sys_dictionary_details" table.
+	SysDictionaryDetailsTable = &schema.Table{
+		Name:       "sys_dictionary_details",
+		Comment:    "Dictionary Key/Value Table | 字典键值表",
+		Columns:    SysDictionaryDetailsColumns,
+		PrimaryKey: []*schema.Column{SysDictionaryDetailsColumns[0]},
+	}
 	// LanguagesColumns holds the columns for the "languages" table.
 	LanguagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -72,11 +131,199 @@ var (
 		Columns:    LanguagesColumns,
 		PrimaryKey: []*schema.Column{LanguagesColumns[0]},
 	}
+	// SysMenusColumns holds the columns for the "sys_menus" table.
+	SysMenusColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true, Comment: "主键 ID"},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间"},
+		{Name: "sort", Type: field.TypeUint32, Comment: "排序编号", Default: 1},
+		{Name: "parent_id", Type: field.TypeUint64, Nullable: true, Comment: "Parent menu ID | 父菜单ID", Default: 100000},
+		{Name: "menu_level", Type: field.TypeUint32, Comment: "Menu level | 菜单层级"},
+		{Name: "menu_type", Type: field.TypeUint32, Comment: "Menu type | 菜单类型 （菜单或目录）0 目录 1 菜单"},
+		{Name: "path", Type: field.TypeString, Nullable: true, Comment: "Index path | 菜单路由路径", Default: ""},
+		{Name: "name", Type: field.TypeString, Comment: "Index name | 菜单名称"},
+		{Name: "redirect", Type: field.TypeString, Nullable: true, Comment: "Redirect path | 跳转路径 （外链）", Default: ""},
+		{Name: "component", Type: field.TypeString, Nullable: true, Comment: "The path of vue file | 组件路径", Default: ""},
+		{Name: "disabled", Type: field.TypeBool, Nullable: true, Comment: "Disable status | 是否停用", Default: false},
+		{Name: "service_name", Type: field.TypeString, Nullable: true, Comment: "Service Name | 服务名称", Default: "Other"},
+		{Name: "permission", Type: field.TypeString, Nullable: true, Comment: "Permission symbol | 权限标识"},
+		{Name: "title", Type: field.TypeString, Comment: "Menu name | 菜单显示标题"},
+		{Name: "icon", Type: field.TypeString, Comment: "Menu icon | 菜单图标"},
+		{Name: "hide_menu", Type: field.TypeBool, Nullable: true, Comment: "Hide menu | 是否隐藏菜单", Default: false},
+		{Name: "hide_breadcrumb", Type: field.TypeBool, Nullable: true, Comment: "Hide the breadcrumb | 隐藏面包屑", Default: false},
+		{Name: "ignore_keep_alive", Type: field.TypeBool, Nullable: true, Comment: "Do not keep alive the tab | 取消页面缓存", Default: false},
+		{Name: "hide_tab", Type: field.TypeBool, Nullable: true, Comment: "Hide the tab header | 隐藏页头", Default: false},
+		{Name: "frame_src", Type: field.TypeString, Nullable: true, Comment: "Show iframe | 内嵌 iframe", Default: ""},
+		{Name: "carry_param", Type: field.TypeBool, Nullable: true, Comment: "The route carries parameters or not | 携带参数", Default: false},
+		{Name: "hide_children_in_menu", Type: field.TypeBool, Nullable: true, Comment: "Hide children menu or not | 隐藏所有子菜单", Default: false},
+		{Name: "affix", Type: field.TypeBool, Nullable: true, Comment: "Affix tab | Tab 固定", Default: false},
+		{Name: "dynamic_level", Type: field.TypeUint32, Nullable: true, Comment: "The maximum number of pages the router can open | 能打开的子TAB数", Default: 20},
+		{Name: "real_path", Type: field.TypeString, Nullable: true, Comment: "The real path of the route without dynamic part | 菜单路由不包含参数部分", Default: ""},
+	}
+	// SysMenusTable holds the schema information for the "sys_menus" table.
+	SysMenusTable = &schema.Table{
+		Name:       "sys_menus",
+		Comment:    "Menu Table | 菜单表",
+		Columns:    SysMenusColumns,
+		PrimaryKey: []*schema.Column{SysMenusColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "menu_name",
+				Unique:  true,
+				Columns: []*schema.Column{SysMenusColumns[8]},
+			},
+			{
+				Name:    "menu_path",
+				Unique:  true,
+				Columns: []*schema.Column{SysMenusColumns[7]},
+			},
+		},
+	}
+	// SysOauthProvidersColumns holds the columns for the "sys_oauth_providers" table.
+	SysOauthProvidersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true, Comment: "主键 ID"},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间"},
+		{Name: "name", Type: field.TypeString, Unique: true, Comment: "The provider's name | 提供商名称"},
+		{Name: "client_id", Type: field.TypeString, Comment: "The client id | 客户端 id"},
+		{Name: "client_secret", Type: field.TypeString, Comment: "The client secret | 客户端密钥"},
+		{Name: "redirect_url", Type: field.TypeString, Comment: "The redirect url | 跳转地址"},
+		{Name: "scopes", Type: field.TypeString, Comment: "The scopes | 权限范围"},
+		{Name: "auth_url", Type: field.TypeString, Comment: "The auth url of the provider | 认证地址"},
+		{Name: "token_url", Type: field.TypeString, Comment: "The token url of the provider | 获取 token地址"},
+		{Name: "auth_style", Type: field.TypeUint64, Comment: "The auth style, 0: auto detect 1: third party log in 2: log in with username and password | 鉴权方式 0 自动 1 第三方登录 2 使用用户名密码"},
+		{Name: "info_url", Type: field.TypeString, Comment: "The URL to request user information by token | 用户信息请求地址"},
+	}
+	// SysOauthProvidersTable holds the schema information for the "sys_oauth_providers" table.
+	SysOauthProvidersTable = &schema.Table{
+		Name:       "sys_oauth_providers",
+		Comment:    "Oauth Provider Configuration Table | 三方登录配置表",
+		Columns:    SysOauthProvidersColumns,
+		PrimaryKey: []*schema.Column{SysOauthProvidersColumns[0]},
+	}
+	// SysPositionsColumns holds the columns for the "sys_positions" table.
+	SysPositionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true, Comment: "主键 ID"},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间"},
+		{Name: "status", Type: field.TypeUint8, Nullable: true, Comment: "状态：1 正常，2 停用", Default: 1},
+		{Name: "sort", Type: field.TypeUint32, Comment: "排序编号", Default: 1},
+		{Name: "name", Type: field.TypeString, Comment: "Position Name | 职位名称"},
+		{Name: "code", Type: field.TypeString, Comment: "The code of position | 职位编码"},
+		{Name: "remark", Type: field.TypeString, Nullable: true, Comment: "Remark | 备注"},
+	}
+	// SysPositionsTable holds the schema information for the "sys_positions" table.
+	SysPositionsTable = &schema.Table{
+		Name:       "sys_positions",
+		Comment:    "Position Table | 职位信息表",
+		Columns:    SysPositionsColumns,
+		PrimaryKey: []*schema.Column{SysPositionsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "position_code",
+				Unique:  true,
+				Columns: []*schema.Column{SysPositionsColumns[6]},
+			},
+		},
+	}
+	// SysRolesColumns holds the columns for the "sys_roles" table.
+	SysRolesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true, Comment: "主键 ID"},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间"},
+		{Name: "status", Type: field.TypeUint8, Nullable: true, Comment: "状态：1 正常，2 停用", Default: 1},
+		{Name: "name", Type: field.TypeString, Comment: "Role name | 角色名"},
+		{Name: "code", Type: field.TypeString, Comment: "Role code for permission control in front end | 角色码，用于前端权限控制"},
+		{Name: "remark", Type: field.TypeString, Comment: "Remark | 备注", Default: ""},
+		{Name: "sort", Type: field.TypeUint32, Comment: "Order number | 排序编号", Default: 0},
+	}
+	// SysRolesTable holds the schema information for the "sys_roles" table.
+	SysRolesTable = &schema.Table{
+		Name:       "sys_roles",
+		Comment:    "Role Table | 角色信息表",
+		Columns:    SysRolesColumns,
+		PrimaryKey: []*schema.Column{SysRolesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "role_code",
+				Unique:  true,
+				Columns: []*schema.Column{SysRolesColumns[5]},
+			},
+		},
+	}
+	// SysTokensColumns holds the columns for the "sys_tokens" table.
+	SysTokensColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Comment: "UUID 主键"},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间"},
+		{Name: "status", Type: field.TypeUint8, Nullable: true, Comment: "状态：1 正常，2 停用", Default: 1},
+		{Name: "uuid", Type: field.TypeUUID, Comment: " User's UUID | 用户的UUID"},
+		{Name: "username", Type: field.TypeString, Comment: "Username | 用户名", Default: "unknown"},
+		{Name: "token", Type: field.TypeString, Comment: "Token string | Token 字符串"},
+		{Name: "source", Type: field.TypeString, Comment: "Log in source such as GitHub | Token 来源 （本地为core, 第三方如github等）"},
+		{Name: "expired_at", Type: field.TypeTime, Comment: " Expire time | 过期时间"},
+	}
+	// SysTokensTable holds the schema information for the "sys_tokens" table.
+	SysTokensTable = &schema.Table{
+		Name:       "sys_tokens",
+		Comment:    "Token Log Table | 令牌信息表",
+		Columns:    SysTokensColumns,
+		PrimaryKey: []*schema.Column{SysTokensColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "token_uuid",
+				Unique:  false,
+				Columns: []*schema.Column{SysTokensColumns[4]},
+			},
+			{
+				Name:    "token_expired_at",
+				Unique:  false,
+				Columns: []*schema.Column{SysTokensColumns[8]},
+			},
+		},
+	}
+	// SysUsersColumns holds the columns for the "sys_users" table.
+	SysUsersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "username", Type: field.TypeString, Unique: true, Comment: "User's login name | 登录名"},
+		{Name: "password", Type: field.TypeString, Comment: "Password | 密码"},
+		{Name: "nickname", Type: field.TypeString, Unique: true, Comment: "Nickname | 昵称"},
+		{Name: "description", Type: field.TypeString, Nullable: true, Comment: "The description of user | 用户的描述信息"},
+		{Name: "home_path", Type: field.TypeString, Comment: "The home page that the user enters after logging in | 用户登陆后进入的首页", Default: "/dashboard"},
+		{Name: "mobile", Type: field.TypeString, Nullable: true, Comment: "Mobile number | 手机号"},
+		{Name: "email", Type: field.TypeString, Nullable: true, Comment: "Email | 邮箱号"},
+		{Name: "avatar", Type: field.TypeString, Nullable: true, Comment: "Avatar | 头像路径", SchemaType: map[string]string{"mysql": "varchar(512)"}},
+		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "Department ID | 部门ID", Default: 1},
+		{Name: "expired_at", Type: field.TypeTime, Nullable: true, Comment: "The expired time | 到期时间", SchemaType: map[string]string{"mysql": "datetime"}},
+	}
+	// SysUsersTable holds the schema information for the "sys_users" table.
+	SysUsersTable = &schema.Table{
+		Name:       "sys_users",
+		Comment:    "User Table | 用户信息表",
+		Columns:    SysUsersColumns,
+		PrimaryKey: []*schema.Column{SysUsersColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "user_username_email",
+				Unique:  true,
+				Columns: []*schema.Column{SysUsersColumns[1], SysUsersColumns[7]},
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		SysApisTable,
 		SysConfigurationTable,
+		SysDepartmentsTable,
+		SysDictionariesTable,
+		SysDictionaryDetailsTable,
 		LanguagesTable,
+		SysMenusTable,
+		SysOauthProvidersTable,
+		SysPositionsTable,
+		SysRolesTable,
+		SysTokensTable,
+		SysUsersTable,
 	}
 )
 
@@ -86,5 +333,32 @@ func init() {
 	}
 	SysConfigurationTable.Annotation = &entsql.Annotation{
 		Table: "sys_configuration",
+	}
+	SysDepartmentsTable.Annotation = &entsql.Annotation{
+		Table: "sys_departments",
+	}
+	SysDictionariesTable.Annotation = &entsql.Annotation{
+		Table: "sys_dictionaries",
+	}
+	SysDictionaryDetailsTable.Annotation = &entsql.Annotation{
+		Table: "sys_dictionary_details",
+	}
+	SysMenusTable.Annotation = &entsql.Annotation{
+		Table: "sys_menus",
+	}
+	SysOauthProvidersTable.Annotation = &entsql.Annotation{
+		Table: "sys_oauth_providers",
+	}
+	SysPositionsTable.Annotation = &entsql.Annotation{
+		Table: "sys_positions",
+	}
+	SysRolesTable.Annotation = &entsql.Annotation{
+		Table: "sys_roles",
+	}
+	SysTokensTable.Annotation = &entsql.Annotation{
+		Table: "sys_tokens",
+	}
+	SysUsersTable.Annotation = &entsql.Annotation{
+		Table: "sys_users",
 	}
 }

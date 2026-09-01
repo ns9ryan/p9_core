@@ -13,7 +13,7 @@ RPC_PROTO := p9_core.proto
 RPC_PROTO_PATH := rpc/proto
 
 # Ent
-ENT_SCHEMA := rpc/ent/schema
+ENT_DIR := rpc/ent
 
 .PHONY: api
 api:
@@ -32,7 +32,7 @@ endif
 
 .PHONY: ent
 ent:
-	$(GO) run entgo.io/ent/cmd/ent generate ./$(ENT_SCHEMA)
+	$(GO) generate ./$(ENT_DIR)
 
 .PHONY: gen
-gen: api rpc
+gen: api rpc ent

@@ -9,16 +9,16 @@ import (
 
 	"github.com/ns9ryan/p9_core/rpc/pb/core"
 
+	"github.com/ns9ryan/p9_core/rpc/pb/core/ping"
+
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 
 type (
-	PingRequest  = core.PingRequest
-	PingResponse = core.PingResponse
-
 	PingService interface {
-		Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
+		// Ping
+		Ping(ctx context.Context, in *ping.PingRequest, opts ...grpc.CallOption) (*ping.PingResponse, error)
 	}
 
 	defaultPingService struct {
@@ -32,7 +32,8 @@ func NewPingService(cli zrpc.Client) PingService {
 	}
 }
 
-func (m *defaultPingService) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
+// Ping
+func (m *defaultPingService) Ping(ctx context.Context, in *ping.PingRequest, opts ...grpc.CallOption) (*ping.PingResponse, error) {
 	client := core.NewPingServiceClient(m.cli.Conn())
 	return client.Ping(ctx, in, opts...)
 }

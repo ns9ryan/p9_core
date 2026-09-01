@@ -24,6 +24,7 @@ func NewBaseServiceServer(svcCtx *svc.ServiceContext) *BaseServiceServer {
 	}
 }
 
+// 初始化数据库
 func (s *BaseServiceServer) InitDatabase(ctx context.Context, in *base.InitDatabaseRequest) (*base.InitDatabaseResponse, error) {
 	l := baseservicelogic.NewInitDatabaseLogic(ctx, s.svcCtx)
 	return l.InitDatabase(in)

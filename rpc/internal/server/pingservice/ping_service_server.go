@@ -10,6 +10,7 @@ import (
 	"github.com/ns9ryan/p9_core/rpc/internal/logic/pingservice"
 	"github.com/ns9ryan/p9_core/rpc/internal/svc"
 	"github.com/ns9ryan/p9_core/rpc/pb/core"
+	"github.com/ns9ryan/p9_core/rpc/pb/core/ping"
 )
 
 type PingServiceServer struct {
@@ -23,7 +24,8 @@ func NewPingServiceServer(svcCtx *svc.ServiceContext) *PingServiceServer {
 	}
 }
 
-func (s *PingServiceServer) Ping(ctx context.Context, in *core.PingRequest) (*core.PingResponse, error) {
+// Ping
+func (s *PingServiceServer) Ping(ctx context.Context, in *ping.PingRequest) (*ping.PingResponse, error) {
 	l := pingservicelogic.NewPingLogic(ctx, s.svcCtx)
 	return l.Ping(in)
 }

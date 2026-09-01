@@ -4,8 +4,11 @@ package base;
 
 option go_package = "github.com/ns9ryan/p9_core/rpc/pb/core/base";
 
+// 初始化数据库请求
 message InitDatabaseRequest {}
 
+// 初始化数据库响应
 message InitDatabaseResponse {
+  // 响应消息
   string msg = 1;
 }

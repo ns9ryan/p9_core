@@ -17,6 +17,7 @@ import (
 
 type (
 	BaseService interface {
+		// 初始化数据库
 		InitDatabase(ctx context.Context, in *base.InitDatabaseRequest, opts ...grpc.CallOption) (*base.InitDatabaseResponse, error)
 	}
 
@@ -31,6 +32,7 @@ func NewBaseService(cli zrpc.Client) BaseService {
 	}
 }
 
+// 初始化数据库
 func (m *defaultBaseService) InitDatabase(ctx context.Context, in *base.InitDatabaseRequest, opts ...grpc.CallOption) (*base.InitDatabaseResponse, error) {
 	client := core.NewBaseServiceClient(m.cli.Conn())
 	return client.InitDatabase(ctx, in, opts...)

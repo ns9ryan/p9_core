@@ -1,15 +1,17 @@
 GO ?= go
 GOCTL ?= goctl
 
+# 仓库独立配置, 新建仓库时需要修改
+MODULE := github.com/ns9ryan/p9_core
+RPC_PROTO := p9_core.proto
+
 STYLE := go_zero
-MODULE := $(shell go list -m)
 
 # API
 API_FILE := api/desc/main.api
 API_DIR := api
 
 # RPC
-RPC_PROTO := p9_core.proto
 RPC_PROTO_PATH := rpc/proto
 
 # Ent

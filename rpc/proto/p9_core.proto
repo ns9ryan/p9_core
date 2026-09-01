@@ -4,19 +4,32 @@ package core;
 
 option go_package = "github.com/ns9ryan/p9_core/rpc/pb/core";
 
+import "types/ping.proto";
 import "types/base.proto";
+import "types/role.proto";
 
-message PingRequest {
-}
-
-message PingResponse {
-  string message = 1;
-}
-
+// Ping 服务
 service PingService {
-  rpc Ping(PingRequest) returns (PingResponse);
+  // Ping
+  rpc Ping(ping.PingRequest) returns (ping.PingResponse);
 }
 
+// 基础服务
 service BaseService {
+  // 初始化数据库
   rpc InitDatabase(base.InitDatabaseRequest) returns (base.InitDatabaseResponse);
+}
+
+// 角色管理服务
+service RoleService {
+  // 创建角色
+  rpc Create(role.CreateRoleRequest) returns (role.CreateRoleResponse);
+  // 更新角色
+  rpc Update(role.UpdateRoleRequest) returns (role.UpdateRoleResponse);
+  // 获取角色
+  rpc Get(role.GetRoleRequest) returns (role.GetRoleResponse);
+  // 获取角色列表
+  rpc List(role.ListRolesRequest) returns (role.ListRolesResponse);
+  // 批量删除角色
+  rpc BatchDelete(role.BatchDeleteRolesRequest) returns (role.BatchDeleteRolesResponse);
 }

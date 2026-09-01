@@ -6,7 +6,7 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/bsm/redislock v0.10.0
 	github.com/gofrs/uuid/v5 v5.5.1
-	github.com/ns9ryan/common v0.0.0-20260901064107-4eccfbbb8b1f
+	github.com/ns9ryan/common v0.0.0-20260901092728-fe5d7862bbd8
 	github.com/redis/go-redis/v9 v9.22.0
 	github.com/suyuan32/simple-admin-common v1.8.7
 	github.com/suyuan32/simple-admin-core v1.8.7
@@ -62,7 +62,7 @@ require (
 	github.com/lib/pq v1.12.3 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
 	github.com/mattn/go-isatty v0.0.22 // indirect
-	github.com/mattn/go-sqlite3 v1.14.49 // indirect
+	github.com/mattn/go-sqlite3 v1.14.50 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee // indirect

@@ -4,34 +4,45 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/ns9ryan/common/orm/ent/mixins"
 )
 
-// Dictionary holds the schema definition for the Dictionary entity.
+// Dictionary 定义字典信息表结构
 type Dictionary struct {
 	ent.Schema
 }
 
-// Fields of the Dictionary.
+// Fields 定义字典信息表字段
 func (Dictionary) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("title").
-			Comment("The title shown in the ui | 展示名称 （建议配合i18n）"),
-		field.String("name").Unique().
-			Comment("The name of dictionary for search | 字典搜索名称"),
+			Comment("展示名称"),
+
+		field.String("name").
+			Unique().
+			Comment("字典名称"),
+
 		field.String("desc").
-			Comment("The description of dictionary | 字典的描述").
-			Optional(),
-		field.Bool("is_public").Default(false).Comment("Whether to be public for everyone | 是否公开词典，无需登录即可访问"),
+			Optional().
+			Comment("字典描述"),
+
+		field.Bool("is_public").
+			Default(false).
+			Comment("是否公开，无需登录即可访问"),
 	}
 }
 
-// Edges of the Dictionary.
+// Edges 定义字典信息表关联关系
 func (Dictionary) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		// 字典与字典明细关系
+		edge.To("dictionary_details", DictionaryDetail.Type),
+	}
 }
 
+// Mixin 定义字典信息表公共字段
 func (Dictionary) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.IDMixin{},
@@ -39,10 +50,11 @@ func (Dictionary) Mixin() []ent.Mixin {
 	}
 }
 
+// Annotations 定义字典信息表数据库注解
 func (Dictionary) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.WithComments(true),
-		schema.Comment("Dictionary Table | 字典信息表"),
-		entsql.Annotation{Table: "sys_dictionaries"},
+		entsql.WithComments(true),                    // 启用数据库字段注释
+		schema.Comment("字典信息表"),                      // 设置数据库表注释
+		entsql.Annotation{Table: "sys_dictionaries"}, // 设置数据库表名
 	}
 }

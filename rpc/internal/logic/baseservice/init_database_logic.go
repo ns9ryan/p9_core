@@ -9,13 +9,12 @@ import (
 	"github.com/bsm/redislock"
 	"github.com/ns9ryan/common/enum/common"
 	"github.com/ns9ryan/common/i18n"
+	"github.com/ns9ryan/common/password"
 	"github.com/ns9ryan/common/rpcerror"
 	"github.com/ns9ryan/p9_core/rpc/ent"
 	"github.com/ns9ryan/p9_core/rpc/ent/role"
 	"github.com/ns9ryan/p9_core/rpc/internal/svc"
 	"github.com/ns9ryan/p9_core/rpc/pb/core/base"
-	"github.com/suyuan32/simple-admin-common/msg/logmsg"
-	"github.com/suyuan32/simple-admin-common/utils/encrypt"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -173,14 +172,6 @@ func (l *InitDatabaseLogic) InitDatabase(in *base.InitDatabaseRequest) (*base.In
 		return l.handleInitError(err)
 	}
 
-	// 强制更新 Casbin 策略，以避免在策略更新失败时超级管理员无法登录
-	err = l.insertCasbinPoliciesData()
-	if err != nil {
-		logx.Errorw(logmsg.DatabaseError, logx.Field("detail", err.Error()))
-		_ = l.svcCtx.Redis.Set(l.ctx, "INIT:DATABASE:ERROR", err.Error(), 300*time.Second).Err()
-		return nil, rpcerror.NewInternal(err.Error())
-	}
-
 	// 标记数据库初始化完成
 	if err := l.svcCtx.Redis.Set(l.ctx, initDatabaseStateKey, initDatabaseStateSuccess, initDatabaseStateTTL).Err(); err != nil {
 		logx.Errorw("更新数据库初始化状态失败", logx.Field("detail", err))
@@ -241,11 +232,16 @@ func (l *InitDatabaseLogic) insertPositionData() error {
 
 // insertUserData 插入初始用户数据
 func (l *InitDatabaseLogic) insertUserData() error {
+	passwordHash, err := password.Hash("simple-admin")
+	if err != nil {
+		return err
+	}
+
 	users := []*ent.UserCreate{
 		l.svcCtx.DB.User.Create().
 			SetUsername("admin").
 			SetNickname("admin").
-			SetPassword(encrypt.BcryptEncrypt("simple-admin")).
+			SetPassword(passwordHash).
 			SetEmail("simple_admin@gmail.com").
 			AddRoleIDs(1).
 			SetDepartmentID(1).

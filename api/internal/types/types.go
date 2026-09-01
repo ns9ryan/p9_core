@@ -3,6 +3,43 @@
 
 package types
 
+type BaseInfo struct {
+	Id        *uint64 `json:"id,optional"`
+	CreatedAt *int64  `json:"createdAt,optional"`
+	UpdatedAt *int64  `json:"updatedAt,optional"`
+}
+
+type BaseResponse struct {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+}
+
+type CreateRoleRequest struct {
+	Status *uint32 `json:"status,optional"`
+	Name   string  `json:"name"`
+	Code   string  `json:"code"`
+	Remark *string `json:"remark,optional"`
+	Sort   *uint32 `json:"sort,optional"`
+}
+
+type CreateRoleResponse struct {
+	BaseResponse
+}
+
+type InitDatabaseResponse struct {
+	BaseResponse
+}
+
 type PingResponse struct {
 	Message string `json:"message"`
+}
+
+type RoleInfo struct {
+	BaseInfo
+	Trans  string  `json:"trans,optional"`
+	Status *uint32 `json:"status,optional"`
+	Name   *string `json:"name,optional"`
+	Code   *string `json:"code,optional"`
+	Remark *string `json:"remark,optional"`
+	Sort   *uint32 `json:"sort,optional"`
 }

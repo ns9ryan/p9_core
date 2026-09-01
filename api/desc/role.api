@@ -1,0 +1,61 @@
+syntax = "v1"
+
+// 公共类型
+import "types/common.api"
+
+type (
+    // 角色信息
+    RoleInfo {
+        BaseInfo
+
+        // 展示名称
+        Trans string `json:"trans,optional"`
+
+        // 状态
+        Status *uint32 `json:"status,optional"`
+
+        // 角色名称
+        Name *string `json:"name,optional"`
+
+        // 角色编码
+        Code *string `json:"code,optional"`
+
+        // 备注
+        Remark *string `json:"remark,optional"`
+
+        // 排序
+        Sort *uint32 `json:"sort,optional"`
+    }
+
+        // 创建角色请求
+    CreateRoleRequest {
+        // 状态
+        Status *uint32 `json:"status,optional"`
+
+        // 角色名称
+        Name string `json:"name"`
+
+        // 角色编码
+        Code string `json:"code"`
+
+        // 备注
+        Remark *string `json:"remark,optional"`
+
+        // 排序
+        Sort *uint32 `json:"sort,optional"`
+    }
+
+        // 创建角色响应
+    CreateRoleResponse {
+        BaseResponse
+    }
+)
+
+@server (
+    group: role
+)
+service core {
+    // 创建角色
+    @handler Create
+    post /role/create (CreateRoleRequest) returns (CreateRoleResponse)
+}

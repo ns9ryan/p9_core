@@ -1,0 +1,18 @@
+syntax = "v1"
+
+// 公共类型
+import "types/common.api"
+
+// 初始化数据库响应
+type InitDatabaseResponse {
+    BaseResponse
+}
+
+@server (
+    group: core
+)
+service core {
+    // 初始化数据库
+    @handler InitDatabase
+    get /core/init/database returns (InitDatabaseResponse)
+}

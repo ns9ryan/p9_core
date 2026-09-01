@@ -1,0 +1,22 @@
+syntax = "v1"
+
+// 基础信息
+type BaseInfo {
+    // ID
+    Id *uint64 `json:"id,optional"`
+
+    // 创建时间
+    CreatedAt *int64 `json:"createdAt,optional"`
+
+    // 更新时间
+    UpdatedAt *int64 `json:"updatedAt,optional"`
+}
+
+// 基础无数据响应
+type BaseResponse {
+    // 错误码
+    Code int `json:"code"`
+
+    // 提示信息
+    Msg string `json:"msg"`
+}

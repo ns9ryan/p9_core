@@ -1,10 +1,21 @@
 syntax = "v1"
 
+// 基础接口
+import "base.api"
+// 角色接口
+import "role.api"
+
+// Ping响应
 type PingResponse {
+	// 响应信息
 	Message string `json:"message"`
 }
 
+@server (
+	group: ping
+)
 service core {
+	// 服务探活
 	@handler Ping
 	get /ping returns (PingResponse)
 }

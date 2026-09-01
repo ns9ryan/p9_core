@@ -6,6 +6,9 @@ package handler
 import (
 	"net/http"
 
+	core "github.com/ns9ryan/p9_core/api/internal/handler/core"
+	ping "github.com/ns9ryan/p9_core/api/internal/handler/ping"
+	role "github.com/ns9ryan/p9_core/api/internal/handler/role"
 	"github.com/ns9ryan/p9_core/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -16,8 +19,28 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
+				Path:    "/core/init/database",
+				Handler: core.InitDatabaseHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
 				Path:    "/ping",
-				Handler: PingHandler(serverCtx),
+				Handler: ping.PingHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/role/create",
+				Handler: role.CreateHandler(serverCtx),
 			},
 		},
 	)

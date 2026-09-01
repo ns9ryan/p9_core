@@ -14,3 +14,31 @@ Log:
   Compress: false
   KeepDays: 7
   StackCoolDownMillis: 100
+
+DatabaseConf:
+  Type: postgres
+  Host: 127.0.0.1
+  Port: 15432
+  DBName: simple_admin_study
+  Username: root
+  Password: root
+  MaxOpenConn: 100
+  SSLMode: disable # disable or require
+  CacheTime: 5
+  Debug: true
+
+RedisConf:
+  Host: 127.0.0.1:16379
+
+CasbinConf:
+  ModelText: |
+    [request_definition]
+    r = sub, obj, act
+    [policy_definition]
+    p = sub, obj, act
+    [role_definition]
+    g = _, _
+    [policy_effect]
+    e = some(where (p.eft == allow))
+    [matchers]
+    m = r.sub == p.sub && keyMatch2(r.obj,p.obj) && r.act == p.act

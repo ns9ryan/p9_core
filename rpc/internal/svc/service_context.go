@@ -1,16 +1,20 @@
 package svc
 
 import (
+	_ "github.com/ns9ryan/p9_core/rpc/ent/runtime"
+
+	"github.com/ns9ryan/common/plugins/casbin"
+	"github.com/ns9ryan/p9_core/rpc/ent"
 	"github.com/ns9ryan/p9_core/rpc/internal/config"
 	"github.com/redis/go-redis/v9"
-	"github.com/suyuan32/simple-admin-core/rpc/ent"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type ServiceContext struct {
-	Config config.Config
-	DB     *ent.Client           // Ent 数据库客户端
-	Redis  redis.UniversalClient // Redis 客户端
+	Config     config.Config
+	DB         *ent.Client           // Ent 数据库客户端
+	Redis      redis.UniversalClient // Redis 客户端
+	CasbinConf casbin.CasbinConf
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {

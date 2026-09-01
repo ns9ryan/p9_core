@@ -6,10 +6,9 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/bsm/redislock v0.10.0
 	github.com/gofrs/uuid/v5 v5.5.1
-	github.com/ns9ryan/common v0.0.0-20260901092728-fe5d7862bbd8
+	github.com/ns9ryan/common v0.0.0-20260901101207-6dae375044ec
 	github.com/redis/go-redis/v9 v9.22.0
 	github.com/suyuan32/simple-admin-common v1.8.7
-	github.com/suyuan32/simple-admin-core v1.8.7
 	github.com/zeromicro/go-zero v1.10.3
 	google.golang.org/grpc v1.83.2
 	google.golang.org/protobuf v1.36.12
@@ -22,6 +21,9 @@ require (
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
+	github.com/bmatcuk/doublestar/v4 v4.10.0 // indirect
+	github.com/casbin/casbin/v3 v3.11.0 // indirect
+	github.com/casbin/govaluate v1.10.0 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect
@@ -100,6 +102,7 @@ require (
 	go.uber.org/zap v1.28.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.4 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
+	golang.org/x/crypto v0.55.0 // indirect
 	golang.org/x/mod v0.38.0 // indirect
 	golang.org/x/net v0.58.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect

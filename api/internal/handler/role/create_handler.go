@@ -19,10 +19,6 @@ func CreateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
-		//if err := httpx.Parse(r, &req, true); err != nil {
-		//	httpx.ErrorCtx(r.Context(), w, err)
-		//	return
-		//}
 
 		l := role.NewCreateLogic(r.Context(), svcCtx)
 		resp, err := l.Create(&req)

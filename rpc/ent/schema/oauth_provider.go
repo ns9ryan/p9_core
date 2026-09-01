@@ -8,51 +8,56 @@ import (
 	"github.com/ns9ryan/common/orm/ent/mixins"
 )
 
-// OauthProvider holds the schema definition for the OauthProvider entity.
+// OauthProvider 定义第三方登录配置表结构
 type OauthProvider struct {
 	ent.Schema
 }
 
-// Fields of the OauthProvider.
+// Fields 定义第三方登录配置表字段
 func (OauthProvider) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name").Unique().
-			Comment("The provider's name | 提供商名称"),
+		field.String("name").
+			Unique().
+			Comment("提供商名称"),
+
 		field.String("client_id").
-			Comment("The client id | 客户端 id"),
+			Comment("客户端 ID"),
+
 		field.String("client_secret").
-			Comment("The client secret | 客户端密钥"),
+			Comment("客户端密钥"),
+
 		field.String("redirect_url").
-			Comment("The redirect url | 跳转地址"),
+			Comment("回调地址"),
+
 		field.String("scopes").
-			Comment("The scopes | 权限范围"),
+			Comment("权限范围"),
+
 		field.String("auth_url").
-			Comment("The auth url of the provider | 认证地址"),
+			Comment("认证地址"),
+
 		field.String("token_url").
-			Comment("The token url of the provider | 获取 token地址"),
+			Comment("Token 获取地址"),
+
 		field.Uint64("auth_style").
-			Comment("The auth style, 0: auto detect 1: third party log in 2: log in with username and password | 鉴权方式" +
-				" 0 自动 1 第三方登录 2 使用用户名密码"),
+			Comment("鉴权方式：0 自动，1 第三方登录，2 用户名密码登录"),
+
 		field.String("info_url").
-			Comment("The URL to request user information by token | 用户信息请求地址"),
+			Comment("用户信息请求地址"),
 	}
 }
 
-// Edges of the OauthProvider.
-func (OauthProvider) Edges() []ent.Edge {
-	return nil
-}
-
+// Mixin 定义第三方登录配置表公共字段
 func (OauthProvider) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.IDMixin{},
 	}
 }
 
+// Annotations 定义第三方登录配置表数据库注解
 func (OauthProvider) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.WithComments(true),
-		schema.Comment("Oauth Provider Configuration Table | 三方登录配置表"),
-		entsql.Annotation{Table: "sys_oauth_providers"},
+		entsql.WithComments(true),                       // 启用数据库字段注释
+		schema.Comment("第三方登录配置表"),                      // 设置数据库表注释
+		entsql.Annotation{Table: "sys_oauth_providers"}, // 设置数据库表名
 	}
 }

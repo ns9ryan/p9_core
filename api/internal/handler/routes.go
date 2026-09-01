@@ -6,7 +6,7 @@ package handler
 import (
 	"net/http"
 
-	core "github.com/ns9ryan/p9_core/api/internal/handler/core"
+	base "github.com/ns9ryan/p9_core/api/internal/handler/base"
 	ping "github.com/ns9ryan/p9_core/api/internal/handler/ping"
 	role "github.com/ns9ryan/p9_core/api/internal/handler/role"
 	"github.com/ns9ryan/p9_core/api/internal/svc"
@@ -20,7 +20,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodGet,
 				Path:    "/core/init/database",
-				Handler: core.InitDatabaseHandler(serverCtx),
+				Handler: base.InitDatabaseHandler(serverCtx),
 			},
 		},
 	)

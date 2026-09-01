@@ -9,7 +9,7 @@ type InitDatabaseResponse {
 }
 
 @server (
-    group: core
+    group: base
 )
 service core {
     // 初始化数据库

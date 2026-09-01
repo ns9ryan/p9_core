@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ns9ryan/p9_core/rpc/ent/dictionary"
+	"github.com/ns9ryan/p9_core/rpc/ent/dictionarydetail"
 )
 
 // DictionaryCreate is the builder for creating a Dictionary entity.
@@ -106,6 +107,21 @@ func (_c *DictionaryCreate) SetNillableIsPublic(v *bool) *DictionaryCreate {
 func (_c *DictionaryCreate) SetID(v uint64) *DictionaryCreate {
 	_c.mutation.SetID(v)
 	return _c
+}
+
+// AddDictionaryDetailIDs adds the "dictionary_details" edge to the DictionaryDetail entity by IDs.
+func (_c *DictionaryCreate) AddDictionaryDetailIDs(ids ...uint64) *DictionaryCreate {
+	_c.mutation.AddDictionaryDetailIDs(ids...)
+	return _c
+}
+
+// AddDictionaryDetails adds the "dictionary_details" edges to the DictionaryDetail entity.
+func (_c *DictionaryCreate) AddDictionaryDetails(v ...*DictionaryDetail) *DictionaryCreate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddDictionaryDetailIDs(ids...)
 }
 
 // Mutation returns the DictionaryMutation object of the builder.
@@ -237,6 +253,22 @@ func (_c *DictionaryCreate) createSpec() (*Dictionary, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.IsPublic(); ok {
 		_spec.SetField(dictionary.FieldIsPublic, field.TypeBool, value)
 		_node.IsPublic = value
+	}
+	if nodes := _c.mutation.DictionaryDetailsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dictionary.DictionaryDetailsTable,
+			Columns: []string{dictionary.DictionaryDetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dictionarydetail.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

@@ -11,8 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	uuid "github.com/gofrs/uuid/v5"
 	"github.com/ns9ryan/p9_core/rpc/ent/position"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
+	"github.com/ns9ryan/p9_core/rpc/ent/user"
 )
 
 // PositionUpdate is the builder for updating Position entities.
@@ -130,9 +132,45 @@ func (_u *PositionUpdate) ClearRemark() *PositionUpdate {
 	return _u
 }
 
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (_u *PositionUpdate) AddUserIDs(ids ...uuid.UUID) *PositionUpdate {
+	_u.mutation.AddUserIDs(ids...)
+	return _u
+}
+
+// AddUsers adds the "users" edges to the User entity.
+func (_u *PositionUpdate) AddUsers(v ...*User) *PositionUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddUserIDs(ids...)
+}
+
 // Mutation returns the PositionMutation object of the builder.
 func (_u *PositionUpdate) Mutation() *PositionMutation {
 	return _u.mutation
+}
+
+// ClearUsers clears all "users" edges to the User entity.
+func (_u *PositionUpdate) ClearUsers() *PositionUpdate {
+	_u.mutation.ClearUsers()
+	return _u
+}
+
+// RemoveUserIDs removes the "users" edge to User entities by IDs.
+func (_u *PositionUpdate) RemoveUserIDs(ids ...uuid.UUID) *PositionUpdate {
+	_u.mutation.RemoveUserIDs(ids...)
+	return _u
+}
+
+// RemoveUsers removes "users" edges to User entities.
+func (_u *PositionUpdate) RemoveUsers(v ...*User) *PositionUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveUserIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -209,6 +247,51 @@ func (_u *PositionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.RemarkCleared() {
 		_spec.ClearField(position.FieldRemark, field.TypeString)
+	}
+	if _u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   position.UsersTable,
+			Columns: position.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedUsersIDs(); len(nodes) > 0 && !_u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   position.UsersTable,
+			Columns: position.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   position.UsersTable,
+			Columns: position.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -332,9 +415,45 @@ func (_u *PositionUpdateOne) ClearRemark() *PositionUpdateOne {
 	return _u
 }
 
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (_u *PositionUpdateOne) AddUserIDs(ids ...uuid.UUID) *PositionUpdateOne {
+	_u.mutation.AddUserIDs(ids...)
+	return _u
+}
+
+// AddUsers adds the "users" edges to the User entity.
+func (_u *PositionUpdateOne) AddUsers(v ...*User) *PositionUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddUserIDs(ids...)
+}
+
 // Mutation returns the PositionMutation object of the builder.
 func (_u *PositionUpdateOne) Mutation() *PositionMutation {
 	return _u.mutation
+}
+
+// ClearUsers clears all "users" edges to the User entity.
+func (_u *PositionUpdateOne) ClearUsers() *PositionUpdateOne {
+	_u.mutation.ClearUsers()
+	return _u
+}
+
+// RemoveUserIDs removes the "users" edge to User entities by IDs.
+func (_u *PositionUpdateOne) RemoveUserIDs(ids ...uuid.UUID) *PositionUpdateOne {
+	_u.mutation.RemoveUserIDs(ids...)
+	return _u
+}
+
+// RemoveUsers removes "users" edges to User entities.
+func (_u *PositionUpdateOne) RemoveUsers(v ...*User) *PositionUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveUserIDs(ids...)
 }
 
 // Where appends a list predicates to the PositionUpdate builder.
@@ -441,6 +560,51 @@ func (_u *PositionUpdateOne) sqlSave(ctx context.Context) (_node *Position, err 
 	}
 	if _u.mutation.RemarkCleared() {
 		_spec.ClearField(position.FieldRemark, field.TypeString)
+	}
+	if _u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   position.UsersTable,
+			Columns: position.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedUsersIDs(); len(nodes) > 0 && !_u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   position.UsersTable,
+			Columns: position.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   position.UsersTable,
+			Columns: position.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Position{config: _u.config}
 	_spec.Assign = _node.assignValues

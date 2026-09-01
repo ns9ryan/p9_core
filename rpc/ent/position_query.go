@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -11,8 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	uuid "github.com/gofrs/uuid/v5"
 	"github.com/ns9ryan/p9_core/rpc/ent/position"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
+	"github.com/ns9ryan/p9_core/rpc/ent/user"
 )
 
 // PositionQuery is the builder for querying Position entities.
@@ -22,6 +25,7 @@ type PositionQuery struct {
 	order      []position.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Position
+	withUsers  *UserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -56,6 +60,28 @@ func (_q *PositionQuery) Unique(unique bool) *PositionQuery {
 func (_q *PositionQuery) Order(o ...position.OrderOption) *PositionQuery {
 	_q.order = append(_q.order, o...)
 	return _q
+}
+
+// QueryUsers chains the current query on the "users" edge.
+func (_q *PositionQuery) QueryUsers() *UserQuery {
+	query := (&UserClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(position.Table, position.FieldID, selector),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, position.UsersTable, position.UsersPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Position entity from the query.
@@ -250,10 +276,22 @@ func (_q *PositionQuery) Clone() *PositionQuery {
 		order:      append([]position.OrderOption{}, _q.order...),
 		inters:     append([]Interceptor{}, _q.inters...),
 		predicates: append([]predicate.Position{}, _q.predicates...),
+		withUsers:  _q.withUsers.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
+}
+
+// WithUsers tells the query-builder to eager-load the nodes that are connected to
+// the "users" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *PositionQuery) WithUsers(opts ...func(*UserQuery)) *PositionQuery {
+	query := (&UserClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withUsers = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -332,8 +370,11 @@ func (_q *PositionQuery) prepareQuery(ctx context.Context) error {
 
 func (_q *PositionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Position, error) {
 	var (
-		nodes = []*Position{}
-		_spec = _q.querySpec()
+		nodes       = []*Position{}
+		_spec       = _q.querySpec()
+		loadedTypes = [1]bool{
+			_q.withUsers != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Position).scanValues(nil, columns)
@@ -341,6 +382,7 @@ func (_q *PositionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pos
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Position{config: _q.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -352,7 +394,76 @@ func (_q *PositionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pos
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := _q.withUsers; query != nil {
+		if err := _q.loadUsers(ctx, query, nodes,
+			func(n *Position) { n.Edges.Users = []*User{} },
+			func(n *Position, e *User) { n.Edges.Users = append(n.Edges.Users, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (_q *PositionQuery) loadUsers(ctx context.Context, query *UserQuery, nodes []*Position, init func(*Position), assign func(*Position, *User)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[uint64]*Position)
+	nids := make(map[uuid.UUID]map[*Position]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(position.UsersTable)
+		s.Join(joinT).On(s.C(user.FieldID), joinT.C(position.UsersPrimaryKey[0]))
+		s.Where(sql.InValues(joinT.C(position.UsersPrimaryKey[1]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(position.UsersPrimaryKey[1]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := uint64(values[0].(*sql.NullInt64).Int64)
+				inValue := *values[1].(*uuid.UUID)
+				if nids[inValue] == nil {
+					nids[inValue] = map[*Position]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*User](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "users" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
 }
 
 func (_q *PositionQuery) sqlCount(ctx context.Context) (int, error) {

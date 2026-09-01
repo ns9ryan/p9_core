@@ -10,7 +10,10 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	uuid "github.com/gofrs/uuid/v5"
+	"github.com/ns9ryan/p9_core/rpc/ent/menu"
 	"github.com/ns9ryan/p9_core/rpc/ent/role"
+	"github.com/ns9ryan/p9_core/rpc/ent/user"
 )
 
 // RoleCreate is the builder for creating a Role entity.
@@ -62,6 +65,20 @@ func (_c *RoleCreate) SetNillableStatus(v *uint8) *RoleCreate {
 	return _c
 }
 
+// SetSort sets the "sort" field.
+func (_c *RoleCreate) SetSort(v uint32) *RoleCreate {
+	_c.mutation.SetSort(v)
+	return _c
+}
+
+// SetNillableSort sets the "sort" field if the given value is not nil.
+func (_c *RoleCreate) SetNillableSort(v *uint32) *RoleCreate {
+	if v != nil {
+		_c.SetSort(*v)
+	}
+	return _c
+}
+
 // SetName sets the "name" field.
 func (_c *RoleCreate) SetName(v string) *RoleCreate {
 	_c.mutation.SetName(v)
@@ -88,24 +105,40 @@ func (_c *RoleCreate) SetNillableRemark(v *string) *RoleCreate {
 	return _c
 }
 
-// SetSort sets the "sort" field.
-func (_c *RoleCreate) SetSort(v uint32) *RoleCreate {
-	_c.mutation.SetSort(v)
-	return _c
-}
-
-// SetNillableSort sets the "sort" field if the given value is not nil.
-func (_c *RoleCreate) SetNillableSort(v *uint32) *RoleCreate {
-	if v != nil {
-		_c.SetSort(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *RoleCreate) SetID(v uint64) *RoleCreate {
 	_c.mutation.SetID(v)
 	return _c
+}
+
+// AddMenuIDs adds the "menus" edge to the Menu entity by IDs.
+func (_c *RoleCreate) AddMenuIDs(ids ...uint64) *RoleCreate {
+	_c.mutation.AddMenuIDs(ids...)
+	return _c
+}
+
+// AddMenus adds the "menus" edges to the Menu entity.
+func (_c *RoleCreate) AddMenus(v ...*Menu) *RoleCreate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddMenuIDs(ids...)
+}
+
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (_c *RoleCreate) AddUserIDs(ids ...uuid.UUID) *RoleCreate {
+	_c.mutation.AddUserIDs(ids...)
+	return _c
+}
+
+// AddUsers adds the "users" edges to the User entity.
+func (_c *RoleCreate) AddUsers(v ...*User) *RoleCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddUserIDs(ids...)
 }
 
 // Mutation returns the RoleMutation object of the builder.
@@ -155,13 +188,13 @@ func (_c *RoleCreate) defaults() {
 		v := role.DefaultStatus
 		_c.mutation.SetStatus(v)
 	}
-	if _, ok := _c.mutation.Remark(); !ok {
-		v := role.DefaultRemark
-		_c.mutation.SetRemark(v)
-	}
 	if _, ok := _c.mutation.Sort(); !ok {
 		v := role.DefaultSort
 		_c.mutation.SetSort(v)
+	}
+	if _, ok := _c.mutation.Remark(); !ok {
+		v := role.DefaultRemark
+		_c.mutation.SetRemark(v)
 	}
 }
 
@@ -173,6 +206,9 @@ func (_c *RoleCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Role.updated_at"`)}
 	}
+	if _, ok := _c.mutation.Sort(); !ok {
+		return &ValidationError{Name: "sort", err: errors.New(`ent: missing required field "Role.sort"`)}
+	}
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Role.name"`)}
 	}
@@ -181,9 +217,6 @@ func (_c *RoleCreate) check() error {
 	}
 	if _, ok := _c.mutation.Remark(); !ok {
 		return &ValidationError{Name: "remark", err: errors.New(`ent: missing required field "Role.remark"`)}
-	}
-	if _, ok := _c.mutation.Sort(); !ok {
-		return &ValidationError{Name: "sort", err: errors.New(`ent: missing required field "Role.sort"`)}
 	}
 	return nil
 }
@@ -229,6 +262,10 @@ func (_c *RoleCreate) createSpec() (*Role, *sqlgraph.CreateSpec) {
 		_spec.SetField(role.FieldStatus, field.TypeUint8, value)
 		_node.Status = value
 	}
+	if value, ok := _c.mutation.Sort(); ok {
+		_spec.SetField(role.FieldSort, field.TypeUint32, value)
+		_node.Sort = value
+	}
 	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(role.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -241,9 +278,37 @@ func (_c *RoleCreate) createSpec() (*Role, *sqlgraph.CreateSpec) {
 		_spec.SetField(role.FieldRemark, field.TypeString, value)
 		_node.Remark = value
 	}
-	if value, ok := _c.mutation.Sort(); ok {
-		_spec.SetField(role.FieldSort, field.TypeUint32, value)
-		_node.Sort = value
+	if nodes := _c.mutation.MenusIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   role.MenusTable,
+			Columns: role.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

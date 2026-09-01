@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ns9ryan/p9_core/rpc/ent/dictionary"
 	"github.com/ns9ryan/p9_core/rpc/ent/dictionarydetail"
 )
 
@@ -112,6 +113,25 @@ func (_c *DictionaryDetailCreate) SetNillableDictionaryID(v *uint64) *Dictionary
 func (_c *DictionaryDetailCreate) SetID(v uint64) *DictionaryDetailCreate {
 	_c.mutation.SetID(v)
 	return _c
+}
+
+// SetDictionariesID sets the "dictionaries" edge to the Dictionary entity by ID.
+func (_c *DictionaryDetailCreate) SetDictionariesID(id uint64) *DictionaryDetailCreate {
+	_c.mutation.SetDictionariesID(id)
+	return _c
+}
+
+// SetNillableDictionariesID sets the "dictionaries" edge to the Dictionary entity by ID if the given value is not nil.
+func (_c *DictionaryDetailCreate) SetNillableDictionariesID(id *uint64) *DictionaryDetailCreate {
+	if id != nil {
+		_c = _c.SetDictionariesID(*id)
+	}
+	return _c
+}
+
+// SetDictionaries sets the "dictionaries" edge to the Dictionary entity.
+func (_c *DictionaryDetailCreate) SetDictionaries(v *Dictionary) *DictionaryDetailCreate {
+	return _c.SetDictionariesID(v.ID)
 }
 
 // Mutation returns the DictionaryDetailMutation object of the builder.
@@ -247,9 +267,22 @@ func (_c *DictionaryDetailCreate) createSpec() (*DictionaryDetail, *sqlgraph.Cre
 		_spec.SetField(dictionarydetail.FieldValue, field.TypeString, value)
 		_node.Value = value
 	}
-	if value, ok := _c.mutation.DictionaryID(); ok {
-		_spec.SetField(dictionarydetail.FieldDictionaryID, field.TypeUint64, value)
-		_node.DictionaryID = value
+	if nodes := _c.mutation.DictionariesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   dictionarydetail.DictionariesTable,
+			Columns: []string{dictionarydetail.DictionariesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dictionary.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.DictionaryID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -21,24 +22,24 @@ const (
 	FieldSort = "sort"
 	// FieldParentID holds the string denoting the parent_id field in the database.
 	FieldParentID = "parent_id"
-	// FieldMenuLevel holds the string denoting the menu_level field in the database.
-	FieldMenuLevel = "menu_level"
-	// FieldMenuType holds the string denoting the menu_type field in the database.
-	FieldMenuType = "menu_type"
-	// FieldPath holds the string denoting the path field in the database.
-	FieldPath = "path"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldRedirect holds the string denoting the redirect field in the database.
-	FieldRedirect = "redirect"
+	// FieldMenuType holds the string denoting the menu_type field in the database.
+	FieldMenuType = "menu_type"
+	// FieldMenuLevel holds the string denoting the menu_level field in the database.
+	FieldMenuLevel = "menu_level"
+	// FieldPath holds the string denoting the path field in the database.
+	FieldPath = "path"
 	// FieldComponent holds the string denoting the component field in the database.
 	FieldComponent = "component"
-	// FieldDisabled holds the string denoting the disabled field in the database.
-	FieldDisabled = "disabled"
+	// FieldRedirect holds the string denoting the redirect field in the database.
+	FieldRedirect = "redirect"
 	// FieldServiceName holds the string denoting the service_name field in the database.
 	FieldServiceName = "service_name"
 	// FieldPermission holds the string denoting the permission field in the database.
 	FieldPermission = "permission"
+	// FieldDisabled holds the string denoting the disabled field in the database.
+	FieldDisabled = "disabled"
 	// FieldTitle holds the string denoting the title field in the database.
 	FieldTitle = "title"
 	// FieldIcon holds the string denoting the icon field in the database.
@@ -63,8 +64,27 @@ const (
 	FieldDynamicLevel = "dynamic_level"
 	// FieldRealPath holds the string denoting the real_path field in the database.
 	FieldRealPath = "real_path"
+	// EdgeRoles holds the string denoting the roles edge name in mutations.
+	EdgeRoles = "roles"
+	// EdgeParent holds the string denoting the parent edge name in mutations.
+	EdgeParent = "parent"
+	// EdgeChildren holds the string denoting the children edge name in mutations.
+	EdgeChildren = "children"
 	// Table holds the table name of the menu in the database.
 	Table = "sys_menus"
+	// RolesTable is the table that holds the roles relation/edge. The primary key declared below.
+	RolesTable = "role_menus"
+	// RolesInverseTable is the table name for the Role entity.
+	// It exists in this package in order to avoid circular dependency with the "role" package.
+	RolesInverseTable = "sys_roles"
+	// ParentTable is the table that holds the parent relation/edge.
+	ParentTable = "sys_menus"
+	// ParentColumn is the table column denoting the parent relation/edge.
+	ParentColumn = "parent_id"
+	// ChildrenTable is the table that holds the children relation/edge.
+	ChildrenTable = "sys_menus"
+	// ChildrenColumn is the table column denoting the children relation/edge.
+	ChildrenColumn = "parent_id"
 )
 
 // Columns holds all SQL columns for menu fields.
@@ -74,15 +94,15 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldSort,
 	FieldParentID,
-	FieldMenuLevel,
-	FieldMenuType,
-	FieldPath,
 	FieldName,
-	FieldRedirect,
+	FieldMenuType,
+	FieldMenuLevel,
+	FieldPath,
 	FieldComponent,
-	FieldDisabled,
+	FieldRedirect,
 	FieldServiceName,
 	FieldPermission,
+	FieldDisabled,
 	FieldTitle,
 	FieldIcon,
 	FieldHideMenu,
@@ -96,6 +116,12 @@ var Columns = []string{
 	FieldDynamicLevel,
 	FieldRealPath,
 }
+
+var (
+	// RolesPrimaryKey and RolesColumn2 are the table columns denoting the
+	// primary key for the roles relation (M2M).
+	RolesPrimaryKey = []string{"role_id", "menu_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -120,14 +146,14 @@ var (
 	DefaultParentID uint64
 	// DefaultPath holds the default value on creation for the "path" field.
 	DefaultPath string
-	// DefaultRedirect holds the default value on creation for the "redirect" field.
-	DefaultRedirect string
 	// DefaultComponent holds the default value on creation for the "component" field.
 	DefaultComponent string
-	// DefaultDisabled holds the default value on creation for the "disabled" field.
-	DefaultDisabled bool
+	// DefaultRedirect holds the default value on creation for the "redirect" field.
+	DefaultRedirect string
 	// DefaultServiceName holds the default value on creation for the "service_name" field.
 	DefaultServiceName string
+	// DefaultDisabled holds the default value on creation for the "disabled" field.
+	DefaultDisabled bool
 	// DefaultHideMenu holds the default value on creation for the "hide_menu" field.
 	DefaultHideMenu bool
 	// DefaultHideBreadcrumb holds the default value on creation for the "hide_breadcrumb" field.
@@ -178,9 +204,9 @@ func ByParentID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldParentID, opts...).ToFunc()
 }
 
-// ByMenuLevel orders the results by the menu_level field.
-func ByMenuLevel(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldMenuLevel, opts...).ToFunc()
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByMenuType orders the results by the menu_type field.
@@ -188,19 +214,14 @@ func ByMenuType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMenuType, opts...).ToFunc()
 }
 
+// ByMenuLevel orders the results by the menu_level field.
+func ByMenuLevel(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMenuLevel, opts...).ToFunc()
+}
+
 // ByPath orders the results by the path field.
 func ByPath(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPath, opts...).ToFunc()
-}
-
-// ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldName, opts...).ToFunc()
-}
-
-// ByRedirect orders the results by the redirect field.
-func ByRedirect(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRedirect, opts...).ToFunc()
 }
 
 // ByComponent orders the results by the component field.
@@ -208,9 +229,9 @@ func ByComponent(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldComponent, opts...).ToFunc()
 }
 
-// ByDisabled orders the results by the disabled field.
-func ByDisabled(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDisabled, opts...).ToFunc()
+// ByRedirect orders the results by the redirect field.
+func ByRedirect(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRedirect, opts...).ToFunc()
 }
 
 // ByServiceName orders the results by the service_name field.
@@ -221,6 +242,11 @@ func ByServiceName(opts ...sql.OrderTermOption) OrderOption {
 // ByPermission orders the results by the permission field.
 func ByPermission(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPermission, opts...).ToFunc()
+}
+
+// ByDisabled orders the results by the disabled field.
+func ByDisabled(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDisabled, opts...).ToFunc()
 }
 
 // ByTitle orders the results by the title field.
@@ -281,4 +307,60 @@ func ByDynamicLevel(opts ...sql.OrderTermOption) OrderOption {
 // ByRealPath orders the results by the real_path field.
 func ByRealPath(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRealPath, opts...).ToFunc()
+}
+
+// ByRolesCount orders the results by roles count.
+func ByRolesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newRolesStep(), opts...)
+	}
+}
+
+// ByRoles orders the results by roles terms.
+func ByRoles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newRolesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByParentField orders the results by parent field.
+func ByParentField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newParentStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByChildrenCount orders the results by children count.
+func ByChildrenCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newChildrenStep(), opts...)
+	}
+}
+
+// ByChildren orders the results by children terms.
+func ByChildren(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newChildrenStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newRolesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(RolesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, RolesTable, RolesPrimaryKey...),
+	)
+}
+func newParentStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ParentTable, ParentColumn),
+	)
+}
+func newChildrenStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ChildrenTable, ChildrenColumn),
+	)
 }

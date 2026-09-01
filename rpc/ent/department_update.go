@@ -11,8 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	uuid "github.com/gofrs/uuid/v5"
 	"github.com/ns9ryan/p9_core/rpc/ent/department"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
+	"github.com/ns9ryan/p9_core/rpc/ent/user"
 )
 
 // DepartmentUpdate is the builder for updating Department entities.
@@ -93,6 +95,26 @@ func (_u *DepartmentUpdate) SetNillableName(v *string) *DepartmentUpdate {
 	if v != nil {
 		_u.SetName(*v)
 	}
+	return _u
+}
+
+// SetParentID sets the "parent_id" field.
+func (_u *DepartmentUpdate) SetParentID(v uint64) *DepartmentUpdate {
+	_u.mutation.SetParentID(v)
+	return _u
+}
+
+// SetNillableParentID sets the "parent_id" field if the given value is not nil.
+func (_u *DepartmentUpdate) SetNillableParentID(v *uint64) *DepartmentUpdate {
+	if v != nil {
+		_u.SetParentID(*v)
+	}
+	return _u
+}
+
+// ClearParentID clears the value of the "parent_id" field.
+func (_u *DepartmentUpdate) ClearParentID() *DepartmentUpdate {
+	_u.mutation.ClearParentID()
 	return _u
 }
 
@@ -196,36 +218,92 @@ func (_u *DepartmentUpdate) ClearRemark() *DepartmentUpdate {
 	return _u
 }
 
-// SetParentID sets the "parent_id" field.
-func (_u *DepartmentUpdate) SetParentID(v uint64) *DepartmentUpdate {
-	_u.mutation.ResetParentID()
-	_u.mutation.SetParentID(v)
+// SetParent sets the "parent" edge to the Department entity.
+func (_u *DepartmentUpdate) SetParent(v *Department) *DepartmentUpdate {
+	return _u.SetParentID(v.ID)
+}
+
+// AddChildIDs adds the "children" edge to the Department entity by IDs.
+func (_u *DepartmentUpdate) AddChildIDs(ids ...uint64) *DepartmentUpdate {
+	_u.mutation.AddChildIDs(ids...)
 	return _u
 }
 
-// SetNillableParentID sets the "parent_id" field if the given value is not nil.
-func (_u *DepartmentUpdate) SetNillableParentID(v *uint64) *DepartmentUpdate {
-	if v != nil {
-		_u.SetParentID(*v)
+// AddChildren adds the "children" edges to the Department entity.
+func (_u *DepartmentUpdate) AddChildren(v ...*Department) *DepartmentUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
+	return _u.AddChildIDs(ids...)
+}
+
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (_u *DepartmentUpdate) AddUserIDs(ids ...uuid.UUID) *DepartmentUpdate {
+	_u.mutation.AddUserIDs(ids...)
 	return _u
 }
 
-// AddParentID adds value to the "parent_id" field.
-func (_u *DepartmentUpdate) AddParentID(v int64) *DepartmentUpdate {
-	_u.mutation.AddParentID(v)
-	return _u
-}
-
-// ClearParentID clears the value of the "parent_id" field.
-func (_u *DepartmentUpdate) ClearParentID() *DepartmentUpdate {
-	_u.mutation.ClearParentID()
-	return _u
+// AddUsers adds the "users" edges to the User entity.
+func (_u *DepartmentUpdate) AddUsers(v ...*User) *DepartmentUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddUserIDs(ids...)
 }
 
 // Mutation returns the DepartmentMutation object of the builder.
 func (_u *DepartmentUpdate) Mutation() *DepartmentMutation {
 	return _u.mutation
+}
+
+// ClearParent clears the "parent" edge to the Department entity.
+func (_u *DepartmentUpdate) ClearParent() *DepartmentUpdate {
+	_u.mutation.ClearParent()
+	return _u
+}
+
+// ClearChildren clears all "children" edges to the Department entity.
+func (_u *DepartmentUpdate) ClearChildren() *DepartmentUpdate {
+	_u.mutation.ClearChildren()
+	return _u
+}
+
+// RemoveChildIDs removes the "children" edge to Department entities by IDs.
+func (_u *DepartmentUpdate) RemoveChildIDs(ids ...uint64) *DepartmentUpdate {
+	_u.mutation.RemoveChildIDs(ids...)
+	return _u
+}
+
+// RemoveChildren removes "children" edges to Department entities.
+func (_u *DepartmentUpdate) RemoveChildren(v ...*Department) *DepartmentUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveChildIDs(ids...)
+}
+
+// ClearUsers clears all "users" edges to the User entity.
+func (_u *DepartmentUpdate) ClearUsers() *DepartmentUpdate {
+	_u.mutation.ClearUsers()
+	return _u
+}
+
+// RemoveUserIDs removes the "users" edge to User entities by IDs.
+func (_u *DepartmentUpdate) RemoveUserIDs(ids ...uuid.UUID) *DepartmentUpdate {
+	_u.mutation.RemoveUserIDs(ids...)
+	return _u
+}
+
+// RemoveUsers removes "users" edges to User entities.
+func (_u *DepartmentUpdate) RemoveUsers(v ...*User) *DepartmentUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveUserIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -324,14 +402,124 @@ func (_u *DepartmentUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 	if _u.mutation.RemarkCleared() {
 		_spec.ClearField(department.FieldRemark, field.TypeString)
 	}
-	if value, ok := _u.mutation.ParentID(); ok {
-		_spec.SetField(department.FieldParentID, field.TypeUint64, value)
+	if _u.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   department.ParentTable,
+			Columns: []string{department.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := _u.mutation.AddedParentID(); ok {
-		_spec.AddField(department.FieldParentID, field.TypeUint64, value)
+	if nodes := _u.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   department.ParentTable,
+			Columns: []string{department.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.ParentIDCleared() {
-		_spec.ClearField(department.FieldParentID, field.TypeUint64)
+	if _u.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   department.ChildrenTable,
+			Columns: []string{department.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !_u.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   department.ChildrenTable,
+			Columns: []string{department.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   department.ChildrenTable,
+			Columns: []string{department.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.UsersTable,
+			Columns: []string{department.UsersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedUsersIDs(); len(nodes) > 0 && !_u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.UsersTable,
+			Columns: []string{department.UsersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.UsersTable,
+			Columns: []string{department.UsersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -418,6 +606,26 @@ func (_u *DepartmentUpdateOne) SetNillableName(v *string) *DepartmentUpdateOne {
 	if v != nil {
 		_u.SetName(*v)
 	}
+	return _u
+}
+
+// SetParentID sets the "parent_id" field.
+func (_u *DepartmentUpdateOne) SetParentID(v uint64) *DepartmentUpdateOne {
+	_u.mutation.SetParentID(v)
+	return _u
+}
+
+// SetNillableParentID sets the "parent_id" field if the given value is not nil.
+func (_u *DepartmentUpdateOne) SetNillableParentID(v *uint64) *DepartmentUpdateOne {
+	if v != nil {
+		_u.SetParentID(*v)
+	}
+	return _u
+}
+
+// ClearParentID clears the value of the "parent_id" field.
+func (_u *DepartmentUpdateOne) ClearParentID() *DepartmentUpdateOne {
+	_u.mutation.ClearParentID()
 	return _u
 }
 
@@ -521,36 +729,92 @@ func (_u *DepartmentUpdateOne) ClearRemark() *DepartmentUpdateOne {
 	return _u
 }
 
-// SetParentID sets the "parent_id" field.
-func (_u *DepartmentUpdateOne) SetParentID(v uint64) *DepartmentUpdateOne {
-	_u.mutation.ResetParentID()
-	_u.mutation.SetParentID(v)
+// SetParent sets the "parent" edge to the Department entity.
+func (_u *DepartmentUpdateOne) SetParent(v *Department) *DepartmentUpdateOne {
+	return _u.SetParentID(v.ID)
+}
+
+// AddChildIDs adds the "children" edge to the Department entity by IDs.
+func (_u *DepartmentUpdateOne) AddChildIDs(ids ...uint64) *DepartmentUpdateOne {
+	_u.mutation.AddChildIDs(ids...)
 	return _u
 }
 
-// SetNillableParentID sets the "parent_id" field if the given value is not nil.
-func (_u *DepartmentUpdateOne) SetNillableParentID(v *uint64) *DepartmentUpdateOne {
-	if v != nil {
-		_u.SetParentID(*v)
+// AddChildren adds the "children" edges to the Department entity.
+func (_u *DepartmentUpdateOne) AddChildren(v ...*Department) *DepartmentUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
+	return _u.AddChildIDs(ids...)
+}
+
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (_u *DepartmentUpdateOne) AddUserIDs(ids ...uuid.UUID) *DepartmentUpdateOne {
+	_u.mutation.AddUserIDs(ids...)
 	return _u
 }
 
-// AddParentID adds value to the "parent_id" field.
-func (_u *DepartmentUpdateOne) AddParentID(v int64) *DepartmentUpdateOne {
-	_u.mutation.AddParentID(v)
-	return _u
-}
-
-// ClearParentID clears the value of the "parent_id" field.
-func (_u *DepartmentUpdateOne) ClearParentID() *DepartmentUpdateOne {
-	_u.mutation.ClearParentID()
-	return _u
+// AddUsers adds the "users" edges to the User entity.
+func (_u *DepartmentUpdateOne) AddUsers(v ...*User) *DepartmentUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddUserIDs(ids...)
 }
 
 // Mutation returns the DepartmentMutation object of the builder.
 func (_u *DepartmentUpdateOne) Mutation() *DepartmentMutation {
 	return _u.mutation
+}
+
+// ClearParent clears the "parent" edge to the Department entity.
+func (_u *DepartmentUpdateOne) ClearParent() *DepartmentUpdateOne {
+	_u.mutation.ClearParent()
+	return _u
+}
+
+// ClearChildren clears all "children" edges to the Department entity.
+func (_u *DepartmentUpdateOne) ClearChildren() *DepartmentUpdateOne {
+	_u.mutation.ClearChildren()
+	return _u
+}
+
+// RemoveChildIDs removes the "children" edge to Department entities by IDs.
+func (_u *DepartmentUpdateOne) RemoveChildIDs(ids ...uint64) *DepartmentUpdateOne {
+	_u.mutation.RemoveChildIDs(ids...)
+	return _u
+}
+
+// RemoveChildren removes "children" edges to Department entities.
+func (_u *DepartmentUpdateOne) RemoveChildren(v ...*Department) *DepartmentUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveChildIDs(ids...)
+}
+
+// ClearUsers clears all "users" edges to the User entity.
+func (_u *DepartmentUpdateOne) ClearUsers() *DepartmentUpdateOne {
+	_u.mutation.ClearUsers()
+	return _u
+}
+
+// RemoveUserIDs removes the "users" edge to User entities by IDs.
+func (_u *DepartmentUpdateOne) RemoveUserIDs(ids ...uuid.UUID) *DepartmentUpdateOne {
+	_u.mutation.RemoveUserIDs(ids...)
+	return _u
+}
+
+// RemoveUsers removes "users" edges to User entities.
+func (_u *DepartmentUpdateOne) RemoveUsers(v ...*User) *DepartmentUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveUserIDs(ids...)
 }
 
 // Where appends a list predicates to the DepartmentUpdate builder.
@@ -679,14 +943,124 @@ func (_u *DepartmentUpdateOne) sqlSave(ctx context.Context) (_node *Department, 
 	if _u.mutation.RemarkCleared() {
 		_spec.ClearField(department.FieldRemark, field.TypeString)
 	}
-	if value, ok := _u.mutation.ParentID(); ok {
-		_spec.SetField(department.FieldParentID, field.TypeUint64, value)
+	if _u.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   department.ParentTable,
+			Columns: []string{department.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := _u.mutation.AddedParentID(); ok {
-		_spec.AddField(department.FieldParentID, field.TypeUint64, value)
+	if nodes := _u.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   department.ParentTable,
+			Columns: []string{department.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.ParentIDCleared() {
-		_spec.ClearField(department.FieldParentID, field.TypeUint64)
+	if _u.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   department.ChildrenTable,
+			Columns: []string{department.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !_u.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   department.ChildrenTable,
+			Columns: []string{department.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   department.ChildrenTable,
+			Columns: []string{department.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.UsersTable,
+			Columns: []string{department.UsersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedUsersIDs(); len(nodes) > 0 && !_u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.UsersTable,
+			Columns: []string{department.UsersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.UsersTable,
+			Columns: []string{department.UsersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Department{config: _u.config}
 	_spec.Assign = _node.assignValues

@@ -12,7 +12,7 @@ import (
 	"github.com/ns9ryan/p9_core/rpc/ent/role"
 )
 
-// Role Table | 角色信息表
+// 角色信息表
 type Role struct {
 	config `json:"-"`
 	// ID of the ent.
@@ -24,15 +24,47 @@ type Role struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// 状态：1 正常，2 停用
 	Status uint8 `json:"status,omitempty"`
-	// Role name | 角色名
+	// 排序编号
+	Sort uint32 `json:"sort,omitempty"`
+	// 角色名称
 	Name string `json:"name,omitempty"`
-	// Role code for permission control in front end | 角色码，用于前端权限控制
+	// 角色编码
 	Code string `json:"code,omitempty"`
-	// Remark | 备注
+	// 备注
 	Remark string `json:"remark,omitempty"`
-	// Order number | 排序编号
-	Sort         uint32 `json:"sort,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the RoleQuery when eager-loading is set.
+	Edges        RoleEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// RoleEdges holds the relations/edges for other nodes in the graph.
+type RoleEdges struct {
+	// Menus holds the value of the menus edge.
+	Menus []*Menu `json:"menus,omitempty"`
+	// Users holds the value of the users edge.
+	Users []*User `json:"users,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// MenusOrErr returns the Menus value or an error if the edge
+// was not loaded in eager-loading.
+func (e RoleEdges) MenusOrErr() ([]*Menu, error) {
+	if e.loadedTypes[0] {
+		return e.Menus, nil
+	}
+	return nil, &NotLoadedError{edge: "menus"}
+}
+
+// UsersOrErr returns the Users value or an error if the edge
+// was not loaded in eager-loading.
+func (e RoleEdges) UsersOrErr() ([]*User, error) {
+	if e.loadedTypes[1] {
+		return e.Users, nil
+	}
+	return nil, &NotLoadedError{edge: "users"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -85,6 +117,12 @@ func (_m *Role) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Status = uint8(value.Int64)
 			}
+		case role.FieldSort:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field sort", values[i])
+			} else if value.Valid {
+				_m.Sort = uint32(value.Int64)
+			}
 		case role.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -103,12 +141,6 @@ func (_m *Role) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Remark = value.String
 			}
-		case role.FieldSort:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field sort", values[i])
-			} else if value.Valid {
-				_m.Sort = uint32(value.Int64)
-			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -120,6 +152,16 @@ func (_m *Role) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *Role) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryMenus queries the "menus" edge of the Role entity.
+func (_m *Role) QueryMenus() *MenuQuery {
+	return NewRoleClient(_m.config).QueryMenus(_m)
+}
+
+// QueryUsers queries the "users" edge of the Role entity.
+func (_m *Role) QueryUsers() *UserQuery {
+	return NewRoleClient(_m.config).QueryUsers(_m)
 }
 
 // Update returns a builder for updating this Role.
@@ -154,6 +196,9 @@ func (_m *Role) String() string {
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
+	builder.WriteString("sort=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Sort))
+	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
@@ -162,9 +207,6 @@ func (_m *Role) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("remark=")
 	builder.WriteString(_m.Remark)
-	builder.WriteString(", ")
-	builder.WriteString("sort=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Sort))
 	builder.WriteByte(')')
 	return builder.String()
 }

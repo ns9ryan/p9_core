@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
 )
 
@@ -432,6 +433,29 @@ func IsPublicEQ(v bool) predicate.Dictionary {
 // IsPublicNEQ applies the NEQ predicate on the "is_public" field.
 func IsPublicNEQ(v bool) predicate.Dictionary {
 	return predicate.Dictionary(sql.FieldNEQ(FieldIsPublic, v))
+}
+
+// HasDictionaryDetails applies the HasEdge predicate on the "dictionary_details" edge.
+func HasDictionaryDetails() predicate.Dictionary {
+	return predicate.Dictionary(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DictionaryDetailsTable, DictionaryDetailsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDictionaryDetailsWith applies the HasEdge predicate on the "dictionary_details" edge with a given conditions (other predicates).
+func HasDictionaryDetailsWith(preds ...predicate.DictionaryDetail) predicate.Dictionary {
+	return predicate.Dictionary(func(s *sql.Selector) {
+		step := newDictionaryDetailsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

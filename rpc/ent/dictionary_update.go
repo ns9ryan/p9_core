@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ns9ryan/p9_core/rpc/ent/dictionary"
+	"github.com/ns9ryan/p9_core/rpc/ent/dictionarydetail"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
 )
 
@@ -123,9 +124,45 @@ func (_u *DictionaryUpdate) SetNillableIsPublic(v *bool) *DictionaryUpdate {
 	return _u
 }
 
+// AddDictionaryDetailIDs adds the "dictionary_details" edge to the DictionaryDetail entity by IDs.
+func (_u *DictionaryUpdate) AddDictionaryDetailIDs(ids ...uint64) *DictionaryUpdate {
+	_u.mutation.AddDictionaryDetailIDs(ids...)
+	return _u
+}
+
+// AddDictionaryDetails adds the "dictionary_details" edges to the DictionaryDetail entity.
+func (_u *DictionaryUpdate) AddDictionaryDetails(v ...*DictionaryDetail) *DictionaryUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDictionaryDetailIDs(ids...)
+}
+
 // Mutation returns the DictionaryMutation object of the builder.
 func (_u *DictionaryUpdate) Mutation() *DictionaryMutation {
 	return _u.mutation
+}
+
+// ClearDictionaryDetails clears all "dictionary_details" edges to the DictionaryDetail entity.
+func (_u *DictionaryUpdate) ClearDictionaryDetails() *DictionaryUpdate {
+	_u.mutation.ClearDictionaryDetails()
+	return _u
+}
+
+// RemoveDictionaryDetailIDs removes the "dictionary_details" edge to DictionaryDetail entities by IDs.
+func (_u *DictionaryUpdate) RemoveDictionaryDetailIDs(ids ...uint64) *DictionaryUpdate {
+	_u.mutation.RemoveDictionaryDetailIDs(ids...)
+	return _u
+}
+
+// RemoveDictionaryDetails removes "dictionary_details" edges to DictionaryDetail entities.
+func (_u *DictionaryUpdate) RemoveDictionaryDetails(v ...*DictionaryDetail) *DictionaryUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDictionaryDetailIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -199,6 +236,51 @@ func (_u *DictionaryUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 	}
 	if value, ok := _u.mutation.IsPublic(); ok {
 		_spec.SetField(dictionary.FieldIsPublic, field.TypeBool, value)
+	}
+	if _u.mutation.DictionaryDetailsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dictionary.DictionaryDetailsTable,
+			Columns: []string{dictionary.DictionaryDetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dictionarydetail.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDictionaryDetailsIDs(); len(nodes) > 0 && !_u.mutation.DictionaryDetailsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dictionary.DictionaryDetailsTable,
+			Columns: []string{dictionary.DictionaryDetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dictionarydetail.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DictionaryDetailsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dictionary.DictionaryDetailsTable,
+			Columns: []string{dictionary.DictionaryDetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dictionarydetail.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -315,9 +397,45 @@ func (_u *DictionaryUpdateOne) SetNillableIsPublic(v *bool) *DictionaryUpdateOne
 	return _u
 }
 
+// AddDictionaryDetailIDs adds the "dictionary_details" edge to the DictionaryDetail entity by IDs.
+func (_u *DictionaryUpdateOne) AddDictionaryDetailIDs(ids ...uint64) *DictionaryUpdateOne {
+	_u.mutation.AddDictionaryDetailIDs(ids...)
+	return _u
+}
+
+// AddDictionaryDetails adds the "dictionary_details" edges to the DictionaryDetail entity.
+func (_u *DictionaryUpdateOne) AddDictionaryDetails(v ...*DictionaryDetail) *DictionaryUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddDictionaryDetailIDs(ids...)
+}
+
 // Mutation returns the DictionaryMutation object of the builder.
 func (_u *DictionaryUpdateOne) Mutation() *DictionaryMutation {
 	return _u.mutation
+}
+
+// ClearDictionaryDetails clears all "dictionary_details" edges to the DictionaryDetail entity.
+func (_u *DictionaryUpdateOne) ClearDictionaryDetails() *DictionaryUpdateOne {
+	_u.mutation.ClearDictionaryDetails()
+	return _u
+}
+
+// RemoveDictionaryDetailIDs removes the "dictionary_details" edge to DictionaryDetail entities by IDs.
+func (_u *DictionaryUpdateOne) RemoveDictionaryDetailIDs(ids ...uint64) *DictionaryUpdateOne {
+	_u.mutation.RemoveDictionaryDetailIDs(ids...)
+	return _u
+}
+
+// RemoveDictionaryDetails removes "dictionary_details" edges to DictionaryDetail entities.
+func (_u *DictionaryUpdateOne) RemoveDictionaryDetails(v ...*DictionaryDetail) *DictionaryUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveDictionaryDetailIDs(ids...)
 }
 
 // Where appends a list predicates to the DictionaryUpdate builder.
@@ -421,6 +539,51 @@ func (_u *DictionaryUpdateOne) sqlSave(ctx context.Context) (_node *Dictionary, 
 	}
 	if value, ok := _u.mutation.IsPublic(); ok {
 		_spec.SetField(dictionary.FieldIsPublic, field.TypeBool, value)
+	}
+	if _u.mutation.DictionaryDetailsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dictionary.DictionaryDetailsTable,
+			Columns: []string{dictionary.DictionaryDetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dictionarydetail.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedDictionaryDetailsIDs(); len(nodes) > 0 && !_u.mutation.DictionaryDetailsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dictionary.DictionaryDetailsTable,
+			Columns: []string{dictionary.DictionaryDetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dictionarydetail.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DictionaryDetailsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   dictionary.DictionaryDetailsTable,
+			Columns: []string{dictionary.DictionaryDetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dictionarydetail.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Dictionary{config: _u.config}
 	_spec.Assign = _node.assignValues

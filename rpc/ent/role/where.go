@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
 )
 
@@ -69,6 +70,11 @@ func Status(v uint8) predicate.Role {
 	return predicate.Role(sql.FieldEQ(FieldStatus, v))
 }
 
+// Sort applies equality check predicate on the "sort" field. It's identical to SortEQ.
+func Sort(v uint32) predicate.Role {
+	return predicate.Role(sql.FieldEQ(FieldSort, v))
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Role {
 	return predicate.Role(sql.FieldEQ(FieldName, v))
@@ -82,11 +88,6 @@ func Code(v string) predicate.Role {
 // Remark applies equality check predicate on the "remark" field. It's identical to RemarkEQ.
 func Remark(v string) predicate.Role {
 	return predicate.Role(sql.FieldEQ(FieldRemark, v))
-}
-
-// Sort applies equality check predicate on the "sort" field. It's identical to SortEQ.
-func Sort(v uint32) predicate.Role {
-	return predicate.Role(sql.FieldEQ(FieldSort, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -217,6 +218,46 @@ func StatusIsNil() predicate.Role {
 // StatusNotNil applies the NotNil predicate on the "status" field.
 func StatusNotNil() predicate.Role {
 	return predicate.Role(sql.FieldNotNull(FieldStatus))
+}
+
+// SortEQ applies the EQ predicate on the "sort" field.
+func SortEQ(v uint32) predicate.Role {
+	return predicate.Role(sql.FieldEQ(FieldSort, v))
+}
+
+// SortNEQ applies the NEQ predicate on the "sort" field.
+func SortNEQ(v uint32) predicate.Role {
+	return predicate.Role(sql.FieldNEQ(FieldSort, v))
+}
+
+// SortIn applies the In predicate on the "sort" field.
+func SortIn(vs ...uint32) predicate.Role {
+	return predicate.Role(sql.FieldIn(FieldSort, vs...))
+}
+
+// SortNotIn applies the NotIn predicate on the "sort" field.
+func SortNotIn(vs ...uint32) predicate.Role {
+	return predicate.Role(sql.FieldNotIn(FieldSort, vs...))
+}
+
+// SortGT applies the GT predicate on the "sort" field.
+func SortGT(v uint32) predicate.Role {
+	return predicate.Role(sql.FieldGT(FieldSort, v))
+}
+
+// SortGTE applies the GTE predicate on the "sort" field.
+func SortGTE(v uint32) predicate.Role {
+	return predicate.Role(sql.FieldGTE(FieldSort, v))
+}
+
+// SortLT applies the LT predicate on the "sort" field.
+func SortLT(v uint32) predicate.Role {
+	return predicate.Role(sql.FieldLT(FieldSort, v))
+}
+
+// SortLTE applies the LTE predicate on the "sort" field.
+func SortLTE(v uint32) predicate.Role {
+	return predicate.Role(sql.FieldLTE(FieldSort, v))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.
@@ -414,44 +455,50 @@ func RemarkContainsFold(v string) predicate.Role {
 	return predicate.Role(sql.FieldContainsFold(FieldRemark, v))
 }
 
-// SortEQ applies the EQ predicate on the "sort" field.
-func SortEQ(v uint32) predicate.Role {
-	return predicate.Role(sql.FieldEQ(FieldSort, v))
+// HasMenus applies the HasEdge predicate on the "menus" edge.
+func HasMenus() predicate.Role {
+	return predicate.Role(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, MenusTable, MenusPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
 }
 
-// SortNEQ applies the NEQ predicate on the "sort" field.
-func SortNEQ(v uint32) predicate.Role {
-	return predicate.Role(sql.FieldNEQ(FieldSort, v))
+// HasMenusWith applies the HasEdge predicate on the "menus" edge with a given conditions (other predicates).
+func HasMenusWith(preds ...predicate.Menu) predicate.Role {
+	return predicate.Role(func(s *sql.Selector) {
+		step := newMenusStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
-// SortIn applies the In predicate on the "sort" field.
-func SortIn(vs ...uint32) predicate.Role {
-	return predicate.Role(sql.FieldIn(FieldSort, vs...))
+// HasUsers applies the HasEdge predicate on the "users" edge.
+func HasUsers() predicate.Role {
+	return predicate.Role(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, UsersTable, UsersPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
 }
 
-// SortNotIn applies the NotIn predicate on the "sort" field.
-func SortNotIn(vs ...uint32) predicate.Role {
-	return predicate.Role(sql.FieldNotIn(FieldSort, vs...))
-}
-
-// SortGT applies the GT predicate on the "sort" field.
-func SortGT(v uint32) predicate.Role {
-	return predicate.Role(sql.FieldGT(FieldSort, v))
-}
-
-// SortGTE applies the GTE predicate on the "sort" field.
-func SortGTE(v uint32) predicate.Role {
-	return predicate.Role(sql.FieldGTE(FieldSort, v))
-}
-
-// SortLT applies the LT predicate on the "sort" field.
-func SortLT(v uint32) predicate.Role {
-	return predicate.Role(sql.FieldLT(FieldSort, v))
-}
-
-// SortLTE applies the LTE predicate on the "sort" field.
-func SortLTE(v uint32) predicate.Role {
-	return predicate.Role(sql.FieldLTE(FieldSort, v))
+// HasUsersWith applies the HasEdge predicate on the "users" edge with a given conditions (other predicates).
+func HasUsersWith(preds ...predicate.User) predicate.Role {
+	return predicate.Role(func(s *sql.Selector) {
+		step := newUsersStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

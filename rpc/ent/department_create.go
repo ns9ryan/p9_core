@@ -10,7 +10,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	uuid "github.com/gofrs/uuid/v5"
 	"github.com/ns9ryan/p9_core/rpc/ent/department"
+	"github.com/ns9ryan/p9_core/rpc/ent/user"
 )
 
 // DepartmentCreate is the builder for creating a Department entity.
@@ -79,6 +81,20 @@ func (_c *DepartmentCreate) SetNillableSort(v *uint32) *DepartmentCreate {
 // SetName sets the "name" field.
 func (_c *DepartmentCreate) SetName(v string) *DepartmentCreate {
 	_c.mutation.SetName(v)
+	return _c
+}
+
+// SetParentID sets the "parent_id" field.
+func (_c *DepartmentCreate) SetParentID(v uint64) *DepartmentCreate {
+	_c.mutation.SetParentID(v)
+	return _c
+}
+
+// SetNillableParentID sets the "parent_id" field if the given value is not nil.
+func (_c *DepartmentCreate) SetNillableParentID(v *uint64) *DepartmentCreate {
+	if v != nil {
+		_c.SetParentID(*v)
+	}
 	return _c
 }
 
@@ -152,24 +168,45 @@ func (_c *DepartmentCreate) SetNillableRemark(v *string) *DepartmentCreate {
 	return _c
 }
 
-// SetParentID sets the "parent_id" field.
-func (_c *DepartmentCreate) SetParentID(v uint64) *DepartmentCreate {
-	_c.mutation.SetParentID(v)
-	return _c
-}
-
-// SetNillableParentID sets the "parent_id" field if the given value is not nil.
-func (_c *DepartmentCreate) SetNillableParentID(v *uint64) *DepartmentCreate {
-	if v != nil {
-		_c.SetParentID(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *DepartmentCreate) SetID(v uint64) *DepartmentCreate {
 	_c.mutation.SetID(v)
 	return _c
+}
+
+// SetParent sets the "parent" edge to the Department entity.
+func (_c *DepartmentCreate) SetParent(v *Department) *DepartmentCreate {
+	return _c.SetParentID(v.ID)
+}
+
+// AddChildIDs adds the "children" edge to the Department entity by IDs.
+func (_c *DepartmentCreate) AddChildIDs(ids ...uint64) *DepartmentCreate {
+	_c.mutation.AddChildIDs(ids...)
+	return _c
+}
+
+// AddChildren adds the "children" edges to the Department entity.
+func (_c *DepartmentCreate) AddChildren(v ...*Department) *DepartmentCreate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddChildIDs(ids...)
+}
+
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (_c *DepartmentCreate) AddUserIDs(ids ...uuid.UUID) *DepartmentCreate {
+	_c.mutation.AddUserIDs(ids...)
+	return _c
+}
+
+// AddUsers adds the "users" edges to the User entity.
+func (_c *DepartmentCreate) AddUsers(v ...*User) *DepartmentCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddUserIDs(ids...)
 }
 
 // Mutation returns the DepartmentMutation object of the builder.
@@ -315,9 +352,54 @@ func (_c *DepartmentCreate) createSpec() (*Department, *sqlgraph.CreateSpec) {
 		_spec.SetField(department.FieldRemark, field.TypeString, value)
 		_node.Remark = value
 	}
-	if value, ok := _c.mutation.ParentID(); ok {
-		_spec.SetField(department.FieldParentID, field.TypeUint64, value)
-		_node.ParentID = value
+	if nodes := _c.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   department.ParentTable,
+			Columns: []string{department.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ParentID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   department.ChildrenTable,
+			Columns: []string{department.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.UsersTable,
+			Columns: []string{department.UsersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

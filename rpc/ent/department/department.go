@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -23,6 +24,8 @@ const (
 	FieldSort = "sort"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldParentID holds the string denoting the parent_id field in the database.
+	FieldParentID = "parent_id"
 	// FieldAncestors holds the string denoting the ancestors field in the database.
 	FieldAncestors = "ancestors"
 	// FieldLeader holds the string denoting the leader field in the database.
@@ -33,10 +36,29 @@ const (
 	FieldEmail = "email"
 	// FieldRemark holds the string denoting the remark field in the database.
 	FieldRemark = "remark"
-	// FieldParentID holds the string denoting the parent_id field in the database.
-	FieldParentID = "parent_id"
+	// EdgeParent holds the string denoting the parent edge name in mutations.
+	EdgeParent = "parent"
+	// EdgeChildren holds the string denoting the children edge name in mutations.
+	EdgeChildren = "children"
+	// EdgeUsers holds the string denoting the users edge name in mutations.
+	EdgeUsers = "users"
 	// Table holds the table name of the department in the database.
 	Table = "sys_departments"
+	// ParentTable is the table that holds the parent relation/edge.
+	ParentTable = "sys_departments"
+	// ParentColumn is the table column denoting the parent relation/edge.
+	ParentColumn = "parent_id"
+	// ChildrenTable is the table that holds the children relation/edge.
+	ChildrenTable = "sys_departments"
+	// ChildrenColumn is the table column denoting the children relation/edge.
+	ChildrenColumn = "parent_id"
+	// UsersTable is the table that holds the users relation/edge.
+	UsersTable = "sys_users"
+	// UsersInverseTable is the table name for the User entity.
+	// It exists in this package in order to avoid circular dependency with the "user" package.
+	UsersInverseTable = "sys_users"
+	// UsersColumn is the table column denoting the users relation/edge.
+	UsersColumn = "department_id"
 )
 
 // Columns holds all SQL columns for department fields.
@@ -47,12 +69,12 @@ var Columns = []string{
 	FieldStatus,
 	FieldSort,
 	FieldName,
+	FieldParentID,
 	FieldAncestors,
 	FieldLeader,
 	FieldPhone,
 	FieldEmail,
 	FieldRemark,
-	FieldParentID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -113,6 +135,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
+// ByParentID orders the results by the parent_id field.
+func ByParentID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldParentID, opts...).ToFunc()
+}
+
 // ByAncestors orders the results by the ancestors field.
 func ByAncestors(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAncestors, opts...).ToFunc()
@@ -138,7 +165,58 @@ func ByRemark(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRemark, opts...).ToFunc()
 }
 
-// ByParentID orders the results by the parent_id field.
-func ByParentID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldParentID, opts...).ToFunc()
+// ByParentField orders the results by parent field.
+func ByParentField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newParentStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByChildrenCount orders the results by children count.
+func ByChildrenCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newChildrenStep(), opts...)
+	}
+}
+
+// ByChildren orders the results by children terms.
+func ByChildren(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newChildrenStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByUsersCount orders the results by users count.
+func ByUsersCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newUsersStep(), opts...)
+	}
+}
+
+// ByUsers orders the results by users terms.
+func ByUsers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newUsersStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newParentStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ParentTable, ParentColumn),
+	)
+}
+func newChildrenStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ChildrenTable, ChildrenColumn),
+	)
+}
+func newUsersStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(UsersInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, UsersTable, UsersColumn),
+	)
 }

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
 )
 
@@ -479,26 +480,6 @@ func DictionaryIDNotIn(vs ...uint64) predicate.DictionaryDetail {
 	return predicate.DictionaryDetail(sql.FieldNotIn(FieldDictionaryID, vs...))
 }
 
-// DictionaryIDGT applies the GT predicate on the "dictionary_id" field.
-func DictionaryIDGT(v uint64) predicate.DictionaryDetail {
-	return predicate.DictionaryDetail(sql.FieldGT(FieldDictionaryID, v))
-}
-
-// DictionaryIDGTE applies the GTE predicate on the "dictionary_id" field.
-func DictionaryIDGTE(v uint64) predicate.DictionaryDetail {
-	return predicate.DictionaryDetail(sql.FieldGTE(FieldDictionaryID, v))
-}
-
-// DictionaryIDLT applies the LT predicate on the "dictionary_id" field.
-func DictionaryIDLT(v uint64) predicate.DictionaryDetail {
-	return predicate.DictionaryDetail(sql.FieldLT(FieldDictionaryID, v))
-}
-
-// DictionaryIDLTE applies the LTE predicate on the "dictionary_id" field.
-func DictionaryIDLTE(v uint64) predicate.DictionaryDetail {
-	return predicate.DictionaryDetail(sql.FieldLTE(FieldDictionaryID, v))
-}
-
 // DictionaryIDIsNil applies the IsNil predicate on the "dictionary_id" field.
 func DictionaryIDIsNil() predicate.DictionaryDetail {
 	return predicate.DictionaryDetail(sql.FieldIsNull(FieldDictionaryID))
@@ -507,6 +488,29 @@ func DictionaryIDIsNil() predicate.DictionaryDetail {
 // DictionaryIDNotNil applies the NotNil predicate on the "dictionary_id" field.
 func DictionaryIDNotNil() predicate.DictionaryDetail {
 	return predicate.DictionaryDetail(sql.FieldNotNull(FieldDictionaryID))
+}
+
+// HasDictionaries applies the HasEdge predicate on the "dictionaries" edge.
+func HasDictionaries() predicate.DictionaryDetail {
+	return predicate.DictionaryDetail(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, DictionariesTable, DictionariesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDictionariesWith applies the HasEdge predicate on the "dictionaries" edge with a given conditions (other predicates).
+func HasDictionariesWith(preds ...predicate.Dictionary) predicate.DictionaryDetail {
+	return predicate.DictionaryDetail(func(s *sql.Selector) {
+		step := newDictionariesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

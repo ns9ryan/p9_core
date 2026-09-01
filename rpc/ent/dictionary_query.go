@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,16 +13,18 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ns9ryan/p9_core/rpc/ent/dictionary"
+	"github.com/ns9ryan/p9_core/rpc/ent/dictionarydetail"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
 )
 
 // DictionaryQuery is the builder for querying Dictionary entities.
 type DictionaryQuery struct {
 	config
-	ctx        *QueryContext
-	order      []dictionary.OrderOption
-	inters     []Interceptor
-	predicates []predicate.Dictionary
+	ctx                   *QueryContext
+	order                 []dictionary.OrderOption
+	inters                []Interceptor
+	predicates            []predicate.Dictionary
+	withDictionaryDetails *DictionaryDetailQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -56,6 +59,28 @@ func (_q *DictionaryQuery) Unique(unique bool) *DictionaryQuery {
 func (_q *DictionaryQuery) Order(o ...dictionary.OrderOption) *DictionaryQuery {
 	_q.order = append(_q.order, o...)
 	return _q
+}
+
+// QueryDictionaryDetails chains the current query on the "dictionary_details" edge.
+func (_q *DictionaryQuery) QueryDictionaryDetails() *DictionaryDetailQuery {
+	query := (&DictionaryDetailClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(dictionary.Table, dictionary.FieldID, selector),
+			sqlgraph.To(dictionarydetail.Table, dictionarydetail.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, dictionary.DictionaryDetailsTable, dictionary.DictionaryDetailsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Dictionary entity from the query.
@@ -245,15 +270,27 @@ func (_q *DictionaryQuery) Clone() *DictionaryQuery {
 		return nil
 	}
 	return &DictionaryQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]dictionary.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.Dictionary{}, _q.predicates...),
+		config:                _q.config,
+		ctx:                   _q.ctx.Clone(),
+		order:                 append([]dictionary.OrderOption{}, _q.order...),
+		inters:                append([]Interceptor{}, _q.inters...),
+		predicates:            append([]predicate.Dictionary{}, _q.predicates...),
+		withDictionaryDetails: _q.withDictionaryDetails.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
+}
+
+// WithDictionaryDetails tells the query-builder to eager-load the nodes that are connected to
+// the "dictionary_details" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *DictionaryQuery) WithDictionaryDetails(opts ...func(*DictionaryDetailQuery)) *DictionaryQuery {
+	query := (&DictionaryDetailClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withDictionaryDetails = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -332,8 +369,11 @@ func (_q *DictionaryQuery) prepareQuery(ctx context.Context) error {
 
 func (_q *DictionaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Dictionary, error) {
 	var (
-		nodes = []*Dictionary{}
-		_spec = _q.querySpec()
+		nodes       = []*Dictionary{}
+		_spec       = _q.querySpec()
+		loadedTypes = [1]bool{
+			_q.withDictionaryDetails != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Dictionary).scanValues(nil, columns)
@@ -341,6 +381,7 @@ func (_q *DictionaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*D
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Dictionary{config: _q.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -352,7 +393,47 @@ func (_q *DictionaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*D
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := _q.withDictionaryDetails; query != nil {
+		if err := _q.loadDictionaryDetails(ctx, query, nodes,
+			func(n *Dictionary) { n.Edges.DictionaryDetails = []*DictionaryDetail{} },
+			func(n *Dictionary, e *DictionaryDetail) {
+				n.Edges.DictionaryDetails = append(n.Edges.DictionaryDetails, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (_q *DictionaryQuery) loadDictionaryDetails(ctx context.Context, query *DictionaryDetailQuery, nodes []*Dictionary, init func(*Dictionary), assign func(*Dictionary, *DictionaryDetail)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uint64]*Dictionary)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(dictionarydetail.FieldDictionaryID)
+	}
+	query.Where(predicate.DictionaryDetail(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(dictionary.DictionaryDetailsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.DictionaryID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "dictionary_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (_q *DictionaryQuery) sqlCount(ctx context.Context) (int, error) {

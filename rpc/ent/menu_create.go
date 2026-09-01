@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ns9ryan/p9_core/rpc/ent/menu"
+	"github.com/ns9ryan/p9_core/rpc/ent/role"
 )
 
 // MenuCreate is the builder for creating a Menu entity.
@@ -76,15 +77,21 @@ func (_c *MenuCreate) SetNillableParentID(v *uint64) *MenuCreate {
 	return _c
 }
 
-// SetMenuLevel sets the "menu_level" field.
-func (_c *MenuCreate) SetMenuLevel(v uint32) *MenuCreate {
-	_c.mutation.SetMenuLevel(v)
+// SetName sets the "name" field.
+func (_c *MenuCreate) SetName(v string) *MenuCreate {
+	_c.mutation.SetName(v)
 	return _c
 }
 
 // SetMenuType sets the "menu_type" field.
 func (_c *MenuCreate) SetMenuType(v uint32) *MenuCreate {
 	_c.mutation.SetMenuType(v)
+	return _c
+}
+
+// SetMenuLevel sets the "menu_level" field.
+func (_c *MenuCreate) SetMenuLevel(v uint32) *MenuCreate {
+	_c.mutation.SetMenuLevel(v)
 	return _c
 }
 
@@ -98,26 +105,6 @@ func (_c *MenuCreate) SetPath(v string) *MenuCreate {
 func (_c *MenuCreate) SetNillablePath(v *string) *MenuCreate {
 	if v != nil {
 		_c.SetPath(*v)
-	}
-	return _c
-}
-
-// SetName sets the "name" field.
-func (_c *MenuCreate) SetName(v string) *MenuCreate {
-	_c.mutation.SetName(v)
-	return _c
-}
-
-// SetRedirect sets the "redirect" field.
-func (_c *MenuCreate) SetRedirect(v string) *MenuCreate {
-	_c.mutation.SetRedirect(v)
-	return _c
-}
-
-// SetNillableRedirect sets the "redirect" field if the given value is not nil.
-func (_c *MenuCreate) SetNillableRedirect(v *string) *MenuCreate {
-	if v != nil {
-		_c.SetRedirect(*v)
 	}
 	return _c
 }
@@ -136,16 +123,16 @@ func (_c *MenuCreate) SetNillableComponent(v *string) *MenuCreate {
 	return _c
 }
 
-// SetDisabled sets the "disabled" field.
-func (_c *MenuCreate) SetDisabled(v bool) *MenuCreate {
-	_c.mutation.SetDisabled(v)
+// SetRedirect sets the "redirect" field.
+func (_c *MenuCreate) SetRedirect(v string) *MenuCreate {
+	_c.mutation.SetRedirect(v)
 	return _c
 }
 
-// SetNillableDisabled sets the "disabled" field if the given value is not nil.
-func (_c *MenuCreate) SetNillableDisabled(v *bool) *MenuCreate {
+// SetNillableRedirect sets the "redirect" field if the given value is not nil.
+func (_c *MenuCreate) SetNillableRedirect(v *string) *MenuCreate {
 	if v != nil {
-		_c.SetDisabled(*v)
+		_c.SetRedirect(*v)
 	}
 	return _c
 }
@@ -174,6 +161,20 @@ func (_c *MenuCreate) SetPermission(v string) *MenuCreate {
 func (_c *MenuCreate) SetNillablePermission(v *string) *MenuCreate {
 	if v != nil {
 		_c.SetPermission(*v)
+	}
+	return _c
+}
+
+// SetDisabled sets the "disabled" field.
+func (_c *MenuCreate) SetDisabled(v bool) *MenuCreate {
+	_c.mutation.SetDisabled(v)
+	return _c
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (_c *MenuCreate) SetNillableDisabled(v *bool) *MenuCreate {
+	if v != nil {
+		_c.SetDisabled(*v)
 	}
 	return _c
 }
@@ -336,6 +337,41 @@ func (_c *MenuCreate) SetID(v uint64) *MenuCreate {
 	return _c
 }
 
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
+func (_c *MenuCreate) AddRoleIDs(ids ...uint64) *MenuCreate {
+	_c.mutation.AddRoleIDs(ids...)
+	return _c
+}
+
+// AddRoles adds the "roles" edges to the Role entity.
+func (_c *MenuCreate) AddRoles(v ...*Role) *MenuCreate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddRoleIDs(ids...)
+}
+
+// SetParent sets the "parent" edge to the Menu entity.
+func (_c *MenuCreate) SetParent(v *Menu) *MenuCreate {
+	return _c.SetParentID(v.ID)
+}
+
+// AddChildIDs adds the "children" edge to the Menu entity by IDs.
+func (_c *MenuCreate) AddChildIDs(ids ...uint64) *MenuCreate {
+	_c.mutation.AddChildIDs(ids...)
+	return _c
+}
+
+// AddChildren adds the "children" edges to the Menu entity.
+func (_c *MenuCreate) AddChildren(v ...*Menu) *MenuCreate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddChildIDs(ids...)
+}
+
 // Mutation returns the MenuMutation object of the builder.
 func (_c *MenuCreate) Mutation() *MenuMutation {
 	return _c.mutation
@@ -391,21 +427,21 @@ func (_c *MenuCreate) defaults() {
 		v := menu.DefaultPath
 		_c.mutation.SetPath(v)
 	}
-	if _, ok := _c.mutation.Redirect(); !ok {
-		v := menu.DefaultRedirect
-		_c.mutation.SetRedirect(v)
-	}
 	if _, ok := _c.mutation.Component(); !ok {
 		v := menu.DefaultComponent
 		_c.mutation.SetComponent(v)
 	}
-	if _, ok := _c.mutation.Disabled(); !ok {
-		v := menu.DefaultDisabled
-		_c.mutation.SetDisabled(v)
+	if _, ok := _c.mutation.Redirect(); !ok {
+		v := menu.DefaultRedirect
+		_c.mutation.SetRedirect(v)
 	}
 	if _, ok := _c.mutation.ServiceName(); !ok {
 		v := menu.DefaultServiceName
 		_c.mutation.SetServiceName(v)
+	}
+	if _, ok := _c.mutation.Disabled(); !ok {
+		v := menu.DefaultDisabled
+		_c.mutation.SetDisabled(v)
 	}
 	if _, ok := _c.mutation.HideMenu(); !ok {
 		v := menu.DefaultHideMenu
@@ -460,14 +496,14 @@ func (_c *MenuCreate) check() error {
 	if _, ok := _c.mutation.Sort(); !ok {
 		return &ValidationError{Name: "sort", err: errors.New(`ent: missing required field "Menu.sort"`)}
 	}
-	if _, ok := _c.mutation.MenuLevel(); !ok {
-		return &ValidationError{Name: "menu_level", err: errors.New(`ent: missing required field "Menu.menu_level"`)}
+	if _, ok := _c.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Menu.name"`)}
 	}
 	if _, ok := _c.mutation.MenuType(); !ok {
 		return &ValidationError{Name: "menu_type", err: errors.New(`ent: missing required field "Menu.menu_type"`)}
 	}
-	if _, ok := _c.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Menu.name"`)}
+	if _, ok := _c.mutation.MenuLevel(); !ok {
+		return &ValidationError{Name: "menu_level", err: errors.New(`ent: missing required field "Menu.menu_level"`)}
 	}
 	if _, ok := _c.mutation.Title(); !ok {
 		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Menu.title"`)}
@@ -519,37 +555,29 @@ func (_c *MenuCreate) createSpec() (*Menu, *sqlgraph.CreateSpec) {
 		_spec.SetField(menu.FieldSort, field.TypeUint32, value)
 		_node.Sort = value
 	}
-	if value, ok := _c.mutation.ParentID(); ok {
-		_spec.SetField(menu.FieldParentID, field.TypeUint64, value)
-		_node.ParentID = value
-	}
-	if value, ok := _c.mutation.MenuLevel(); ok {
-		_spec.SetField(menu.FieldMenuLevel, field.TypeUint32, value)
-		_node.MenuLevel = value
+	if value, ok := _c.mutation.Name(); ok {
+		_spec.SetField(menu.FieldName, field.TypeString, value)
+		_node.Name = value
 	}
 	if value, ok := _c.mutation.MenuType(); ok {
 		_spec.SetField(menu.FieldMenuType, field.TypeUint32, value)
 		_node.MenuType = value
 	}
+	if value, ok := _c.mutation.MenuLevel(); ok {
+		_spec.SetField(menu.FieldMenuLevel, field.TypeUint32, value)
+		_node.MenuLevel = value
+	}
 	if value, ok := _c.mutation.Path(); ok {
 		_spec.SetField(menu.FieldPath, field.TypeString, value)
 		_node.Path = value
-	}
-	if value, ok := _c.mutation.Name(); ok {
-		_spec.SetField(menu.FieldName, field.TypeString, value)
-		_node.Name = value
-	}
-	if value, ok := _c.mutation.Redirect(); ok {
-		_spec.SetField(menu.FieldRedirect, field.TypeString, value)
-		_node.Redirect = value
 	}
 	if value, ok := _c.mutation.Component(); ok {
 		_spec.SetField(menu.FieldComponent, field.TypeString, value)
 		_node.Component = value
 	}
-	if value, ok := _c.mutation.Disabled(); ok {
-		_spec.SetField(menu.FieldDisabled, field.TypeBool, value)
-		_node.Disabled = value
+	if value, ok := _c.mutation.Redirect(); ok {
+		_spec.SetField(menu.FieldRedirect, field.TypeString, value)
+		_node.Redirect = value
 	}
 	if value, ok := _c.mutation.ServiceName(); ok {
 		_spec.SetField(menu.FieldServiceName, field.TypeString, value)
@@ -558,6 +586,10 @@ func (_c *MenuCreate) createSpec() (*Menu, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Permission(); ok {
 		_spec.SetField(menu.FieldPermission, field.TypeString, value)
 		_node.Permission = value
+	}
+	if value, ok := _c.mutation.Disabled(); ok {
+		_spec.SetField(menu.FieldDisabled, field.TypeBool, value)
+		_node.Disabled = value
 	}
 	if value, ok := _c.mutation.Title(); ok {
 		_spec.SetField(menu.FieldTitle, field.TypeString, value)
@@ -606,6 +638,55 @@ func (_c *MenuCreate) createSpec() (*Menu, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.RealPath(); ok {
 		_spec.SetField(menu.FieldRealPath, field.TypeString, value)
 		_node.RealPath = value
+	}
+	if nodes := _c.mutation.RolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   menu.RolesTable,
+			Columns: menu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   menu.ParentTable,
+			Columns: []string{menu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ParentID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   menu.ChildrenTable,
+			Columns: []string{menu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

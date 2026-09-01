@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -29,8 +30,17 @@ const (
 	FieldValue = "value"
 	// FieldDictionaryID holds the string denoting the dictionary_id field in the database.
 	FieldDictionaryID = "dictionary_id"
+	// EdgeDictionaries holds the string denoting the dictionaries edge name in mutations.
+	EdgeDictionaries = "dictionaries"
 	// Table holds the table name of the dictionarydetail in the database.
 	Table = "sys_dictionary_details"
+	// DictionariesTable is the table that holds the dictionaries relation/edge.
+	DictionariesTable = "sys_dictionary_details"
+	// DictionariesInverseTable is the table name for the Dictionary entity.
+	// It exists in this package in order to avoid circular dependency with the "dictionary" package.
+	DictionariesInverseTable = "sys_dictionaries"
+	// DictionariesColumn is the table column denoting the dictionaries relation/edge.
+	DictionariesColumn = "dictionary_id"
 )
 
 // Columns holds all SQL columns for dictionarydetail fields.
@@ -115,4 +125,18 @@ func ByValue(opts ...sql.OrderTermOption) OrderOption {
 // ByDictionaryID orders the results by the dictionary_id field.
 func ByDictionaryID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDictionaryID, opts...).ToFunc()
+}
+
+// ByDictionariesField orders the results by dictionaries field.
+func ByDictionariesField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDictionariesStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newDictionariesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DictionariesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, DictionariesTable, DictionariesColumn),
+	)
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/ns9ryan/p9_core/rpc/ent/token"
 )
 
-// Token Log Table | 令牌信息表
+// 令牌信息表
 type Token struct {
 	config `json:"-"`
 	// ID of the ent.
@@ -25,15 +25,15 @@ type Token struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// 状态：1 正常，2 停用
 	Status uint8 `json:"status,omitempty"`
-	//  User's UUID | 用户的UUID
+	// 用户 UUID
 	UUID uuid.UUID `json:"uuid,omitempty"`
-	// Username | 用户名
+	// 用户名
 	Username string `json:"username,omitempty"`
-	// Token string | Token 字符串
+	// Token 字符串
 	Token string `json:"token,omitempty"`
-	// Log in source such as GitHub | Token 来源 （本地为core, 第三方如github等）
+	// Token 来源
 	Source string `json:"source,omitempty"`
-	//  Expire time | 过期时间
+	// 过期时间
 	ExpiredAt    time.Time `json:"expired_at,omitempty"`
 	selectValues sql.SelectValues
 }

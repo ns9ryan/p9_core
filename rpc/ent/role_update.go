@@ -11,8 +11,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	uuid "github.com/gofrs/uuid/v5"
+	"github.com/ns9ryan/p9_core/rpc/ent/menu"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
 	"github.com/ns9ryan/p9_core/rpc/ent/role"
+	"github.com/ns9ryan/p9_core/rpc/ent/user"
 )
 
 // RoleUpdate is the builder for updating Role entities.
@@ -61,6 +64,27 @@ func (_u *RoleUpdate) ClearStatus() *RoleUpdate {
 	return _u
 }
 
+// SetSort sets the "sort" field.
+func (_u *RoleUpdate) SetSort(v uint32) *RoleUpdate {
+	_u.mutation.ResetSort()
+	_u.mutation.SetSort(v)
+	return _u
+}
+
+// SetNillableSort sets the "sort" field if the given value is not nil.
+func (_u *RoleUpdate) SetNillableSort(v *uint32) *RoleUpdate {
+	if v != nil {
+		_u.SetSort(*v)
+	}
+	return _u
+}
+
+// AddSort adds value to the "sort" field.
+func (_u *RoleUpdate) AddSort(v int32) *RoleUpdate {
+	_u.mutation.AddSort(v)
+	return _u
+}
+
 // SetName sets the "name" field.
 func (_u *RoleUpdate) SetName(v string) *RoleUpdate {
 	_u.mutation.SetName(v)
@@ -103,30 +127,81 @@ func (_u *RoleUpdate) SetNillableRemark(v *string) *RoleUpdate {
 	return _u
 }
 
-// SetSort sets the "sort" field.
-func (_u *RoleUpdate) SetSort(v uint32) *RoleUpdate {
-	_u.mutation.ResetSort()
-	_u.mutation.SetSort(v)
+// AddMenuIDs adds the "menus" edge to the Menu entity by IDs.
+func (_u *RoleUpdate) AddMenuIDs(ids ...uint64) *RoleUpdate {
+	_u.mutation.AddMenuIDs(ids...)
 	return _u
 }
 
-// SetNillableSort sets the "sort" field if the given value is not nil.
-func (_u *RoleUpdate) SetNillableSort(v *uint32) *RoleUpdate {
-	if v != nil {
-		_u.SetSort(*v)
+// AddMenus adds the "menus" edges to the Menu entity.
+func (_u *RoleUpdate) AddMenus(v ...*Menu) *RoleUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
+	return _u.AddMenuIDs(ids...)
+}
+
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (_u *RoleUpdate) AddUserIDs(ids ...uuid.UUID) *RoleUpdate {
+	_u.mutation.AddUserIDs(ids...)
 	return _u
 }
 
-// AddSort adds value to the "sort" field.
-func (_u *RoleUpdate) AddSort(v int32) *RoleUpdate {
-	_u.mutation.AddSort(v)
-	return _u
+// AddUsers adds the "users" edges to the User entity.
+func (_u *RoleUpdate) AddUsers(v ...*User) *RoleUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddUserIDs(ids...)
 }
 
 // Mutation returns the RoleMutation object of the builder.
 func (_u *RoleUpdate) Mutation() *RoleMutation {
 	return _u.mutation
+}
+
+// ClearMenus clears all "menus" edges to the Menu entity.
+func (_u *RoleUpdate) ClearMenus() *RoleUpdate {
+	_u.mutation.ClearMenus()
+	return _u
+}
+
+// RemoveMenuIDs removes the "menus" edge to Menu entities by IDs.
+func (_u *RoleUpdate) RemoveMenuIDs(ids ...uint64) *RoleUpdate {
+	_u.mutation.RemoveMenuIDs(ids...)
+	return _u
+}
+
+// RemoveMenus removes "menus" edges to Menu entities.
+func (_u *RoleUpdate) RemoveMenus(v ...*Menu) *RoleUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveMenuIDs(ids...)
+}
+
+// ClearUsers clears all "users" edges to the User entity.
+func (_u *RoleUpdate) ClearUsers() *RoleUpdate {
+	_u.mutation.ClearUsers()
+	return _u
+}
+
+// RemoveUserIDs removes the "users" edge to User entities by IDs.
+func (_u *RoleUpdate) RemoveUserIDs(ids ...uuid.UUID) *RoleUpdate {
+	_u.mutation.RemoveUserIDs(ids...)
+	return _u
+}
+
+// RemoveUsers removes "users" edges to User entities.
+func (_u *RoleUpdate) RemoveUsers(v ...*User) *RoleUpdate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveUserIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -186,6 +261,12 @@ func (_u *RoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.StatusCleared() {
 		_spec.ClearField(role.FieldStatus, field.TypeUint8)
 	}
+	if value, ok := _u.mutation.Sort(); ok {
+		_spec.SetField(role.FieldSort, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedSort(); ok {
+		_spec.AddField(role.FieldSort, field.TypeUint32, value)
+	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(role.FieldName, field.TypeString, value)
 	}
@@ -195,11 +276,95 @@ func (_u *RoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.Remark(); ok {
 		_spec.SetField(role.FieldRemark, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Sort(); ok {
-		_spec.SetField(role.FieldSort, field.TypeUint32, value)
+	if _u.mutation.MenusCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   role.MenusTable,
+			Columns: role.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := _u.mutation.AddedSort(); ok {
-		_spec.AddField(role.FieldSort, field.TypeUint32, value)
+	if nodes := _u.mutation.RemovedMenusIDs(); len(nodes) > 0 && !_u.mutation.MenusCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   role.MenusTable,
+			Columns: role.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.MenusIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   role.MenusTable,
+			Columns: role.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedUsersIDs(); len(nodes) > 0 && !_u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -254,6 +419,27 @@ func (_u *RoleUpdateOne) ClearStatus() *RoleUpdateOne {
 	return _u
 }
 
+// SetSort sets the "sort" field.
+func (_u *RoleUpdateOne) SetSort(v uint32) *RoleUpdateOne {
+	_u.mutation.ResetSort()
+	_u.mutation.SetSort(v)
+	return _u
+}
+
+// SetNillableSort sets the "sort" field if the given value is not nil.
+func (_u *RoleUpdateOne) SetNillableSort(v *uint32) *RoleUpdateOne {
+	if v != nil {
+		_u.SetSort(*v)
+	}
+	return _u
+}
+
+// AddSort adds value to the "sort" field.
+func (_u *RoleUpdateOne) AddSort(v int32) *RoleUpdateOne {
+	_u.mutation.AddSort(v)
+	return _u
+}
+
 // SetName sets the "name" field.
 func (_u *RoleUpdateOne) SetName(v string) *RoleUpdateOne {
 	_u.mutation.SetName(v)
@@ -296,30 +482,81 @@ func (_u *RoleUpdateOne) SetNillableRemark(v *string) *RoleUpdateOne {
 	return _u
 }
 
-// SetSort sets the "sort" field.
-func (_u *RoleUpdateOne) SetSort(v uint32) *RoleUpdateOne {
-	_u.mutation.ResetSort()
-	_u.mutation.SetSort(v)
+// AddMenuIDs adds the "menus" edge to the Menu entity by IDs.
+func (_u *RoleUpdateOne) AddMenuIDs(ids ...uint64) *RoleUpdateOne {
+	_u.mutation.AddMenuIDs(ids...)
 	return _u
 }
 
-// SetNillableSort sets the "sort" field if the given value is not nil.
-func (_u *RoleUpdateOne) SetNillableSort(v *uint32) *RoleUpdateOne {
-	if v != nil {
-		_u.SetSort(*v)
+// AddMenus adds the "menus" edges to the Menu entity.
+func (_u *RoleUpdateOne) AddMenus(v ...*Menu) *RoleUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
+	return _u.AddMenuIDs(ids...)
+}
+
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (_u *RoleUpdateOne) AddUserIDs(ids ...uuid.UUID) *RoleUpdateOne {
+	_u.mutation.AddUserIDs(ids...)
 	return _u
 }
 
-// AddSort adds value to the "sort" field.
-func (_u *RoleUpdateOne) AddSort(v int32) *RoleUpdateOne {
-	_u.mutation.AddSort(v)
-	return _u
+// AddUsers adds the "users" edges to the User entity.
+func (_u *RoleUpdateOne) AddUsers(v ...*User) *RoleUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddUserIDs(ids...)
 }
 
 // Mutation returns the RoleMutation object of the builder.
 func (_u *RoleUpdateOne) Mutation() *RoleMutation {
 	return _u.mutation
+}
+
+// ClearMenus clears all "menus" edges to the Menu entity.
+func (_u *RoleUpdateOne) ClearMenus() *RoleUpdateOne {
+	_u.mutation.ClearMenus()
+	return _u
+}
+
+// RemoveMenuIDs removes the "menus" edge to Menu entities by IDs.
+func (_u *RoleUpdateOne) RemoveMenuIDs(ids ...uint64) *RoleUpdateOne {
+	_u.mutation.RemoveMenuIDs(ids...)
+	return _u
+}
+
+// RemoveMenus removes "menus" edges to Menu entities.
+func (_u *RoleUpdateOne) RemoveMenus(v ...*Menu) *RoleUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveMenuIDs(ids...)
+}
+
+// ClearUsers clears all "users" edges to the User entity.
+func (_u *RoleUpdateOne) ClearUsers() *RoleUpdateOne {
+	_u.mutation.ClearUsers()
+	return _u
+}
+
+// RemoveUserIDs removes the "users" edge to User entities by IDs.
+func (_u *RoleUpdateOne) RemoveUserIDs(ids ...uuid.UUID) *RoleUpdateOne {
+	_u.mutation.RemoveUserIDs(ids...)
+	return _u
+}
+
+// RemoveUsers removes "users" edges to User entities.
+func (_u *RoleUpdateOne) RemoveUsers(v ...*User) *RoleUpdateOne {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveUserIDs(ids...)
 }
 
 // Where appends a list predicates to the RoleUpdate builder.
@@ -409,6 +646,12 @@ func (_u *RoleUpdateOne) sqlSave(ctx context.Context) (_node *Role, err error) {
 	if _u.mutation.StatusCleared() {
 		_spec.ClearField(role.FieldStatus, field.TypeUint8)
 	}
+	if value, ok := _u.mutation.Sort(); ok {
+		_spec.SetField(role.FieldSort, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedSort(); ok {
+		_spec.AddField(role.FieldSort, field.TypeUint32, value)
+	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(role.FieldName, field.TypeString, value)
 	}
@@ -418,11 +661,95 @@ func (_u *RoleUpdateOne) sqlSave(ctx context.Context) (_node *Role, err error) {
 	if value, ok := _u.mutation.Remark(); ok {
 		_spec.SetField(role.FieldRemark, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Sort(); ok {
-		_spec.SetField(role.FieldSort, field.TypeUint32, value)
+	if _u.mutation.MenusCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   role.MenusTable,
+			Columns: role.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := _u.mutation.AddedSort(); ok {
-		_spec.AddField(role.FieldSort, field.TypeUint32, value)
+	if nodes := _u.mutation.RemovedMenusIDs(); len(nodes) > 0 && !_u.mutation.MenusCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   role.MenusTable,
+			Columns: role.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.MenusIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   role.MenusTable,
+			Columns: role.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedUsersIDs(); len(nodes) > 0 && !_u.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   role.UsersTable,
+			Columns: role.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Role{config: _u.config}
 	_spec.Assign = _node.assignValues

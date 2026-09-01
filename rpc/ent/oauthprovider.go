@@ -12,7 +12,7 @@ import (
 	"github.com/ns9ryan/p9_core/rpc/ent/oauthprovider"
 )
 
-// Oauth Provider Configuration Table | 三方登录配置表
+// 第三方登录配置表
 type OauthProvider struct {
 	config `json:"-"`
 	// ID of the ent.
@@ -22,23 +22,23 @@ type OauthProvider struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// 更新时间
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// The provider's name | 提供商名称
+	// 提供商名称
 	Name string `json:"name,omitempty"`
-	// The client id | 客户端 id
+	// 客户端 ID
 	ClientID string `json:"client_id,omitempty"`
-	// The client secret | 客户端密钥
+	// 客户端密钥
 	ClientSecret string `json:"client_secret,omitempty"`
-	// The redirect url | 跳转地址
+	// 回调地址
 	RedirectURL string `json:"redirect_url,omitempty"`
-	// The scopes | 权限范围
+	// 权限范围
 	Scopes string `json:"scopes,omitempty"`
-	// The auth url of the provider | 认证地址
+	// 认证地址
 	AuthURL string `json:"auth_url,omitempty"`
-	// The token url of the provider | 获取 token地址
+	// Token 获取地址
 	TokenURL string `json:"token_url,omitempty"`
-	// The auth style, 0: auto detect 1: third party log in 2: log in with username and password | 鉴权方式 0 自动 1 第三方登录 2 使用用户名密码
+	// 鉴权方式：0 自动，1 第三方登录，2 用户名密码登录
 	AuthStyle uint64 `json:"auth_style,omitempty"`
-	// The URL to request user information by token | 用户信息请求地址
+	// 用户信息请求地址
 	InfoURL      string `json:"info_url,omitempty"`
 	selectValues sql.SelectValues
 }

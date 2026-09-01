@@ -12,7 +12,7 @@ import (
 	"github.com/ns9ryan/p9_core/rpc/ent/position"
 )
 
-// Position Table | 职位信息表
+// 职位信息表
 type Position struct {
 	config `json:"-"`
 	// ID of the ent.
@@ -26,13 +26,34 @@ type Position struct {
 	Status uint8 `json:"status,omitempty"`
 	// 排序编号
 	Sort uint32 `json:"sort,omitempty"`
-	// Position Name | 职位名称
+	// 职位名称
 	Name string `json:"name,omitempty"`
-	// The code of position | 职位编码
+	// 职位编码
 	Code string `json:"code,omitempty"`
-	// Remark | 备注
-	Remark       string `json:"remark,omitempty"`
+	// 备注
+	Remark string `json:"remark,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the PositionQuery when eager-loading is set.
+	Edges        PositionEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// PositionEdges holds the relations/edges for other nodes in the graph.
+type PositionEdges struct {
+	// Users holds the value of the users edge.
+	Users []*User `json:"users,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// UsersOrErr returns the Users value or an error if the edge
+// was not loaded in eager-loading.
+func (e PositionEdges) UsersOrErr() ([]*User, error) {
+	if e.loadedTypes[0] {
+		return e.Users, nil
+	}
+	return nil, &NotLoadedError{edge: "users"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -120,6 +141,11 @@ func (_m *Position) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *Position) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryUsers queries the "users" edge of the Position entity.
+func (_m *Position) QueryUsers() *UserQuery {
+	return NewPositionClient(_m.config).QueryUsers(_m)
 }
 
 // Update returns a builder for updating this Position.

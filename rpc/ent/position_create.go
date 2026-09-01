@@ -10,7 +10,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	uuid "github.com/gofrs/uuid/v5"
 	"github.com/ns9ryan/p9_core/rpc/ent/position"
+	"github.com/ns9ryan/p9_core/rpc/ent/user"
 )
 
 // PositionCreate is the builder for creating a Position entity.
@@ -106,6 +108,21 @@ func (_c *PositionCreate) SetNillableRemark(v *string) *PositionCreate {
 func (_c *PositionCreate) SetID(v uint64) *PositionCreate {
 	_c.mutation.SetID(v)
 	return _c
+}
+
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (_c *PositionCreate) AddUserIDs(ids ...uuid.UUID) *PositionCreate {
+	_c.mutation.AddUserIDs(ids...)
+	return _c
+}
+
+// AddUsers adds the "users" edges to the User entity.
+func (_c *PositionCreate) AddUsers(v ...*User) *PositionCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddUserIDs(ids...)
 }
 
 // Mutation returns the PositionMutation object of the builder.
@@ -237,6 +254,22 @@ func (_c *PositionCreate) createSpec() (*Position, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Remark(); ok {
 		_spec.SetField(position.FieldRemark, field.TypeString, value)
 		_node.Remark = value
+	}
+	if nodes := _c.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   position.UsersTable,
+			Columns: position.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

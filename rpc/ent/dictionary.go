@@ -12,7 +12,7 @@ import (
 	"github.com/ns9ryan/p9_core/rpc/ent/dictionary"
 )
 
-// Dictionary Table | 字典信息表
+// 字典信息表
 type Dictionary struct {
 	config `json:"-"`
 	// ID of the ent.
@@ -24,15 +24,36 @@ type Dictionary struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// 状态：1 正常，2 停用
 	Status uint8 `json:"status,omitempty"`
-	// The title shown in the ui | 展示名称 （建议配合i18n）
+	// 展示名称
 	Title string `json:"title,omitempty"`
-	// The name of dictionary for search | 字典搜索名称
+	// 字典名称
 	Name string `json:"name,omitempty"`
-	// The description of dictionary | 字典的描述
+	// 字典描述
 	Desc string `json:"desc,omitempty"`
-	// Whether to be public for everyone | 是否公开词典，无需登录即可访问
-	IsPublic     bool `json:"is_public,omitempty"`
+	// 是否公开，无需登录即可访问
+	IsPublic bool `json:"is_public,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the DictionaryQuery when eager-loading is set.
+	Edges        DictionaryEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// DictionaryEdges holds the relations/edges for other nodes in the graph.
+type DictionaryEdges struct {
+	// DictionaryDetails holds the value of the dictionary_details edge.
+	DictionaryDetails []*DictionaryDetail `json:"dictionary_details,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// DictionaryDetailsOrErr returns the DictionaryDetails value or an error if the edge
+// was not loaded in eager-loading.
+func (e DictionaryEdges) DictionaryDetailsOrErr() ([]*DictionaryDetail, error) {
+	if e.loadedTypes[0] {
+		return e.DictionaryDetails, nil
+	}
+	return nil, &NotLoadedError{edge: "dictionary_details"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -122,6 +143,11 @@ func (_m *Dictionary) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *Dictionary) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryDictionaryDetails queries the "dictionary_details" edge of the Dictionary entity.
+func (_m *Dictionary) QueryDictionaryDetails() *DictionaryDetailQuery {
+	return NewDictionaryClient(_m.config).QueryDictionaryDetails(_m)
 }
 
 // Update returns a builder for updating this Dictionary.

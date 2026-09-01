@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/ns9ryan/p9_core/rpc/ent/menu"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
+	"github.com/ns9ryan/p9_core/rpc/ent/role"
 )
 
 // MenuUpdate is the builder for updating Menu entities.
@@ -57,7 +58,6 @@ func (_u *MenuUpdate) AddSort(v int32) *MenuUpdate {
 
 // SetParentID sets the "parent_id" field.
 func (_u *MenuUpdate) SetParentID(v uint64) *MenuUpdate {
-	_u.mutation.ResetParentID()
 	_u.mutation.SetParentID(v)
 	return _u
 }
@@ -70,36 +70,23 @@ func (_u *MenuUpdate) SetNillableParentID(v *uint64) *MenuUpdate {
 	return _u
 }
 
-// AddParentID adds value to the "parent_id" field.
-func (_u *MenuUpdate) AddParentID(v int64) *MenuUpdate {
-	_u.mutation.AddParentID(v)
-	return _u
-}
-
 // ClearParentID clears the value of the "parent_id" field.
 func (_u *MenuUpdate) ClearParentID() *MenuUpdate {
 	_u.mutation.ClearParentID()
 	return _u
 }
 
-// SetMenuLevel sets the "menu_level" field.
-func (_u *MenuUpdate) SetMenuLevel(v uint32) *MenuUpdate {
-	_u.mutation.ResetMenuLevel()
-	_u.mutation.SetMenuLevel(v)
+// SetName sets the "name" field.
+func (_u *MenuUpdate) SetName(v string) *MenuUpdate {
+	_u.mutation.SetName(v)
 	return _u
 }
 
-// SetNillableMenuLevel sets the "menu_level" field if the given value is not nil.
-func (_u *MenuUpdate) SetNillableMenuLevel(v *uint32) *MenuUpdate {
+// SetNillableName sets the "name" field if the given value is not nil.
+func (_u *MenuUpdate) SetNillableName(v *string) *MenuUpdate {
 	if v != nil {
-		_u.SetMenuLevel(*v)
+		_u.SetName(*v)
 	}
-	return _u
-}
-
-// AddMenuLevel adds value to the "menu_level" field.
-func (_u *MenuUpdate) AddMenuLevel(v int32) *MenuUpdate {
-	_u.mutation.AddMenuLevel(v)
 	return _u
 }
 
@@ -124,6 +111,27 @@ func (_u *MenuUpdate) AddMenuType(v int32) *MenuUpdate {
 	return _u
 }
 
+// SetMenuLevel sets the "menu_level" field.
+func (_u *MenuUpdate) SetMenuLevel(v uint32) *MenuUpdate {
+	_u.mutation.ResetMenuLevel()
+	_u.mutation.SetMenuLevel(v)
+	return _u
+}
+
+// SetNillableMenuLevel sets the "menu_level" field if the given value is not nil.
+func (_u *MenuUpdate) SetNillableMenuLevel(v *uint32) *MenuUpdate {
+	if v != nil {
+		_u.SetMenuLevel(*v)
+	}
+	return _u
+}
+
+// AddMenuLevel adds value to the "menu_level" field.
+func (_u *MenuUpdate) AddMenuLevel(v int32) *MenuUpdate {
+	_u.mutation.AddMenuLevel(v)
+	return _u
+}
+
 // SetPath sets the "path" field.
 func (_u *MenuUpdate) SetPath(v string) *MenuUpdate {
 	_u.mutation.SetPath(v)
@@ -141,40 +149,6 @@ func (_u *MenuUpdate) SetNillablePath(v *string) *MenuUpdate {
 // ClearPath clears the value of the "path" field.
 func (_u *MenuUpdate) ClearPath() *MenuUpdate {
 	_u.mutation.ClearPath()
-	return _u
-}
-
-// SetName sets the "name" field.
-func (_u *MenuUpdate) SetName(v string) *MenuUpdate {
-	_u.mutation.SetName(v)
-	return _u
-}
-
-// SetNillableName sets the "name" field if the given value is not nil.
-func (_u *MenuUpdate) SetNillableName(v *string) *MenuUpdate {
-	if v != nil {
-		_u.SetName(*v)
-	}
-	return _u
-}
-
-// SetRedirect sets the "redirect" field.
-func (_u *MenuUpdate) SetRedirect(v string) *MenuUpdate {
-	_u.mutation.SetRedirect(v)
-	return _u
-}
-
-// SetNillableRedirect sets the "redirect" field if the given value is not nil.
-func (_u *MenuUpdate) SetNillableRedirect(v *string) *MenuUpdate {
-	if v != nil {
-		_u.SetRedirect(*v)
-	}
-	return _u
-}
-
-// ClearRedirect clears the value of the "redirect" field.
-func (_u *MenuUpdate) ClearRedirect() *MenuUpdate {
-	_u.mutation.ClearRedirect()
 	return _u
 }
 
@@ -198,23 +172,23 @@ func (_u *MenuUpdate) ClearComponent() *MenuUpdate {
 	return _u
 }
 
-// SetDisabled sets the "disabled" field.
-func (_u *MenuUpdate) SetDisabled(v bool) *MenuUpdate {
-	_u.mutation.SetDisabled(v)
+// SetRedirect sets the "redirect" field.
+func (_u *MenuUpdate) SetRedirect(v string) *MenuUpdate {
+	_u.mutation.SetRedirect(v)
 	return _u
 }
 
-// SetNillableDisabled sets the "disabled" field if the given value is not nil.
-func (_u *MenuUpdate) SetNillableDisabled(v *bool) *MenuUpdate {
+// SetNillableRedirect sets the "redirect" field if the given value is not nil.
+func (_u *MenuUpdate) SetNillableRedirect(v *string) *MenuUpdate {
 	if v != nil {
-		_u.SetDisabled(*v)
+		_u.SetRedirect(*v)
 	}
 	return _u
 }
 
-// ClearDisabled clears the value of the "disabled" field.
-func (_u *MenuUpdate) ClearDisabled() *MenuUpdate {
-	_u.mutation.ClearDisabled()
+// ClearRedirect clears the value of the "redirect" field.
+func (_u *MenuUpdate) ClearRedirect() *MenuUpdate {
+	_u.mutation.ClearRedirect()
 	return _u
 }
 
@@ -255,6 +229,26 @@ func (_u *MenuUpdate) SetNillablePermission(v *string) *MenuUpdate {
 // ClearPermission clears the value of the "permission" field.
 func (_u *MenuUpdate) ClearPermission() *MenuUpdate {
 	_u.mutation.ClearPermission()
+	return _u
+}
+
+// SetDisabled sets the "disabled" field.
+func (_u *MenuUpdate) SetDisabled(v bool) *MenuUpdate {
+	_u.mutation.SetDisabled(v)
+	return _u
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (_u *MenuUpdate) SetNillableDisabled(v *bool) *MenuUpdate {
+	if v != nil {
+		_u.SetDisabled(*v)
+	}
+	return _u
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (_u *MenuUpdate) ClearDisabled() *MenuUpdate {
+	_u.mutation.ClearDisabled()
 	return _u
 }
 
@@ -493,9 +487,92 @@ func (_u *MenuUpdate) ClearRealPath() *MenuUpdate {
 	return _u
 }
 
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
+func (_u *MenuUpdate) AddRoleIDs(ids ...uint64) *MenuUpdate {
+	_u.mutation.AddRoleIDs(ids...)
+	return _u
+}
+
+// AddRoles adds the "roles" edges to the Role entity.
+func (_u *MenuUpdate) AddRoles(v ...*Role) *MenuUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddRoleIDs(ids...)
+}
+
+// SetParent sets the "parent" edge to the Menu entity.
+func (_u *MenuUpdate) SetParent(v *Menu) *MenuUpdate {
+	return _u.SetParentID(v.ID)
+}
+
+// AddChildIDs adds the "children" edge to the Menu entity by IDs.
+func (_u *MenuUpdate) AddChildIDs(ids ...uint64) *MenuUpdate {
+	_u.mutation.AddChildIDs(ids...)
+	return _u
+}
+
+// AddChildren adds the "children" edges to the Menu entity.
+func (_u *MenuUpdate) AddChildren(v ...*Menu) *MenuUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddChildIDs(ids...)
+}
+
 // Mutation returns the MenuMutation object of the builder.
 func (_u *MenuUpdate) Mutation() *MenuMutation {
 	return _u.mutation
+}
+
+// ClearRoles clears all "roles" edges to the Role entity.
+func (_u *MenuUpdate) ClearRoles() *MenuUpdate {
+	_u.mutation.ClearRoles()
+	return _u
+}
+
+// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
+func (_u *MenuUpdate) RemoveRoleIDs(ids ...uint64) *MenuUpdate {
+	_u.mutation.RemoveRoleIDs(ids...)
+	return _u
+}
+
+// RemoveRoles removes "roles" edges to Role entities.
+func (_u *MenuUpdate) RemoveRoles(v ...*Role) *MenuUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveRoleIDs(ids...)
+}
+
+// ClearParent clears the "parent" edge to the Menu entity.
+func (_u *MenuUpdate) ClearParent() *MenuUpdate {
+	_u.mutation.ClearParent()
+	return _u
+}
+
+// ClearChildren clears all "children" edges to the Menu entity.
+func (_u *MenuUpdate) ClearChildren() *MenuUpdate {
+	_u.mutation.ClearChildren()
+	return _u
+}
+
+// RemoveChildIDs removes the "children" edge to Menu entities by IDs.
+func (_u *MenuUpdate) RemoveChildIDs(ids ...uint64) *MenuUpdate {
+	_u.mutation.RemoveChildIDs(ids...)
+	return _u
+}
+
+// RemoveChildren removes "children" edges to Menu entities.
+func (_u *MenuUpdate) RemoveChildren(v ...*Menu) *MenuUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveChildIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -552,20 +629,8 @@ func (_u *MenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.AddedSort(); ok {
 		_spec.AddField(menu.FieldSort, field.TypeUint32, value)
 	}
-	if value, ok := _u.mutation.ParentID(); ok {
-		_spec.SetField(menu.FieldParentID, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedParentID(); ok {
-		_spec.AddField(menu.FieldParentID, field.TypeUint64, value)
-	}
-	if _u.mutation.ParentIDCleared() {
-		_spec.ClearField(menu.FieldParentID, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.MenuLevel(); ok {
-		_spec.SetField(menu.FieldMenuLevel, field.TypeUint32, value)
-	}
-	if value, ok := _u.mutation.AddedMenuLevel(); ok {
-		_spec.AddField(menu.FieldMenuLevel, field.TypeUint32, value)
+	if value, ok := _u.mutation.Name(); ok {
+		_spec.SetField(menu.FieldName, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.MenuType(); ok {
 		_spec.SetField(menu.FieldMenuType, field.TypeUint32, value)
@@ -573,20 +638,17 @@ func (_u *MenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.AddedMenuType(); ok {
 		_spec.AddField(menu.FieldMenuType, field.TypeUint32, value)
 	}
+	if value, ok := _u.mutation.MenuLevel(); ok {
+		_spec.SetField(menu.FieldMenuLevel, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedMenuLevel(); ok {
+		_spec.AddField(menu.FieldMenuLevel, field.TypeUint32, value)
+	}
 	if value, ok := _u.mutation.Path(); ok {
 		_spec.SetField(menu.FieldPath, field.TypeString, value)
 	}
 	if _u.mutation.PathCleared() {
 		_spec.ClearField(menu.FieldPath, field.TypeString)
-	}
-	if value, ok := _u.mutation.Name(); ok {
-		_spec.SetField(menu.FieldName, field.TypeString, value)
-	}
-	if value, ok := _u.mutation.Redirect(); ok {
-		_spec.SetField(menu.FieldRedirect, field.TypeString, value)
-	}
-	if _u.mutation.RedirectCleared() {
-		_spec.ClearField(menu.FieldRedirect, field.TypeString)
 	}
 	if value, ok := _u.mutation.Component(); ok {
 		_spec.SetField(menu.FieldComponent, field.TypeString, value)
@@ -594,11 +656,11 @@ func (_u *MenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.ComponentCleared() {
 		_spec.ClearField(menu.FieldComponent, field.TypeString)
 	}
-	if value, ok := _u.mutation.Disabled(); ok {
-		_spec.SetField(menu.FieldDisabled, field.TypeBool, value)
+	if value, ok := _u.mutation.Redirect(); ok {
+		_spec.SetField(menu.FieldRedirect, field.TypeString, value)
 	}
-	if _u.mutation.DisabledCleared() {
-		_spec.ClearField(menu.FieldDisabled, field.TypeBool)
+	if _u.mutation.RedirectCleared() {
+		_spec.ClearField(menu.FieldRedirect, field.TypeString)
 	}
 	if value, ok := _u.mutation.ServiceName(); ok {
 		_spec.SetField(menu.FieldServiceName, field.TypeString, value)
@@ -611,6 +673,12 @@ func (_u *MenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.PermissionCleared() {
 		_spec.ClearField(menu.FieldPermission, field.TypeString)
+	}
+	if value, ok := _u.mutation.Disabled(); ok {
+		_spec.SetField(menu.FieldDisabled, field.TypeBool, value)
+	}
+	if _u.mutation.DisabledCleared() {
+		_spec.ClearField(menu.FieldDisabled, field.TypeBool)
 	}
 	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(menu.FieldTitle, field.TypeString, value)
@@ -681,6 +749,125 @@ func (_u *MenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.RealPathCleared() {
 		_spec.ClearField(menu.FieldRealPath, field.TypeString)
 	}
+	if _u.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   menu.RolesTable,
+			Columns: menu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedRolesIDs(); len(nodes) > 0 && !_u.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   menu.RolesTable,
+			Columns: menu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   menu.RolesTable,
+			Columns: menu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   menu.ParentTable,
+			Columns: []string{menu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   menu.ParentTable,
+			Columns: []string{menu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   menu.ChildrenTable,
+			Columns: []string{menu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !_u.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   menu.ChildrenTable,
+			Columns: []string{menu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   menu.ChildrenTable,
+			Columns: []string{menu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{menu.Label}
@@ -730,7 +917,6 @@ func (_u *MenuUpdateOne) AddSort(v int32) *MenuUpdateOne {
 
 // SetParentID sets the "parent_id" field.
 func (_u *MenuUpdateOne) SetParentID(v uint64) *MenuUpdateOne {
-	_u.mutation.ResetParentID()
 	_u.mutation.SetParentID(v)
 	return _u
 }
@@ -743,36 +929,23 @@ func (_u *MenuUpdateOne) SetNillableParentID(v *uint64) *MenuUpdateOne {
 	return _u
 }
 
-// AddParentID adds value to the "parent_id" field.
-func (_u *MenuUpdateOne) AddParentID(v int64) *MenuUpdateOne {
-	_u.mutation.AddParentID(v)
-	return _u
-}
-
 // ClearParentID clears the value of the "parent_id" field.
 func (_u *MenuUpdateOne) ClearParentID() *MenuUpdateOne {
 	_u.mutation.ClearParentID()
 	return _u
 }
 
-// SetMenuLevel sets the "menu_level" field.
-func (_u *MenuUpdateOne) SetMenuLevel(v uint32) *MenuUpdateOne {
-	_u.mutation.ResetMenuLevel()
-	_u.mutation.SetMenuLevel(v)
+// SetName sets the "name" field.
+func (_u *MenuUpdateOne) SetName(v string) *MenuUpdateOne {
+	_u.mutation.SetName(v)
 	return _u
 }
 
-// SetNillableMenuLevel sets the "menu_level" field if the given value is not nil.
-func (_u *MenuUpdateOne) SetNillableMenuLevel(v *uint32) *MenuUpdateOne {
+// SetNillableName sets the "name" field if the given value is not nil.
+func (_u *MenuUpdateOne) SetNillableName(v *string) *MenuUpdateOne {
 	if v != nil {
-		_u.SetMenuLevel(*v)
+		_u.SetName(*v)
 	}
-	return _u
-}
-
-// AddMenuLevel adds value to the "menu_level" field.
-func (_u *MenuUpdateOne) AddMenuLevel(v int32) *MenuUpdateOne {
-	_u.mutation.AddMenuLevel(v)
 	return _u
 }
 
@@ -797,6 +970,27 @@ func (_u *MenuUpdateOne) AddMenuType(v int32) *MenuUpdateOne {
 	return _u
 }
 
+// SetMenuLevel sets the "menu_level" field.
+func (_u *MenuUpdateOne) SetMenuLevel(v uint32) *MenuUpdateOne {
+	_u.mutation.ResetMenuLevel()
+	_u.mutation.SetMenuLevel(v)
+	return _u
+}
+
+// SetNillableMenuLevel sets the "menu_level" field if the given value is not nil.
+func (_u *MenuUpdateOne) SetNillableMenuLevel(v *uint32) *MenuUpdateOne {
+	if v != nil {
+		_u.SetMenuLevel(*v)
+	}
+	return _u
+}
+
+// AddMenuLevel adds value to the "menu_level" field.
+func (_u *MenuUpdateOne) AddMenuLevel(v int32) *MenuUpdateOne {
+	_u.mutation.AddMenuLevel(v)
+	return _u
+}
+
 // SetPath sets the "path" field.
 func (_u *MenuUpdateOne) SetPath(v string) *MenuUpdateOne {
 	_u.mutation.SetPath(v)
@@ -814,40 +1008,6 @@ func (_u *MenuUpdateOne) SetNillablePath(v *string) *MenuUpdateOne {
 // ClearPath clears the value of the "path" field.
 func (_u *MenuUpdateOne) ClearPath() *MenuUpdateOne {
 	_u.mutation.ClearPath()
-	return _u
-}
-
-// SetName sets the "name" field.
-func (_u *MenuUpdateOne) SetName(v string) *MenuUpdateOne {
-	_u.mutation.SetName(v)
-	return _u
-}
-
-// SetNillableName sets the "name" field if the given value is not nil.
-func (_u *MenuUpdateOne) SetNillableName(v *string) *MenuUpdateOne {
-	if v != nil {
-		_u.SetName(*v)
-	}
-	return _u
-}
-
-// SetRedirect sets the "redirect" field.
-func (_u *MenuUpdateOne) SetRedirect(v string) *MenuUpdateOne {
-	_u.mutation.SetRedirect(v)
-	return _u
-}
-
-// SetNillableRedirect sets the "redirect" field if the given value is not nil.
-func (_u *MenuUpdateOne) SetNillableRedirect(v *string) *MenuUpdateOne {
-	if v != nil {
-		_u.SetRedirect(*v)
-	}
-	return _u
-}
-
-// ClearRedirect clears the value of the "redirect" field.
-func (_u *MenuUpdateOne) ClearRedirect() *MenuUpdateOne {
-	_u.mutation.ClearRedirect()
 	return _u
 }
 
@@ -871,23 +1031,23 @@ func (_u *MenuUpdateOne) ClearComponent() *MenuUpdateOne {
 	return _u
 }
 
-// SetDisabled sets the "disabled" field.
-func (_u *MenuUpdateOne) SetDisabled(v bool) *MenuUpdateOne {
-	_u.mutation.SetDisabled(v)
+// SetRedirect sets the "redirect" field.
+func (_u *MenuUpdateOne) SetRedirect(v string) *MenuUpdateOne {
+	_u.mutation.SetRedirect(v)
 	return _u
 }
 
-// SetNillableDisabled sets the "disabled" field if the given value is not nil.
-func (_u *MenuUpdateOne) SetNillableDisabled(v *bool) *MenuUpdateOne {
+// SetNillableRedirect sets the "redirect" field if the given value is not nil.
+func (_u *MenuUpdateOne) SetNillableRedirect(v *string) *MenuUpdateOne {
 	if v != nil {
-		_u.SetDisabled(*v)
+		_u.SetRedirect(*v)
 	}
 	return _u
 }
 
-// ClearDisabled clears the value of the "disabled" field.
-func (_u *MenuUpdateOne) ClearDisabled() *MenuUpdateOne {
-	_u.mutation.ClearDisabled()
+// ClearRedirect clears the value of the "redirect" field.
+func (_u *MenuUpdateOne) ClearRedirect() *MenuUpdateOne {
+	_u.mutation.ClearRedirect()
 	return _u
 }
 
@@ -928,6 +1088,26 @@ func (_u *MenuUpdateOne) SetNillablePermission(v *string) *MenuUpdateOne {
 // ClearPermission clears the value of the "permission" field.
 func (_u *MenuUpdateOne) ClearPermission() *MenuUpdateOne {
 	_u.mutation.ClearPermission()
+	return _u
+}
+
+// SetDisabled sets the "disabled" field.
+func (_u *MenuUpdateOne) SetDisabled(v bool) *MenuUpdateOne {
+	_u.mutation.SetDisabled(v)
+	return _u
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (_u *MenuUpdateOne) SetNillableDisabled(v *bool) *MenuUpdateOne {
+	if v != nil {
+		_u.SetDisabled(*v)
+	}
+	return _u
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (_u *MenuUpdateOne) ClearDisabled() *MenuUpdateOne {
+	_u.mutation.ClearDisabled()
 	return _u
 }
 
@@ -1166,9 +1346,92 @@ func (_u *MenuUpdateOne) ClearRealPath() *MenuUpdateOne {
 	return _u
 }
 
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
+func (_u *MenuUpdateOne) AddRoleIDs(ids ...uint64) *MenuUpdateOne {
+	_u.mutation.AddRoleIDs(ids...)
+	return _u
+}
+
+// AddRoles adds the "roles" edges to the Role entity.
+func (_u *MenuUpdateOne) AddRoles(v ...*Role) *MenuUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddRoleIDs(ids...)
+}
+
+// SetParent sets the "parent" edge to the Menu entity.
+func (_u *MenuUpdateOne) SetParent(v *Menu) *MenuUpdateOne {
+	return _u.SetParentID(v.ID)
+}
+
+// AddChildIDs adds the "children" edge to the Menu entity by IDs.
+func (_u *MenuUpdateOne) AddChildIDs(ids ...uint64) *MenuUpdateOne {
+	_u.mutation.AddChildIDs(ids...)
+	return _u
+}
+
+// AddChildren adds the "children" edges to the Menu entity.
+func (_u *MenuUpdateOne) AddChildren(v ...*Menu) *MenuUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddChildIDs(ids...)
+}
+
 // Mutation returns the MenuMutation object of the builder.
 func (_u *MenuUpdateOne) Mutation() *MenuMutation {
 	return _u.mutation
+}
+
+// ClearRoles clears all "roles" edges to the Role entity.
+func (_u *MenuUpdateOne) ClearRoles() *MenuUpdateOne {
+	_u.mutation.ClearRoles()
+	return _u
+}
+
+// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
+func (_u *MenuUpdateOne) RemoveRoleIDs(ids ...uint64) *MenuUpdateOne {
+	_u.mutation.RemoveRoleIDs(ids...)
+	return _u
+}
+
+// RemoveRoles removes "roles" edges to Role entities.
+func (_u *MenuUpdateOne) RemoveRoles(v ...*Role) *MenuUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveRoleIDs(ids...)
+}
+
+// ClearParent clears the "parent" edge to the Menu entity.
+func (_u *MenuUpdateOne) ClearParent() *MenuUpdateOne {
+	_u.mutation.ClearParent()
+	return _u
+}
+
+// ClearChildren clears all "children" edges to the Menu entity.
+func (_u *MenuUpdateOne) ClearChildren() *MenuUpdateOne {
+	_u.mutation.ClearChildren()
+	return _u
+}
+
+// RemoveChildIDs removes the "children" edge to Menu entities by IDs.
+func (_u *MenuUpdateOne) RemoveChildIDs(ids ...uint64) *MenuUpdateOne {
+	_u.mutation.RemoveChildIDs(ids...)
+	return _u
+}
+
+// RemoveChildren removes "children" edges to Menu entities.
+func (_u *MenuUpdateOne) RemoveChildren(v ...*Menu) *MenuUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveChildIDs(ids...)
 }
 
 // Where appends a list predicates to the MenuUpdate builder.
@@ -1255,20 +1518,8 @@ func (_u *MenuUpdateOne) sqlSave(ctx context.Context) (_node *Menu, err error) {
 	if value, ok := _u.mutation.AddedSort(); ok {
 		_spec.AddField(menu.FieldSort, field.TypeUint32, value)
 	}
-	if value, ok := _u.mutation.ParentID(); ok {
-		_spec.SetField(menu.FieldParentID, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedParentID(); ok {
-		_spec.AddField(menu.FieldParentID, field.TypeUint64, value)
-	}
-	if _u.mutation.ParentIDCleared() {
-		_spec.ClearField(menu.FieldParentID, field.TypeUint64)
-	}
-	if value, ok := _u.mutation.MenuLevel(); ok {
-		_spec.SetField(menu.FieldMenuLevel, field.TypeUint32, value)
-	}
-	if value, ok := _u.mutation.AddedMenuLevel(); ok {
-		_spec.AddField(menu.FieldMenuLevel, field.TypeUint32, value)
+	if value, ok := _u.mutation.Name(); ok {
+		_spec.SetField(menu.FieldName, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.MenuType(); ok {
 		_spec.SetField(menu.FieldMenuType, field.TypeUint32, value)
@@ -1276,20 +1527,17 @@ func (_u *MenuUpdateOne) sqlSave(ctx context.Context) (_node *Menu, err error) {
 	if value, ok := _u.mutation.AddedMenuType(); ok {
 		_spec.AddField(menu.FieldMenuType, field.TypeUint32, value)
 	}
+	if value, ok := _u.mutation.MenuLevel(); ok {
+		_spec.SetField(menu.FieldMenuLevel, field.TypeUint32, value)
+	}
+	if value, ok := _u.mutation.AddedMenuLevel(); ok {
+		_spec.AddField(menu.FieldMenuLevel, field.TypeUint32, value)
+	}
 	if value, ok := _u.mutation.Path(); ok {
 		_spec.SetField(menu.FieldPath, field.TypeString, value)
 	}
 	if _u.mutation.PathCleared() {
 		_spec.ClearField(menu.FieldPath, field.TypeString)
-	}
-	if value, ok := _u.mutation.Name(); ok {
-		_spec.SetField(menu.FieldName, field.TypeString, value)
-	}
-	if value, ok := _u.mutation.Redirect(); ok {
-		_spec.SetField(menu.FieldRedirect, field.TypeString, value)
-	}
-	if _u.mutation.RedirectCleared() {
-		_spec.ClearField(menu.FieldRedirect, field.TypeString)
 	}
 	if value, ok := _u.mutation.Component(); ok {
 		_spec.SetField(menu.FieldComponent, field.TypeString, value)
@@ -1297,11 +1545,11 @@ func (_u *MenuUpdateOne) sqlSave(ctx context.Context) (_node *Menu, err error) {
 	if _u.mutation.ComponentCleared() {
 		_spec.ClearField(menu.FieldComponent, field.TypeString)
 	}
-	if value, ok := _u.mutation.Disabled(); ok {
-		_spec.SetField(menu.FieldDisabled, field.TypeBool, value)
+	if value, ok := _u.mutation.Redirect(); ok {
+		_spec.SetField(menu.FieldRedirect, field.TypeString, value)
 	}
-	if _u.mutation.DisabledCleared() {
-		_spec.ClearField(menu.FieldDisabled, field.TypeBool)
+	if _u.mutation.RedirectCleared() {
+		_spec.ClearField(menu.FieldRedirect, field.TypeString)
 	}
 	if value, ok := _u.mutation.ServiceName(); ok {
 		_spec.SetField(menu.FieldServiceName, field.TypeString, value)
@@ -1314,6 +1562,12 @@ func (_u *MenuUpdateOne) sqlSave(ctx context.Context) (_node *Menu, err error) {
 	}
 	if _u.mutation.PermissionCleared() {
 		_spec.ClearField(menu.FieldPermission, field.TypeString)
+	}
+	if value, ok := _u.mutation.Disabled(); ok {
+		_spec.SetField(menu.FieldDisabled, field.TypeBool, value)
+	}
+	if _u.mutation.DisabledCleared() {
+		_spec.ClearField(menu.FieldDisabled, field.TypeBool)
 	}
 	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(menu.FieldTitle, field.TypeString, value)
@@ -1383,6 +1637,125 @@ func (_u *MenuUpdateOne) sqlSave(ctx context.Context) (_node *Menu, err error) {
 	}
 	if _u.mutation.RealPathCleared() {
 		_spec.ClearField(menu.FieldRealPath, field.TypeString)
+	}
+	if _u.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   menu.RolesTable,
+			Columns: menu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedRolesIDs(); len(nodes) > 0 && !_u.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   menu.RolesTable,
+			Columns: menu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   menu.RolesTable,
+			Columns: menu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   menu.ParentTable,
+			Columns: []string{menu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   menu.ParentTable,
+			Columns: []string{menu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   menu.ChildrenTable,
+			Columns: []string{menu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !_u.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   menu.ChildrenTable,
+			Columns: []string{menu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   menu.ChildrenTable,
+			Columns: []string{menu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(menu.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Menu{config: _u.config}
 	_spec.Assign = _node.assignValues

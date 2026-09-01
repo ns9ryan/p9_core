@@ -11,7 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ns9ryan/p9_core/rpc/ent/department"
+	"github.com/ns9ryan/p9_core/rpc/ent/position"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
+	"github.com/ns9ryan/p9_core/rpc/ent/role"
 	"github.com/ns9ryan/p9_core/rpc/ent/user"
 )
 
@@ -25,6 +28,59 @@ type UserUpdate struct {
 // Where appends a list predicates to the UserUpdate builder.
 func (_u *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *UserUpdate) SetUpdatedAt(v time.Time) *UserUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
+// SetStatus sets the "status" field.
+func (_u *UserUpdate) SetStatus(v uint8) *UserUpdate {
+	_u.mutation.ResetStatus()
+	_u.mutation.SetStatus(v)
+	return _u
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableStatus(v *uint8) *UserUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
+	}
+	return _u
+}
+
+// AddStatus adds value to the "status" field.
+func (_u *UserUpdate) AddStatus(v int8) *UserUpdate {
+	_u.mutation.AddStatus(v)
+	return _u
+}
+
+// ClearStatus clears the value of the "status" field.
+func (_u *UserUpdate) ClearStatus() *UserUpdate {
+	_u.mutation.ClearStatus()
+	return _u
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *UserUpdate) SetDeletedAt(v time.Time) *UserUpdate {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableDeletedAt(v *time.Time) *UserUpdate {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *UserUpdate) ClearDeletedAt() *UserUpdate {
+	_u.mutation.ClearDeletedAt()
 	return _u
 }
 
@@ -166,7 +222,6 @@ func (_u *UserUpdate) ClearAvatar() *UserUpdate {
 
 // SetDepartmentID sets the "department_id" field.
 func (_u *UserUpdate) SetDepartmentID(v uint64) *UserUpdate {
-	_u.mutation.ResetDepartmentID()
 	_u.mutation.SetDepartmentID(v)
 	return _u
 }
@@ -176,12 +231,6 @@ func (_u *UserUpdate) SetNillableDepartmentID(v *uint64) *UserUpdate {
 	if v != nil {
 		_u.SetDepartmentID(*v)
 	}
-	return _u
-}
-
-// AddDepartmentID adds value to the "department_id" field.
-func (_u *UserUpdate) AddDepartmentID(v int64) *UserUpdate {
-	_u.mutation.AddDepartmentID(v)
 	return _u
 }
 
@@ -211,13 +260,113 @@ func (_u *UserUpdate) ClearExpiredAt() *UserUpdate {
 	return _u
 }
 
+// SetDepartmentsID sets the "departments" edge to the Department entity by ID.
+func (_u *UserUpdate) SetDepartmentsID(id uint64) *UserUpdate {
+	_u.mutation.SetDepartmentsID(id)
+	return _u
+}
+
+// SetNillableDepartmentsID sets the "departments" edge to the Department entity by ID if the given value is not nil.
+func (_u *UserUpdate) SetNillableDepartmentsID(id *uint64) *UserUpdate {
+	if id != nil {
+		_u = _u.SetDepartmentsID(*id)
+	}
+	return _u
+}
+
+// SetDepartments sets the "departments" edge to the Department entity.
+func (_u *UserUpdate) SetDepartments(v *Department) *UserUpdate {
+	return _u.SetDepartmentsID(v.ID)
+}
+
+// AddPositionIDs adds the "positions" edge to the Position entity by IDs.
+func (_u *UserUpdate) AddPositionIDs(ids ...uint64) *UserUpdate {
+	_u.mutation.AddPositionIDs(ids...)
+	return _u
+}
+
+// AddPositions adds the "positions" edges to the Position entity.
+func (_u *UserUpdate) AddPositions(v ...*Position) *UserUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddPositionIDs(ids...)
+}
+
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
+func (_u *UserUpdate) AddRoleIDs(ids ...uint64) *UserUpdate {
+	_u.mutation.AddRoleIDs(ids...)
+	return _u
+}
+
+// AddRoles adds the "roles" edges to the Role entity.
+func (_u *UserUpdate) AddRoles(v ...*Role) *UserUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddRoleIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdate) Mutation() *UserMutation {
 	return _u.mutation
 }
 
+// ClearDepartments clears the "departments" edge to the Department entity.
+func (_u *UserUpdate) ClearDepartments() *UserUpdate {
+	_u.mutation.ClearDepartments()
+	return _u
+}
+
+// ClearPositions clears all "positions" edges to the Position entity.
+func (_u *UserUpdate) ClearPositions() *UserUpdate {
+	_u.mutation.ClearPositions()
+	return _u
+}
+
+// RemovePositionIDs removes the "positions" edge to Position entities by IDs.
+func (_u *UserUpdate) RemovePositionIDs(ids ...uint64) *UserUpdate {
+	_u.mutation.RemovePositionIDs(ids...)
+	return _u
+}
+
+// RemovePositions removes "positions" edges to Position entities.
+func (_u *UserUpdate) RemovePositions(v ...*Position) *UserUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemovePositionIDs(ids...)
+}
+
+// ClearRoles clears all "roles" edges to the Role entity.
+func (_u *UserUpdate) ClearRoles() *UserUpdate {
+	_u.mutation.ClearRoles()
+	return _u
+}
+
+// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
+func (_u *UserUpdate) RemoveRoleIDs(ids ...uint64) *UserUpdate {
+	_u.mutation.RemoveRoleIDs(ids...)
+	return _u
+}
+
+// RemoveRoles removes "roles" edges to Role entities.
+func (_u *UserUpdate) RemoveRoles(v ...*Role) *UserUpdate {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveRoleIDs(ids...)
+}
+
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *UserUpdate) Save(ctx context.Context) (int, error) {
+	if err := _u.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -243,14 +392,44 @@ func (_u *UserUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *UserUpdate) defaults() error {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if user.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized user.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := user.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
+	}
+	return nil
+}
+
 func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := _u.mutation.Status(); ok {
+		_spec.SetField(user.FieldStatus, field.TypeUint8, value)
+	}
+	if value, ok := _u.mutation.AddedStatus(); ok {
+		_spec.AddField(user.FieldStatus, field.TypeUint8, value)
+	}
+	if _u.mutation.StatusCleared() {
+		_spec.ClearField(user.FieldStatus, field.TypeUint8)
+	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(user.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(user.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
@@ -288,20 +467,130 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.AvatarCleared() {
 		_spec.ClearField(user.FieldAvatar, field.TypeString)
 	}
-	if value, ok := _u.mutation.DepartmentID(); ok {
-		_spec.SetField(user.FieldDepartmentID, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedDepartmentID(); ok {
-		_spec.AddField(user.FieldDepartmentID, field.TypeUint64, value)
-	}
-	if _u.mutation.DepartmentIDCleared() {
-		_spec.ClearField(user.FieldDepartmentID, field.TypeUint64)
-	}
 	if value, ok := _u.mutation.ExpiredAt(); ok {
 		_spec.SetField(user.FieldExpiredAt, field.TypeTime, value)
 	}
 	if _u.mutation.ExpiredAtCleared() {
 		_spec.ClearField(user.FieldExpiredAt, field.TypeTime)
+	}
+	if _u.mutation.DepartmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   user.DepartmentsTable,
+			Columns: []string{user.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DepartmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   user.DepartmentsTable,
+			Columns: []string{user.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.PositionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.PositionsTable,
+			Columns: user.PositionsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(position.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedPositionsIDs(); len(nodes) > 0 && !_u.mutation.PositionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.PositionsTable,
+			Columns: user.PositionsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(position.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PositionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.PositionsTable,
+			Columns: user.PositionsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(position.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedRolesIDs(); len(nodes) > 0 && !_u.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -321,6 +610,59 @@ type UserUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *UserMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *UserUpdateOne) SetUpdatedAt(v time.Time) *UserUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
+// SetStatus sets the "status" field.
+func (_u *UserUpdateOne) SetStatus(v uint8) *UserUpdateOne {
+	_u.mutation.ResetStatus()
+	_u.mutation.SetStatus(v)
+	return _u
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableStatus(v *uint8) *UserUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
+	}
+	return _u
+}
+
+// AddStatus adds value to the "status" field.
+func (_u *UserUpdateOne) AddStatus(v int8) *UserUpdateOne {
+	_u.mutation.AddStatus(v)
+	return _u
+}
+
+// ClearStatus clears the value of the "status" field.
+func (_u *UserUpdateOne) ClearStatus() *UserUpdateOne {
+	_u.mutation.ClearStatus()
+	return _u
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *UserUpdateOne) SetDeletedAt(v time.Time) *UserUpdateOne {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableDeletedAt(v *time.Time) *UserUpdateOne {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *UserUpdateOne) ClearDeletedAt() *UserUpdateOne {
+	_u.mutation.ClearDeletedAt()
+	return _u
 }
 
 // SetUsername sets the "username" field.
@@ -461,7 +803,6 @@ func (_u *UserUpdateOne) ClearAvatar() *UserUpdateOne {
 
 // SetDepartmentID sets the "department_id" field.
 func (_u *UserUpdateOne) SetDepartmentID(v uint64) *UserUpdateOne {
-	_u.mutation.ResetDepartmentID()
 	_u.mutation.SetDepartmentID(v)
 	return _u
 }
@@ -471,12 +812,6 @@ func (_u *UserUpdateOne) SetNillableDepartmentID(v *uint64) *UserUpdateOne {
 	if v != nil {
 		_u.SetDepartmentID(*v)
 	}
-	return _u
-}
-
-// AddDepartmentID adds value to the "department_id" field.
-func (_u *UserUpdateOne) AddDepartmentID(v int64) *UserUpdateOne {
-	_u.mutation.AddDepartmentID(v)
 	return _u
 }
 
@@ -506,9 +841,106 @@ func (_u *UserUpdateOne) ClearExpiredAt() *UserUpdateOne {
 	return _u
 }
 
+// SetDepartmentsID sets the "departments" edge to the Department entity by ID.
+func (_u *UserUpdateOne) SetDepartmentsID(id uint64) *UserUpdateOne {
+	_u.mutation.SetDepartmentsID(id)
+	return _u
+}
+
+// SetNillableDepartmentsID sets the "departments" edge to the Department entity by ID if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableDepartmentsID(id *uint64) *UserUpdateOne {
+	if id != nil {
+		_u = _u.SetDepartmentsID(*id)
+	}
+	return _u
+}
+
+// SetDepartments sets the "departments" edge to the Department entity.
+func (_u *UserUpdateOne) SetDepartments(v *Department) *UserUpdateOne {
+	return _u.SetDepartmentsID(v.ID)
+}
+
+// AddPositionIDs adds the "positions" edge to the Position entity by IDs.
+func (_u *UserUpdateOne) AddPositionIDs(ids ...uint64) *UserUpdateOne {
+	_u.mutation.AddPositionIDs(ids...)
+	return _u
+}
+
+// AddPositions adds the "positions" edges to the Position entity.
+func (_u *UserUpdateOne) AddPositions(v ...*Position) *UserUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddPositionIDs(ids...)
+}
+
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
+func (_u *UserUpdateOne) AddRoleIDs(ids ...uint64) *UserUpdateOne {
+	_u.mutation.AddRoleIDs(ids...)
+	return _u
+}
+
+// AddRoles adds the "roles" edges to the Role entity.
+func (_u *UserUpdateOne) AddRoles(v ...*Role) *UserUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddRoleIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdateOne) Mutation() *UserMutation {
 	return _u.mutation
+}
+
+// ClearDepartments clears the "departments" edge to the Department entity.
+func (_u *UserUpdateOne) ClearDepartments() *UserUpdateOne {
+	_u.mutation.ClearDepartments()
+	return _u
+}
+
+// ClearPositions clears all "positions" edges to the Position entity.
+func (_u *UserUpdateOne) ClearPositions() *UserUpdateOne {
+	_u.mutation.ClearPositions()
+	return _u
+}
+
+// RemovePositionIDs removes the "positions" edge to Position entities by IDs.
+func (_u *UserUpdateOne) RemovePositionIDs(ids ...uint64) *UserUpdateOne {
+	_u.mutation.RemovePositionIDs(ids...)
+	return _u
+}
+
+// RemovePositions removes "positions" edges to Position entities.
+func (_u *UserUpdateOne) RemovePositions(v ...*Position) *UserUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemovePositionIDs(ids...)
+}
+
+// ClearRoles clears all "roles" edges to the Role entity.
+func (_u *UserUpdateOne) ClearRoles() *UserUpdateOne {
+	_u.mutation.ClearRoles()
+	return _u
+}
+
+// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
+func (_u *UserUpdateOne) RemoveRoleIDs(ids ...uint64) *UserUpdateOne {
+	_u.mutation.RemoveRoleIDs(ids...)
+	return _u
+}
+
+// RemoveRoles removes "roles" edges to Role entities.
+func (_u *UserUpdateOne) RemoveRoles(v ...*Role) *UserUpdateOne {
+	ids := make([]uint64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveRoleIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -526,6 +958,9 @@ func (_u *UserUpdateOne) Select(field string, fields ...string) *UserUpdateOne {
 
 // Save executes the query and returns the updated User entity.
 func (_u *UserUpdateOne) Save(ctx context.Context) (*User, error) {
+	if err := _u.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -551,8 +986,20 @@ func (_u *UserUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *UserUpdateOne) defaults() error {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if user.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized user.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := user.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
+	}
+	return nil
+}
+
 func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID))
 	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "User.id" for update`)}
@@ -576,6 +1023,24 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := _u.mutation.Status(); ok {
+		_spec.SetField(user.FieldStatus, field.TypeUint8, value)
+	}
+	if value, ok := _u.mutation.AddedStatus(); ok {
+		_spec.AddField(user.FieldStatus, field.TypeUint8, value)
+	}
+	if _u.mutation.StatusCleared() {
+		_spec.ClearField(user.FieldStatus, field.TypeUint8)
+	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(user.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(user.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
@@ -613,20 +1078,130 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	if _u.mutation.AvatarCleared() {
 		_spec.ClearField(user.FieldAvatar, field.TypeString)
 	}
-	if value, ok := _u.mutation.DepartmentID(); ok {
-		_spec.SetField(user.FieldDepartmentID, field.TypeUint64, value)
-	}
-	if value, ok := _u.mutation.AddedDepartmentID(); ok {
-		_spec.AddField(user.FieldDepartmentID, field.TypeUint64, value)
-	}
-	if _u.mutation.DepartmentIDCleared() {
-		_spec.ClearField(user.FieldDepartmentID, field.TypeUint64)
-	}
 	if value, ok := _u.mutation.ExpiredAt(); ok {
 		_spec.SetField(user.FieldExpiredAt, field.TypeTime, value)
 	}
 	if _u.mutation.ExpiredAtCleared() {
 		_spec.ClearField(user.FieldExpiredAt, field.TypeTime)
+	}
+	if _u.mutation.DepartmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   user.DepartmentsTable,
+			Columns: []string{user.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.DepartmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   user.DepartmentsTable,
+			Columns: []string{user.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.PositionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.PositionsTable,
+			Columns: user.PositionsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(position.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedPositionsIDs(); len(nodes) > 0 && !_u.mutation.PositionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.PositionsTable,
+			Columns: user.PositionsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(position.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PositionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.PositionsTable,
+			Columns: user.PositionsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(position.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedRolesIDs(); len(nodes) > 0 && !_u.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.RolesTable,
+			Columns: user.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &User{config: _u.config}
 	_spec.Assign = _node.assignValues

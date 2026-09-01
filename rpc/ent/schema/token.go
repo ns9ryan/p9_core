@@ -10,33 +10,42 @@ import (
 	"github.com/ns9ryan/common/orm/ent/mixins"
 )
 
-// Token holds the schema definition for the Token entity.
+// Token 定义令牌信息表结构
 type Token struct {
 	ent.Schema
 }
 
-// Fields of the Token.
+// Fields 定义令牌信息表字段
 func (Token) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("uuid", uuid.UUID{}).
-			Comment(" User's UUID | 用户的UUID"),
+			Comment("用户 UUID"),
+
 		field.String("username").
-			Comment("Username | 用户名").
-			Default("unknown"),
+			Default("unknown").
+			Comment("用户名"),
+
 		field.String("token").
-			Comment("Token string | Token 字符串"),
+			Comment("Token 字符串"),
+
 		field.String("source").
-			Comment("Log in source such as GitHub | Token 来源 （本地为core, 第三方如github等）"),
+			Comment("Token 来源"),
+
 		field.Time("expired_at").
-			Comment(" Expire time | 过期时间"),
+			Comment("过期时间"),
 	}
 }
 
-// Edges of the Token.
-func (Token) Edges() []ent.Edge {
-	return nil
+// Indexes 定义令牌信息表索引
+func (Token) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("uuid"),
+
+		index.Fields("expired_at"),
+	}
 }
 
+// Mixin 定义令牌信息表公共字段
 func (Token) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.UUIDMixin{},
@@ -44,17 +53,11 @@ func (Token) Mixin() []ent.Mixin {
 	}
 }
 
-func (Token) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Fields("uuid"),
-		index.Fields("expired_at"),
-	}
-}
-
+// Annotations 定义令牌信息表数据库注解
 func (Token) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.WithComments(true),
-		schema.Comment("Token Log Table | 令牌信息表"),
-		entsql.Annotation{Table: "sys_tokens"},
+		entsql.WithComments(true),              // 启用数据库字段注释
+		schema.Comment("令牌信息表"),                // 设置数据库表注释
+		entsql.Annotation{Table: "sys_tokens"}, // 设置数据库表名
 	}
 }

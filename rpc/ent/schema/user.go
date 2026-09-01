@@ -5,51 +5,86 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
+	commonmixins "github.com/ns9ryan/common/orm/ent/mixins"
+	"github.com/ns9ryan/p9_core/rpc/ent/schema/schematype"
 )
 
-// User holds the schema definition for the User entity.
+// User 定义用户信息表结构
 type User struct {
 	ent.Schema
 }
 
-// Fields of the User.
+// Fields 定义用户信息表字段
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("username").Unique().
-			Comment("User's login name | 登录名"),
+		field.String("username").
+			Unique().
+			Comment("登录名"),
+
 		field.String("password").
-			Comment("Password | 密码"),
-		field.String("nickname").Unique().
-			Comment("Nickname | 昵称"),
-		field.String("description").Optional().
-			Comment("The description of user | 用户的描述信息"),
-		field.String("home_path").Default("/dashboard").
-			Comment("The home page that the user enters after logging in | 用户登陆后进入的首页"),
-		field.String("mobile").Optional().
-			Comment("Mobile number | 手机号"),
-		field.String("email").Optional().
-			Comment("Email | 邮箱号"),
-		field.String("avatar").
-			SchemaType(map[string]string{dialect.MySQL: "varchar(512)"}).
+			Comment("密码"),
+
+		field.String("nickname").
+			Unique().
+			Comment("昵称"),
+
+		field.String("description").
 			Optional().
-			Comment("Avatar | 头像路径"),
-		field.Uint64("department_id").Optional().Default(1).
-			Comment("Department ID | 部门ID"),
+			Comment("用户描述"),
+
+		field.String("home_path").
+			Default("/dashboard").
+			Comment("登录后首页路径"),
+
+		field.String("mobile").
+			Optional().
+			Comment("手机号"),
+
+		field.String("email").
+			Optional().
+			Comment("邮箱"),
+
+		field.String("avatar").
+			SchemaType(map[string]string{
+				dialect.MySQL: "varchar(512)",
+			}).
+			Optional().
+			Comment("头像路径"),
+
+		field.Uint64("department_id").
+			Optional().
+			Default(1).
+			Comment("部门 ID"),
+
 		field.Time("expired_at").
-			Comment("The expired time | 到期时间").
 			SchemaType(map[string]string{
 				dialect.MySQL: "datetime",
-			}).Optional(),
+			}).
+			Optional().
+			Comment("到期时间"),
 	}
 }
 
-// Edges of the User.
+// Edges 定义用户信息表关联关系
 func (User) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		// 用户与部门关系
+		edge.To("departments", Department.Type).
+			Unique().
+			Field("department_id"),
+
+		// 用户与职位关系
+		edge.To("positions", Position.Type),
+
+		// 用户与角色关系
+		edge.To("roles", Role.Type),
+	}
 }
 
+// Indexes 定义用户信息表索引
 func (User) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("username", "email").
@@ -57,10 +92,20 @@ func (User) Indexes() []ent.Index {
 	}
 }
 
+// Mixin 定义用户信息表公共字段及通用行为
+func (User) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		commonmixins.UUIDMixin{},
+		commonmixins.StatusMixin{},
+		schematype.SoftDeleteMixin{},
+	}
+}
+
+// Annotations 定义用户信息表数据库注解
 func (User) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.WithComments(true),
-		schema.Comment("User Table | 用户信息表"),
-		entsql.Annotation{Table: "sys_users"},
+		entsql.WithComments(true),             // 启用数据库字段注释
+		schema.Comment("用户信息表"),               // 设置数据库表注释
+		entsql.Annotation{Table: "sys_users"}, // 设置数据库表名
 	}
 }

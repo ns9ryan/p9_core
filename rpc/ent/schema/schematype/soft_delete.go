@@ -1,4 +1,4 @@
-package mixins
+package schematype
 
 import (
 	"context"
@@ -14,6 +14,8 @@ import (
 	"github.com/ns9ryan/p9_core/rpc/ent/intercept"
 )
 
+const softDeleteField = "deleted_at"
+
 // SoftDeleteMixin 通用软删除字段及处理逻辑
 type SoftDeleteMixin struct {
 	mixin.Schema
@@ -25,7 +27,7 @@ type softDeleteKey struct{}
 // Fields 定义通用软删除字段
 func (SoftDeleteMixin) Fields() []ent.Field {
 	return []ent.Field{
-		field.Time("deleted_at").
+		field.Time(softDeleteField).
 			Optional().
 			Comment("删除时间"),
 	}
@@ -89,11 +91,11 @@ func (m SoftDeleteMixin) Hooks() []ent.Hook {
 	}
 }
 
-// P 添加未删除数据查询条件
+// P 添加未删除数据过滤条件
 func (m SoftDeleteMixin) P(target interface {
 	WhereP(...func(*sql.Selector))
 }) {
 	target.WhereP(
-		sql.FieldIsNull(m.Fields()[0].Descriptor().Name),
+		sql.FieldIsNull(softDeleteField),
 	)
 }

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -27,8 +28,17 @@ const (
 	FieldDesc = "desc"
 	// FieldIsPublic holds the string denoting the is_public field in the database.
 	FieldIsPublic = "is_public"
+	// EdgeDictionaryDetails holds the string denoting the dictionary_details edge name in mutations.
+	EdgeDictionaryDetails = "dictionary_details"
 	// Table holds the table name of the dictionary in the database.
 	Table = "sys_dictionaries"
+	// DictionaryDetailsTable is the table that holds the dictionary_details relation/edge.
+	DictionaryDetailsTable = "sys_dictionary_details"
+	// DictionaryDetailsInverseTable is the table name for the DictionaryDetail entity.
+	// It exists in this package in order to avoid circular dependency with the "dictionarydetail" package.
+	DictionaryDetailsInverseTable = "sys_dictionary_details"
+	// DictionaryDetailsColumn is the table column denoting the dictionary_details relation/edge.
+	DictionaryDetailsColumn = "dictionary_id"
 )
 
 // Columns holds all SQL columns for dictionary fields.
@@ -107,4 +117,25 @@ func ByDesc(opts ...sql.OrderTermOption) OrderOption {
 // ByIsPublic orders the results by the is_public field.
 func ByIsPublic(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldIsPublic, opts...).ToFunc()
+}
+
+// ByDictionaryDetailsCount orders the results by dictionary_details count.
+func ByDictionaryDetailsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDictionaryDetailsStep(), opts...)
+	}
+}
+
+// ByDictionaryDetails orders the results by dictionary_details terms.
+func ByDictionaryDetails(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDictionaryDetailsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newDictionaryDetailsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DictionaryDetailsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, DictionaryDetailsTable, DictionaryDetailsColumn),
+	)
 }

@@ -9,35 +9,91 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	uuid "github.com/gofrs/uuid/v5"
+	"github.com/ns9ryan/p9_core/rpc/ent/department"
 	"github.com/ns9ryan/p9_core/rpc/ent/user"
 )
 
-// User Table | 用户信息表
+// 用户信息表
 type User struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// User's login name | 登录名
+	// UUID 主键
+	ID uuid.UUID `json:"id,omitempty"`
+	// 创建时间
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// 更新时间
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// 状态：1 正常，2 停用
+	Status uint8 `json:"status,omitempty"`
+	// 删除时间
+	DeletedAt time.Time `json:"deleted_at,omitempty"`
+	// 登录名
 	Username string `json:"username,omitempty"`
-	// Password | 密码
+	// 密码
 	Password string `json:"password,omitempty"`
-	// Nickname | 昵称
+	// 昵称
 	Nickname string `json:"nickname,omitempty"`
-	// The description of user | 用户的描述信息
+	// 用户描述
 	Description string `json:"description,omitempty"`
-	// The home page that the user enters after logging in | 用户登陆后进入的首页
+	// 登录后首页路径
 	HomePath string `json:"home_path,omitempty"`
-	// Mobile number | 手机号
+	// 手机号
 	Mobile string `json:"mobile,omitempty"`
-	// Email | 邮箱号
+	// 邮箱
 	Email string `json:"email,omitempty"`
-	// Avatar | 头像路径
+	// 头像路径
 	Avatar string `json:"avatar,omitempty"`
-	// Department ID | 部门ID
+	// 部门 ID
 	DepartmentID uint64 `json:"department_id,omitempty"`
-	// The expired time | 到期时间
-	ExpiredAt    time.Time `json:"expired_at,omitempty"`
+	// 到期时间
+	ExpiredAt time.Time `json:"expired_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the UserQuery when eager-loading is set.
+	Edges        UserEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// UserEdges holds the relations/edges for other nodes in the graph.
+type UserEdges struct {
+	// Departments holds the value of the departments edge.
+	Departments *Department `json:"departments,omitempty"`
+	// Positions holds the value of the positions edge.
+	Positions []*Position `json:"positions,omitempty"`
+	// Roles holds the value of the roles edge.
+	Roles []*Role `json:"roles,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [3]bool
+}
+
+// DepartmentsOrErr returns the Departments value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e UserEdges) DepartmentsOrErr() (*Department, error) {
+	if e.Departments != nil {
+		return e.Departments, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: department.Label}
+	}
+	return nil, &NotLoadedError{edge: "departments"}
+}
+
+// PositionsOrErr returns the Positions value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) PositionsOrErr() ([]*Position, error) {
+	if e.loadedTypes[1] {
+		return e.Positions, nil
+	}
+	return nil, &NotLoadedError{edge: "positions"}
+}
+
+// RolesOrErr returns the Roles value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) RolesOrErr() ([]*Role, error) {
+	if e.loadedTypes[2] {
+		return e.Roles, nil
+	}
+	return nil, &NotLoadedError{edge: "roles"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -45,12 +101,14 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID, user.FieldDepartmentID:
+		case user.FieldStatus, user.FieldDepartmentID:
 			values[i] = new(sql.NullInt64)
 		case user.FieldUsername, user.FieldPassword, user.FieldNickname, user.FieldDescription, user.FieldHomePath, user.FieldMobile, user.FieldEmail, user.FieldAvatar:
 			values[i] = new(sql.NullString)
-		case user.FieldExpiredAt:
+		case user.FieldCreatedAt, user.FieldUpdatedAt, user.FieldDeletedAt, user.FieldExpiredAt:
 			values[i] = new(sql.NullTime)
+		case user.FieldID:
+			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -67,11 +125,35 @@ func (_m *User) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case user.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value != nil {
+				_m.ID = *value
 			}
-			_m.ID = int(value.Int64)
+		case user.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case user.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
+		case user.FieldStatus:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				_m.Status = uint8(value.Int64)
+			}
+		case user.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				_m.DeletedAt = value.Time
+			}
 		case user.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
@@ -145,6 +227,21 @@ func (_m *User) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
+// QueryDepartments queries the "departments" edge of the User entity.
+func (_m *User) QueryDepartments() *DepartmentQuery {
+	return NewUserClient(_m.config).QueryDepartments(_m)
+}
+
+// QueryPositions queries the "positions" edge of the User entity.
+func (_m *User) QueryPositions() *PositionQuery {
+	return NewUserClient(_m.config).QueryPositions(_m)
+}
+
+// QueryRoles queries the "roles" edge of the User entity.
+func (_m *User) QueryRoles() *RoleQuery {
+	return NewUserClient(_m.config).QueryRoles(_m)
+}
+
 // Update returns a builder for updating this User.
 // Note that you need to call User.Unwrap() before calling this method if this User
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -168,6 +265,18 @@ func (_m *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("status=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
+	builder.WriteString(", ")
+	builder.WriteString("deleted_at=")
+	builder.WriteString(_m.DeletedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("username=")
 	builder.WriteString(_m.Username)
 	builder.WriteString(", ")

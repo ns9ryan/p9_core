@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ns9ryan/p9_core/rpc/ent/predicate"
 )
 
@@ -74,9 +75,9 @@ func ParentID(v uint64) predicate.Menu {
 	return predicate.Menu(sql.FieldEQ(FieldParentID, v))
 }
 
-// MenuLevel applies equality check predicate on the "menu_level" field. It's identical to MenuLevelEQ.
-func MenuLevel(v uint32) predicate.Menu {
-	return predicate.Menu(sql.FieldEQ(FieldMenuLevel, v))
+// Name applies equality check predicate on the "name" field. It's identical to NameEQ.
+func Name(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldEQ(FieldName, v))
 }
 
 // MenuType applies equality check predicate on the "menu_type" field. It's identical to MenuTypeEQ.
@@ -84,19 +85,14 @@ func MenuType(v uint32) predicate.Menu {
 	return predicate.Menu(sql.FieldEQ(FieldMenuType, v))
 }
 
+// MenuLevel applies equality check predicate on the "menu_level" field. It's identical to MenuLevelEQ.
+func MenuLevel(v uint32) predicate.Menu {
+	return predicate.Menu(sql.FieldEQ(FieldMenuLevel, v))
+}
+
 // Path applies equality check predicate on the "path" field. It's identical to PathEQ.
 func Path(v string) predicate.Menu {
 	return predicate.Menu(sql.FieldEQ(FieldPath, v))
-}
-
-// Name applies equality check predicate on the "name" field. It's identical to NameEQ.
-func Name(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldEQ(FieldName, v))
-}
-
-// Redirect applies equality check predicate on the "redirect" field. It's identical to RedirectEQ.
-func Redirect(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldEQ(FieldRedirect, v))
 }
 
 // Component applies equality check predicate on the "component" field. It's identical to ComponentEQ.
@@ -104,9 +100,9 @@ func Component(v string) predicate.Menu {
 	return predicate.Menu(sql.FieldEQ(FieldComponent, v))
 }
 
-// Disabled applies equality check predicate on the "disabled" field. It's identical to DisabledEQ.
-func Disabled(v bool) predicate.Menu {
-	return predicate.Menu(sql.FieldEQ(FieldDisabled, v))
+// Redirect applies equality check predicate on the "redirect" field. It's identical to RedirectEQ.
+func Redirect(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldEQ(FieldRedirect, v))
 }
 
 // ServiceName applies equality check predicate on the "service_name" field. It's identical to ServiceNameEQ.
@@ -117,6 +113,11 @@ func ServiceName(v string) predicate.Menu {
 // Permission applies equality check predicate on the "permission" field. It's identical to PermissionEQ.
 func Permission(v string) predicate.Menu {
 	return predicate.Menu(sql.FieldEQ(FieldPermission, v))
+}
+
+// Disabled applies equality check predicate on the "disabled" field. It's identical to DisabledEQ.
+func Disabled(v bool) predicate.Menu {
+	return predicate.Menu(sql.FieldEQ(FieldDisabled, v))
 }
 
 // Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
@@ -319,26 +320,6 @@ func ParentIDNotIn(vs ...uint64) predicate.Menu {
 	return predicate.Menu(sql.FieldNotIn(FieldParentID, vs...))
 }
 
-// ParentIDGT applies the GT predicate on the "parent_id" field.
-func ParentIDGT(v uint64) predicate.Menu {
-	return predicate.Menu(sql.FieldGT(FieldParentID, v))
-}
-
-// ParentIDGTE applies the GTE predicate on the "parent_id" field.
-func ParentIDGTE(v uint64) predicate.Menu {
-	return predicate.Menu(sql.FieldGTE(FieldParentID, v))
-}
-
-// ParentIDLT applies the LT predicate on the "parent_id" field.
-func ParentIDLT(v uint64) predicate.Menu {
-	return predicate.Menu(sql.FieldLT(FieldParentID, v))
-}
-
-// ParentIDLTE applies the LTE predicate on the "parent_id" field.
-func ParentIDLTE(v uint64) predicate.Menu {
-	return predicate.Menu(sql.FieldLTE(FieldParentID, v))
-}
-
 // ParentIDIsNil applies the IsNil predicate on the "parent_id" field.
 func ParentIDIsNil() predicate.Menu {
 	return predicate.Menu(sql.FieldIsNull(FieldParentID))
@@ -349,44 +330,69 @@ func ParentIDNotNil() predicate.Menu {
 	return predicate.Menu(sql.FieldNotNull(FieldParentID))
 }
 
-// MenuLevelEQ applies the EQ predicate on the "menu_level" field.
-func MenuLevelEQ(v uint32) predicate.Menu {
-	return predicate.Menu(sql.FieldEQ(FieldMenuLevel, v))
+// NameEQ applies the EQ predicate on the "name" field.
+func NameEQ(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldEQ(FieldName, v))
 }
 
-// MenuLevelNEQ applies the NEQ predicate on the "menu_level" field.
-func MenuLevelNEQ(v uint32) predicate.Menu {
-	return predicate.Menu(sql.FieldNEQ(FieldMenuLevel, v))
+// NameNEQ applies the NEQ predicate on the "name" field.
+func NameNEQ(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldNEQ(FieldName, v))
 }
 
-// MenuLevelIn applies the In predicate on the "menu_level" field.
-func MenuLevelIn(vs ...uint32) predicate.Menu {
-	return predicate.Menu(sql.FieldIn(FieldMenuLevel, vs...))
+// NameIn applies the In predicate on the "name" field.
+func NameIn(vs ...string) predicate.Menu {
+	return predicate.Menu(sql.FieldIn(FieldName, vs...))
 }
 
-// MenuLevelNotIn applies the NotIn predicate on the "menu_level" field.
-func MenuLevelNotIn(vs ...uint32) predicate.Menu {
-	return predicate.Menu(sql.FieldNotIn(FieldMenuLevel, vs...))
+// NameNotIn applies the NotIn predicate on the "name" field.
+func NameNotIn(vs ...string) predicate.Menu {
+	return predicate.Menu(sql.FieldNotIn(FieldName, vs...))
 }
 
-// MenuLevelGT applies the GT predicate on the "menu_level" field.
-func MenuLevelGT(v uint32) predicate.Menu {
-	return predicate.Menu(sql.FieldGT(FieldMenuLevel, v))
+// NameGT applies the GT predicate on the "name" field.
+func NameGT(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldGT(FieldName, v))
 }
 
-// MenuLevelGTE applies the GTE predicate on the "menu_level" field.
-func MenuLevelGTE(v uint32) predicate.Menu {
-	return predicate.Menu(sql.FieldGTE(FieldMenuLevel, v))
+// NameGTE applies the GTE predicate on the "name" field.
+func NameGTE(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldGTE(FieldName, v))
 }
 
-// MenuLevelLT applies the LT predicate on the "menu_level" field.
-func MenuLevelLT(v uint32) predicate.Menu {
-	return predicate.Menu(sql.FieldLT(FieldMenuLevel, v))
+// NameLT applies the LT predicate on the "name" field.
+func NameLT(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldLT(FieldName, v))
 }
 
-// MenuLevelLTE applies the LTE predicate on the "menu_level" field.
-func MenuLevelLTE(v uint32) predicate.Menu {
-	return predicate.Menu(sql.FieldLTE(FieldMenuLevel, v))
+// NameLTE applies the LTE predicate on the "name" field.
+func NameLTE(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldLTE(FieldName, v))
+}
+
+// NameContains applies the Contains predicate on the "name" field.
+func NameContains(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldContains(FieldName, v))
+}
+
+// NameHasPrefix applies the HasPrefix predicate on the "name" field.
+func NameHasPrefix(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldHasPrefix(FieldName, v))
+}
+
+// NameHasSuffix applies the HasSuffix predicate on the "name" field.
+func NameHasSuffix(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldHasSuffix(FieldName, v))
+}
+
+// NameEqualFold applies the EqualFold predicate on the "name" field.
+func NameEqualFold(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldEqualFold(FieldName, v))
+}
+
+// NameContainsFold applies the ContainsFold predicate on the "name" field.
+func NameContainsFold(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldContainsFold(FieldName, v))
 }
 
 // MenuTypeEQ applies the EQ predicate on the "menu_type" field.
@@ -427,6 +433,46 @@ func MenuTypeLT(v uint32) predicate.Menu {
 // MenuTypeLTE applies the LTE predicate on the "menu_type" field.
 func MenuTypeLTE(v uint32) predicate.Menu {
 	return predicate.Menu(sql.FieldLTE(FieldMenuType, v))
+}
+
+// MenuLevelEQ applies the EQ predicate on the "menu_level" field.
+func MenuLevelEQ(v uint32) predicate.Menu {
+	return predicate.Menu(sql.FieldEQ(FieldMenuLevel, v))
+}
+
+// MenuLevelNEQ applies the NEQ predicate on the "menu_level" field.
+func MenuLevelNEQ(v uint32) predicate.Menu {
+	return predicate.Menu(sql.FieldNEQ(FieldMenuLevel, v))
+}
+
+// MenuLevelIn applies the In predicate on the "menu_level" field.
+func MenuLevelIn(vs ...uint32) predicate.Menu {
+	return predicate.Menu(sql.FieldIn(FieldMenuLevel, vs...))
+}
+
+// MenuLevelNotIn applies the NotIn predicate on the "menu_level" field.
+func MenuLevelNotIn(vs ...uint32) predicate.Menu {
+	return predicate.Menu(sql.FieldNotIn(FieldMenuLevel, vs...))
+}
+
+// MenuLevelGT applies the GT predicate on the "menu_level" field.
+func MenuLevelGT(v uint32) predicate.Menu {
+	return predicate.Menu(sql.FieldGT(FieldMenuLevel, v))
+}
+
+// MenuLevelGTE applies the GTE predicate on the "menu_level" field.
+func MenuLevelGTE(v uint32) predicate.Menu {
+	return predicate.Menu(sql.FieldGTE(FieldMenuLevel, v))
+}
+
+// MenuLevelLT applies the LT predicate on the "menu_level" field.
+func MenuLevelLT(v uint32) predicate.Menu {
+	return predicate.Menu(sql.FieldLT(FieldMenuLevel, v))
+}
+
+// MenuLevelLTE applies the LTE predicate on the "menu_level" field.
+func MenuLevelLTE(v uint32) predicate.Menu {
+	return predicate.Menu(sql.FieldLTE(FieldMenuLevel, v))
 }
 
 // PathEQ applies the EQ predicate on the "path" field.
@@ -504,146 +550,6 @@ func PathContainsFold(v string) predicate.Menu {
 	return predicate.Menu(sql.FieldContainsFold(FieldPath, v))
 }
 
-// NameEQ applies the EQ predicate on the "name" field.
-func NameEQ(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldEQ(FieldName, v))
-}
-
-// NameNEQ applies the NEQ predicate on the "name" field.
-func NameNEQ(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldNEQ(FieldName, v))
-}
-
-// NameIn applies the In predicate on the "name" field.
-func NameIn(vs ...string) predicate.Menu {
-	return predicate.Menu(sql.FieldIn(FieldName, vs...))
-}
-
-// NameNotIn applies the NotIn predicate on the "name" field.
-func NameNotIn(vs ...string) predicate.Menu {
-	return predicate.Menu(sql.FieldNotIn(FieldName, vs...))
-}
-
-// NameGT applies the GT predicate on the "name" field.
-func NameGT(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldGT(FieldName, v))
-}
-
-// NameGTE applies the GTE predicate on the "name" field.
-func NameGTE(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldGTE(FieldName, v))
-}
-
-// NameLT applies the LT predicate on the "name" field.
-func NameLT(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldLT(FieldName, v))
-}
-
-// NameLTE applies the LTE predicate on the "name" field.
-func NameLTE(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldLTE(FieldName, v))
-}
-
-// NameContains applies the Contains predicate on the "name" field.
-func NameContains(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldContains(FieldName, v))
-}
-
-// NameHasPrefix applies the HasPrefix predicate on the "name" field.
-func NameHasPrefix(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldHasPrefix(FieldName, v))
-}
-
-// NameHasSuffix applies the HasSuffix predicate on the "name" field.
-func NameHasSuffix(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldHasSuffix(FieldName, v))
-}
-
-// NameEqualFold applies the EqualFold predicate on the "name" field.
-func NameEqualFold(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldEqualFold(FieldName, v))
-}
-
-// NameContainsFold applies the ContainsFold predicate on the "name" field.
-func NameContainsFold(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldContainsFold(FieldName, v))
-}
-
-// RedirectEQ applies the EQ predicate on the "redirect" field.
-func RedirectEQ(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldEQ(FieldRedirect, v))
-}
-
-// RedirectNEQ applies the NEQ predicate on the "redirect" field.
-func RedirectNEQ(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldNEQ(FieldRedirect, v))
-}
-
-// RedirectIn applies the In predicate on the "redirect" field.
-func RedirectIn(vs ...string) predicate.Menu {
-	return predicate.Menu(sql.FieldIn(FieldRedirect, vs...))
-}
-
-// RedirectNotIn applies the NotIn predicate on the "redirect" field.
-func RedirectNotIn(vs ...string) predicate.Menu {
-	return predicate.Menu(sql.FieldNotIn(FieldRedirect, vs...))
-}
-
-// RedirectGT applies the GT predicate on the "redirect" field.
-func RedirectGT(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldGT(FieldRedirect, v))
-}
-
-// RedirectGTE applies the GTE predicate on the "redirect" field.
-func RedirectGTE(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldGTE(FieldRedirect, v))
-}
-
-// RedirectLT applies the LT predicate on the "redirect" field.
-func RedirectLT(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldLT(FieldRedirect, v))
-}
-
-// RedirectLTE applies the LTE predicate on the "redirect" field.
-func RedirectLTE(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldLTE(FieldRedirect, v))
-}
-
-// RedirectContains applies the Contains predicate on the "redirect" field.
-func RedirectContains(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldContains(FieldRedirect, v))
-}
-
-// RedirectHasPrefix applies the HasPrefix predicate on the "redirect" field.
-func RedirectHasPrefix(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldHasPrefix(FieldRedirect, v))
-}
-
-// RedirectHasSuffix applies the HasSuffix predicate on the "redirect" field.
-func RedirectHasSuffix(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldHasSuffix(FieldRedirect, v))
-}
-
-// RedirectIsNil applies the IsNil predicate on the "redirect" field.
-func RedirectIsNil() predicate.Menu {
-	return predicate.Menu(sql.FieldIsNull(FieldRedirect))
-}
-
-// RedirectNotNil applies the NotNil predicate on the "redirect" field.
-func RedirectNotNil() predicate.Menu {
-	return predicate.Menu(sql.FieldNotNull(FieldRedirect))
-}
-
-// RedirectEqualFold applies the EqualFold predicate on the "redirect" field.
-func RedirectEqualFold(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldEqualFold(FieldRedirect, v))
-}
-
-// RedirectContainsFold applies the ContainsFold predicate on the "redirect" field.
-func RedirectContainsFold(v string) predicate.Menu {
-	return predicate.Menu(sql.FieldContainsFold(FieldRedirect, v))
-}
-
 // ComponentEQ applies the EQ predicate on the "component" field.
 func ComponentEQ(v string) predicate.Menu {
 	return predicate.Menu(sql.FieldEQ(FieldComponent, v))
@@ -719,24 +625,79 @@ func ComponentContainsFold(v string) predicate.Menu {
 	return predicate.Menu(sql.FieldContainsFold(FieldComponent, v))
 }
 
-// DisabledEQ applies the EQ predicate on the "disabled" field.
-func DisabledEQ(v bool) predicate.Menu {
-	return predicate.Menu(sql.FieldEQ(FieldDisabled, v))
+// RedirectEQ applies the EQ predicate on the "redirect" field.
+func RedirectEQ(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldEQ(FieldRedirect, v))
 }
 
-// DisabledNEQ applies the NEQ predicate on the "disabled" field.
-func DisabledNEQ(v bool) predicate.Menu {
-	return predicate.Menu(sql.FieldNEQ(FieldDisabled, v))
+// RedirectNEQ applies the NEQ predicate on the "redirect" field.
+func RedirectNEQ(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldNEQ(FieldRedirect, v))
 }
 
-// DisabledIsNil applies the IsNil predicate on the "disabled" field.
-func DisabledIsNil() predicate.Menu {
-	return predicate.Menu(sql.FieldIsNull(FieldDisabled))
+// RedirectIn applies the In predicate on the "redirect" field.
+func RedirectIn(vs ...string) predicate.Menu {
+	return predicate.Menu(sql.FieldIn(FieldRedirect, vs...))
 }
 
-// DisabledNotNil applies the NotNil predicate on the "disabled" field.
-func DisabledNotNil() predicate.Menu {
-	return predicate.Menu(sql.FieldNotNull(FieldDisabled))
+// RedirectNotIn applies the NotIn predicate on the "redirect" field.
+func RedirectNotIn(vs ...string) predicate.Menu {
+	return predicate.Menu(sql.FieldNotIn(FieldRedirect, vs...))
+}
+
+// RedirectGT applies the GT predicate on the "redirect" field.
+func RedirectGT(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldGT(FieldRedirect, v))
+}
+
+// RedirectGTE applies the GTE predicate on the "redirect" field.
+func RedirectGTE(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldGTE(FieldRedirect, v))
+}
+
+// RedirectLT applies the LT predicate on the "redirect" field.
+func RedirectLT(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldLT(FieldRedirect, v))
+}
+
+// RedirectLTE applies the LTE predicate on the "redirect" field.
+func RedirectLTE(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldLTE(FieldRedirect, v))
+}
+
+// RedirectContains applies the Contains predicate on the "redirect" field.
+func RedirectContains(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldContains(FieldRedirect, v))
+}
+
+// RedirectHasPrefix applies the HasPrefix predicate on the "redirect" field.
+func RedirectHasPrefix(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldHasPrefix(FieldRedirect, v))
+}
+
+// RedirectHasSuffix applies the HasSuffix predicate on the "redirect" field.
+func RedirectHasSuffix(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldHasSuffix(FieldRedirect, v))
+}
+
+// RedirectIsNil applies the IsNil predicate on the "redirect" field.
+func RedirectIsNil() predicate.Menu {
+	return predicate.Menu(sql.FieldIsNull(FieldRedirect))
+}
+
+// RedirectNotNil applies the NotNil predicate on the "redirect" field.
+func RedirectNotNil() predicate.Menu {
+	return predicate.Menu(sql.FieldNotNull(FieldRedirect))
+}
+
+// RedirectEqualFold applies the EqualFold predicate on the "redirect" field.
+func RedirectEqualFold(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldEqualFold(FieldRedirect, v))
+}
+
+// RedirectContainsFold applies the ContainsFold predicate on the "redirect" field.
+func RedirectContainsFold(v string) predicate.Menu {
+	return predicate.Menu(sql.FieldContainsFold(FieldRedirect, v))
 }
 
 // ServiceNameEQ applies the EQ predicate on the "service_name" field.
@@ -887,6 +848,26 @@ func PermissionEqualFold(v string) predicate.Menu {
 // PermissionContainsFold applies the ContainsFold predicate on the "permission" field.
 func PermissionContainsFold(v string) predicate.Menu {
 	return predicate.Menu(sql.FieldContainsFold(FieldPermission, v))
+}
+
+// DisabledEQ applies the EQ predicate on the "disabled" field.
+func DisabledEQ(v bool) predicate.Menu {
+	return predicate.Menu(sql.FieldEQ(FieldDisabled, v))
+}
+
+// DisabledNEQ applies the NEQ predicate on the "disabled" field.
+func DisabledNEQ(v bool) predicate.Menu {
+	return predicate.Menu(sql.FieldNEQ(FieldDisabled, v))
+}
+
+// DisabledIsNil applies the IsNil predicate on the "disabled" field.
+func DisabledIsNil() predicate.Menu {
+	return predicate.Menu(sql.FieldIsNull(FieldDisabled))
+}
+
+// DisabledNotNil applies the NotNil predicate on the "disabled" field.
+func DisabledNotNil() predicate.Menu {
+	return predicate.Menu(sql.FieldNotNull(FieldDisabled))
 }
 
 // TitleEQ applies the EQ predicate on the "title" field.
@@ -1357,6 +1338,75 @@ func RealPathEqualFold(v string) predicate.Menu {
 // RealPathContainsFold applies the ContainsFold predicate on the "real_path" field.
 func RealPathContainsFold(v string) predicate.Menu {
 	return predicate.Menu(sql.FieldContainsFold(FieldRealPath, v))
+}
+
+// HasRoles applies the HasEdge predicate on the "roles" edge.
+func HasRoles() predicate.Menu {
+	return predicate.Menu(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, RolesTable, RolesPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRolesWith applies the HasEdge predicate on the "roles" edge with a given conditions (other predicates).
+func HasRolesWith(preds ...predicate.Role) predicate.Menu {
+	return predicate.Menu(func(s *sql.Selector) {
+		step := newRolesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasParent applies the HasEdge predicate on the "parent" edge.
+func HasParent() predicate.Menu {
+	return predicate.Menu(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ParentTable, ParentColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasParentWith applies the HasEdge predicate on the "parent" edge with a given conditions (other predicates).
+func HasParentWith(preds ...predicate.Menu) predicate.Menu {
+	return predicate.Menu(func(s *sql.Selector) {
+		step := newParentStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasChildren applies the HasEdge predicate on the "children" edge.
+func HasChildren() predicate.Menu {
+	return predicate.Menu(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ChildrenTable, ChildrenColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasChildrenWith applies the HasEdge predicate on the "children" edge with a given conditions (other predicates).
+func HasChildrenWith(preds ...predicate.Menu) predicate.Menu {
+	return predicate.Menu(func(s *sql.Selector) {
+		step := newChildrenStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

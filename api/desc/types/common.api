@@ -1,22 +1,98 @@
 syntax = "v1"
 
+// 通用请求
+type (
+    // ID请求
+    IDRequest {
+        // ID
+        Id uint64 `json:"id" validate:"number"`
+    }
+
+    // 路径ID请求
+    IDPathRequest {
+        // ID
+        Id uint64 `path:"id"`
+    }
+
+    // ID数组请求
+    IDsRequest {
+        // ID列表
+        Ids []uint64 `json:"ids"`
+    }
+
+    // UUID请求
+    UUIDRequest {
+        // ID
+        Id string `json:"id" validate:"len=36"`
+    }
+
+    // UUID数组请求
+    UUIDsRequest {
+        // ID列表
+        Ids []string `json:"ids"`
+    }
+)
+
 // 基础信息
-type BaseInfo {
-    // ID
-    Id *uint64 `json:"id,optional"`
+type (
+    // 基础ID信息
+    BaseIDInfo {
+        // ID
+        Id *uint64 `json:"id,optional"`
 
-    // 创建时间
-    CreatedAt *int64 `json:"createdAt,optional"`
+        // 创建时间
+        CreatedAt *int64 `json:"createdAt,optional"`
 
-    // 更新时间
-    UpdatedAt *int64 `json:"updatedAt,optional"`
-}
+        // 更新时间
+        UpdatedAt *int64 `json:"updatedAt,optional"`
+    }
+    // 基础UUID信息
+    BaseUUIDInfo {
+        // ID
+        Id *string `json:"id,optional"`
 
-// 基础无数据响应
-type BaseResponse {
-    // 错误码
-    Code int `json:"code"`
+        // 创建时间
+        CreatedAt *int64 `json:"createdAt,optional"`
 
-    // 提示信息
-    Msg string `json:"msg"`
-}
+        // 更新时间
+        UpdatedAt *int64 `json:"updatedAt,optional"`
+    }
+)
+
+// 公共响应
+type (
+    // 基础无数据响应
+    BaseResponse {
+        // 错误码
+        Code int `json:"code"`
+
+        // 提示信息
+        Msg string `json:"msg"`
+    }
+
+    // 基础带数据响应
+    BaseDataResponse {
+        BaseResponse
+
+        // 数据
+        Data string `json:"data,omitempty"`
+    }
+)
+
+// 分页
+type (
+    // 分页请求
+    PageRequest {
+        // 页码
+        Page uint64 `json:"page" validate:"required,number,gt=0"`
+
+        // 每页数量
+        PageSize uint64 `json:"pageSize" validate:"required,number,lt=100000"`
+    }
+
+    // 分页信息
+    PageInfo {
+        // 数据总数
+        Total uint64 `json:"total"`
+    }
+)

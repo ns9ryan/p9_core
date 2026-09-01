@@ -3,7 +3,12 @@
 
 package types
 
-type BaseInfo struct {
+type BaseDataResponse struct {
+	BaseResponse
+	Data string `json:"data,omitempty"`
+}
+
+type BaseIDInfo struct {
 	Id        *uint64 `json:"id,optional"`
 	CreatedAt *int64  `json:"createdAt,optional"`
 	UpdatedAt *int64  `json:"updatedAt,optional"`
@@ -14,20 +19,67 @@ type BaseResponse struct {
 	Msg  string `json:"msg"`
 }
 
+type BaseUUIDInfo struct {
+	Id        *string `json:"id,optional"`
+	CreatedAt *int64  `json:"createdAt,optional"`
+	UpdatedAt *int64  `json:"updatedAt,optional"`
+}
+
 type CreateRoleRequest struct {
-	Status *uint32 `json:"status,optional"`
-	Name   string  `json:"name" validate:"max=15,alphanum"`
-	Code   string  `json:"code"`
-	Remark *string `json:"remark,optional"`
-	Sort   *uint32 `json:"sort,optional"`
+	Status *uint32 `json:"status,optional" validate:"omitempty,lt=20"`
+	Name   *string `json:"name,optional" validate:"omitempty,max=30"`
+	Code   *string `json:"code,optional" validate:"omitempty,max=15,alphanum"`
+	Remark *string `json:"remark,optional" validate:"omitempty,max=200"`
+	Sort   *uint32 `json:"sort,optional" validate:"omitempty,lt=10000"`
 }
 
 type CreateRoleResponse struct {
 	BaseResponse
 }
 
+type DeleteRoleResponse struct {
+	BaseResponse
+}
+
+type GetRoleResponse struct {
+	BaseResponse
+	Data RoleInfo `json:"data"`
+}
+
+type IDPathRequest struct {
+	Id uint64 `path:"id"`
+}
+
+type IDRequest struct {
+	Id uint64 `json:"id" validate:"number"`
+}
+
+type IDsRequest struct {
+	Ids []uint64 `json:"ids"`
+}
+
 type InitDatabaseResponse struct {
 	BaseResponse
+}
+
+type ListRolesRequest struct {
+	PageRequest
+	Name *string `json:"name,optional"`
+}
+
+type ListRolesResponse struct {
+	BaseResponse
+	PageInfo
+	List []RoleInfo `json:"list"`
+}
+
+type PageInfo struct {
+	Total uint64 `json:"total"`
+}
+
+type PageRequest struct {
+	Page     uint64 `json:"page" validate:"required,number,gt=0"`
+	PageSize uint64 `json:"pageSize" validate:"required,number,lt=100000"`
 }
 
 type PingResponse struct {
@@ -35,11 +87,32 @@ type PingResponse struct {
 }
 
 type RoleInfo struct {
-	BaseInfo
+	BaseIDInfo
 	Trans  string  `json:"trans,optional"`
 	Status *uint32 `json:"status,optional"`
 	Name   *string `json:"name,optional"`
 	Code   *string `json:"code,optional"`
 	Remark *string `json:"remark,optional"`
 	Sort   *uint32 `json:"sort,optional"`
+}
+
+type UUIDRequest struct {
+	Id string `json:"id" validate:"len=36"`
+}
+
+type UUIDsRequest struct {
+	Ids []string `json:"ids"`
+}
+
+type UpdateRoleRequest struct {
+	IDRequest
+	Status *uint32 `json:"status,optional" validate:"omitempty,lt=20"`
+	Name   *string `json:"name,optional" validate:"omitempty,max=30"`
+	Code   *string `json:"code,optional" validate:"omitempty,max=15,alphanum"`
+	Remark *string `json:"remark,optional" validate:"omitempty,max=200"`
+	Sort   *uint32 `json:"sort,optional" validate:"omitempty,lt=10000"`
+}
+
+type UpdateRoleResponse struct {
+	BaseResponse
 }

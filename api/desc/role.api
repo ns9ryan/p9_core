@@ -6,7 +6,7 @@ import "types/common.api"
 type (
     // 角色信息
     RoleInfo {
-        BaseInfo
+        BaseIDInfo
 
         // 展示名称
         Trans string `json:"trans,optional"`
@@ -27,27 +27,83 @@ type (
         Sort *uint32 `json:"sort,optional"`
     }
 
-        // 创建角色请求
+    // 创建角色请求
     CreateRoleRequest {
         // 状态
-        Status *uint32 `json:"status,optional"`
+        Status *uint32 `json:"status,optional" validate:"omitempty,lt=20"`
 
         // 角色名称
-        Name string `json:"name" validate:"max=15,alphanum"`
+        Name *string `json:"name,optional" validate:"omitempty,max=30"`
 
         // 角色编码
-        Code string `json:"code"`
+        Code *string `json:"code,optional" validate:"omitempty,max=15,alphanum"`
 
         // 备注
-        Remark *string `json:"remark,optional"`
+        Remark *string `json:"remark,optional" validate:"omitempty,max=200"`
 
         // 排序
-        Sort *uint32 `json:"sort,optional"`
+        Sort *uint32 `json:"sort,optional" validate:"omitempty,lt=10000"`
     }
 
-        // 创建角色响应
+    // 创建角色响应
     CreateRoleResponse {
         BaseResponse
+    }
+
+    // 更新角色请求
+    UpdateRoleRequest {
+        IDRequest
+
+        // 状态
+        Status *uint32 `json:"status,optional" validate:"omitempty,lt=20"`
+
+        // 角色名称
+        Name *string `json:"name,optional" validate:"omitempty,max=30"`
+
+        // 角色编码
+        Code *string `json:"code,optional" validate:"omitempty,max=15,alphanum"`
+
+        // 备注
+        Remark *string `json:"remark,optional" validate:"omitempty,max=200"`
+
+        // 排序
+        Sort *uint32 `json:"sort,optional" validate:"omitempty,lt=10000"`
+    }
+
+    // 更新角色响应
+    UpdateRoleResponse {
+        BaseResponse
+    }
+
+
+    // 删除角色响应
+    DeleteRoleResponse {
+        BaseResponse
+    }
+
+    // 角色列表请求
+    ListRolesRequest {
+        PageRequest
+
+        // 角色名称
+        Name *string `json:"name,optional"`
+    }
+
+    // 角色列表响应
+    ListRolesResponse {
+        BaseResponse
+        PageInfo
+
+        // 角色列表
+        List []RoleInfo `json:"list"`
+    }
+
+    // 角色详情响应
+    GetRoleResponse {
+        BaseResponse
+
+        // 角色信息
+        Data RoleInfo `json:"data"`
     }
 )
 
@@ -58,4 +114,20 @@ service core {
     // 创建角色
     @handler Create
     post /role/create (CreateRoleRequest) returns (CreateRoleResponse)
+
+    // 更新角色
+    @handler Update
+    post /role/update (UpdateRoleRequest) returns (UpdateRoleResponse)
+
+    // 删除角色
+    @handler Delete
+    post /role/delete (IDsRequest) returns (DeleteRoleResponse)
+
+    // 获取角色列表
+    @handler List
+    post /role/list (ListRolesRequest) returns (ListRolesResponse)
+
+    // 获取角色详情
+    @handler Get
+    post /role (IDRequest) returns (GetRoleResponse)
 }

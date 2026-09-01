@@ -16,7 +16,7 @@ type BaseResponse struct {
 
 type CreateRoleRequest struct {
 	Status *uint32 `json:"status,optional"`
-	Name   string  `json:"name"`
+	Name   string  `json:"name" validate:"max=15,alphanum"`
 	Code   string  `json:"code"`
 	Remark *string `json:"remark,optional"`
 	Sort   *uint32 `json:"sort,optional"`

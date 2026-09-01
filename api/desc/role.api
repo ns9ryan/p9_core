@@ -33,7 +33,7 @@ type (
         Status *uint32 `json:"status,optional"`
 
         // 角色名称
-        Name string `json:"name"`
+        Name string `json:"name" validate:"max=15,alphanum"`
 
         // 角色编码
         Code string `json:"code"`

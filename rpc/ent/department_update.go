@@ -37,14 +37,14 @@ func (_u *DepartmentUpdate) SetUpdatedAt(v time.Time) *DepartmentUpdate {
 }
 
 // SetStatus sets the "status" field.
-func (_u *DepartmentUpdate) SetStatus(v uint8) *DepartmentUpdate {
+func (_u *DepartmentUpdate) SetStatus(v uint32) *DepartmentUpdate {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *DepartmentUpdate) SetNillableStatus(v *uint8) *DepartmentUpdate {
+func (_u *DepartmentUpdate) SetNillableStatus(v *uint32) *DepartmentUpdate {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -52,14 +52,8 @@ func (_u *DepartmentUpdate) SetNillableStatus(v *uint8) *DepartmentUpdate {
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *DepartmentUpdate) AddStatus(v int8) *DepartmentUpdate {
+func (_u *DepartmentUpdate) AddStatus(v int32) *DepartmentUpdate {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *DepartmentUpdate) ClearStatus() *DepartmentUpdate {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -355,13 +349,10 @@ func (_u *DepartmentUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 		_spec.SetField(department.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(department.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(department.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(department.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(department.FieldStatus, field.TypeUint8)
+		_spec.AddField(department.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.Sort(); ok {
 		_spec.SetField(department.FieldSort, field.TypeUint32, value)
@@ -548,14 +539,14 @@ func (_u *DepartmentUpdateOne) SetUpdatedAt(v time.Time) *DepartmentUpdateOne {
 }
 
 // SetStatus sets the "status" field.
-func (_u *DepartmentUpdateOne) SetStatus(v uint8) *DepartmentUpdateOne {
+func (_u *DepartmentUpdateOne) SetStatus(v uint32) *DepartmentUpdateOne {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *DepartmentUpdateOne) SetNillableStatus(v *uint8) *DepartmentUpdateOne {
+func (_u *DepartmentUpdateOne) SetNillableStatus(v *uint32) *DepartmentUpdateOne {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -563,14 +554,8 @@ func (_u *DepartmentUpdateOne) SetNillableStatus(v *uint8) *DepartmentUpdateOne 
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *DepartmentUpdateOne) AddStatus(v int8) *DepartmentUpdateOne {
+func (_u *DepartmentUpdateOne) AddStatus(v int32) *DepartmentUpdateOne {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *DepartmentUpdateOne) ClearStatus() *DepartmentUpdateOne {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -896,13 +881,10 @@ func (_u *DepartmentUpdateOne) sqlSave(ctx context.Context) (_node *Department, 
 		_spec.SetField(department.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(department.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(department.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(department.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(department.FieldStatus, field.TypeUint8)
+		_spec.AddField(department.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.Sort(); ok {
 		_spec.SetField(department.FieldSort, field.TypeUint32, value)

@@ -100,7 +100,7 @@ func init() {
 	// departmentDescStatus is the schema descriptor for status field.
 	departmentDescStatus := departmentMixinFields1[0].Descriptor()
 	// department.DefaultStatus holds the default value on creation for the status field.
-	department.DefaultStatus = departmentDescStatus.Default.(uint8)
+	department.DefaultStatus = departmentDescStatus.Default.(uint32)
 	// departmentDescSort is the schema descriptor for sort field.
 	departmentDescSort := departmentMixinFields2[0].Descriptor()
 	// department.DefaultSort holds the default value on creation for the sort field.
@@ -129,7 +129,7 @@ func init() {
 	// dictionaryDescStatus is the schema descriptor for status field.
 	dictionaryDescStatus := dictionaryMixinFields1[0].Descriptor()
 	// dictionary.DefaultStatus holds the default value on creation for the status field.
-	dictionary.DefaultStatus = dictionaryDescStatus.Default.(uint8)
+	dictionary.DefaultStatus = dictionaryDescStatus.Default.(uint32)
 	// dictionaryDescIsPublic is the schema descriptor for is_public field.
 	dictionaryDescIsPublic := dictionaryFields[3].Descriptor()
 	// dictionary.DefaultIsPublic holds the default value on creation for the is_public field.
@@ -156,7 +156,7 @@ func init() {
 	// dictionarydetailDescStatus is the schema descriptor for status field.
 	dictionarydetailDescStatus := dictionarydetailMixinFields1[0].Descriptor()
 	// dictionarydetail.DefaultStatus holds the default value on creation for the status field.
-	dictionarydetail.DefaultStatus = dictionarydetailDescStatus.Default.(uint8)
+	dictionarydetail.DefaultStatus = dictionarydetailDescStatus.Default.(uint32)
 	// dictionarydetailDescSort is the schema descriptor for sort field.
 	dictionarydetailDescSort := dictionarydetailMixinFields2[0].Descriptor()
 	// dictionarydetail.DefaultSort holds the default value on creation for the sort field.
@@ -283,7 +283,7 @@ func init() {
 	// positionDescStatus is the schema descriptor for status field.
 	positionDescStatus := positionMixinFields1[0].Descriptor()
 	// position.DefaultStatus holds the default value on creation for the status field.
-	position.DefaultStatus = positionDescStatus.Default.(uint8)
+	position.DefaultStatus = positionDescStatus.Default.(uint32)
 	// positionDescSort is the schema descriptor for sort field.
 	positionDescSort := positionMixinFields2[0].Descriptor()
 	// position.DefaultSort holds the default value on creation for the sort field.
@@ -310,11 +310,19 @@ func init() {
 	// roleDescStatus is the schema descriptor for status field.
 	roleDescStatus := roleMixinFields1[0].Descriptor()
 	// role.DefaultStatus holds the default value on creation for the status field.
-	role.DefaultStatus = roleDescStatus.Default.(uint8)
+	role.DefaultStatus = roleDescStatus.Default.(uint32)
 	// roleDescSort is the schema descriptor for sort field.
 	roleDescSort := roleMixinFields2[0].Descriptor()
 	// role.DefaultSort holds the default value on creation for the sort field.
 	role.DefaultSort = roleDescSort.Default.(uint32)
+	// roleDescName is the schema descriptor for name field.
+	roleDescName := roleFields[0].Descriptor()
+	// role.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	role.NameValidator = roleDescName.Validators[0].(func(string) error)
+	// roleDescCode is the schema descriptor for code field.
+	roleDescCode := roleFields[1].Descriptor()
+	// role.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	role.CodeValidator = roleDescCode.Validators[0].(func(string) error)
 	// roleDescRemark is the schema descriptor for remark field.
 	roleDescRemark := roleFields[2].Descriptor()
 	// role.DefaultRemark holds the default value on creation for the remark field.
@@ -339,7 +347,7 @@ func init() {
 	// tokenDescStatus is the schema descriptor for status field.
 	tokenDescStatus := tokenMixinFields1[0].Descriptor()
 	// token.DefaultStatus holds the default value on creation for the status field.
-	token.DefaultStatus = tokenDescStatus.Default.(uint8)
+	token.DefaultStatus = tokenDescStatus.Default.(uint32)
 	// tokenDescUsername is the schema descriptor for username field.
 	tokenDescUsername := tokenFields[1].Descriptor()
 	// token.DefaultUsername holds the default value on creation for the username field.
@@ -372,7 +380,7 @@ func init() {
 	// userDescStatus is the schema descriptor for status field.
 	userDescStatus := userMixinFields1[0].Descriptor()
 	// user.DefaultStatus holds the default value on creation for the status field.
-	user.DefaultStatus = userDescStatus.Default.(uint8)
+	user.DefaultStatus = userDescStatus.Default.(uint32)
 	// userDescHomePath is the schema descriptor for home_path field.
 	userDescHomePath := userFields[4].Descriptor()
 	// user.DefaultHomePath holds the default value on creation for the home_path field.

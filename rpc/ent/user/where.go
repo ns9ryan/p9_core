@@ -67,7 +67,7 @@ func UpdatedAt(v time.Time) predicate.User {
 }
 
 // Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
-func Status(v uint8) predicate.User {
+func Status(v uint32) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldStatus, v))
 }
 
@@ -207,53 +207,43 @@ func UpdatedAtLTE(v time.Time) predicate.User {
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.
-func StatusEQ(v uint8) predicate.User {
+func StatusEQ(v uint32) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldStatus, v))
 }
 
 // StatusNEQ applies the NEQ predicate on the "status" field.
-func StatusNEQ(v uint8) predicate.User {
+func StatusNEQ(v uint32) predicate.User {
 	return predicate.User(sql.FieldNEQ(FieldStatus, v))
 }
 
 // StatusIn applies the In predicate on the "status" field.
-func StatusIn(vs ...uint8) predicate.User {
+func StatusIn(vs ...uint32) predicate.User {
 	return predicate.User(sql.FieldIn(FieldStatus, vs...))
 }
 
 // StatusNotIn applies the NotIn predicate on the "status" field.
-func StatusNotIn(vs ...uint8) predicate.User {
+func StatusNotIn(vs ...uint32) predicate.User {
 	return predicate.User(sql.FieldNotIn(FieldStatus, vs...))
 }
 
 // StatusGT applies the GT predicate on the "status" field.
-func StatusGT(v uint8) predicate.User {
+func StatusGT(v uint32) predicate.User {
 	return predicate.User(sql.FieldGT(FieldStatus, v))
 }
 
 // StatusGTE applies the GTE predicate on the "status" field.
-func StatusGTE(v uint8) predicate.User {
+func StatusGTE(v uint32) predicate.User {
 	return predicate.User(sql.FieldGTE(FieldStatus, v))
 }
 
 // StatusLT applies the LT predicate on the "status" field.
-func StatusLT(v uint8) predicate.User {
+func StatusLT(v uint32) predicate.User {
 	return predicate.User(sql.FieldLT(FieldStatus, v))
 }
 
 // StatusLTE applies the LTE predicate on the "status" field.
-func StatusLTE(v uint8) predicate.User {
+func StatusLTE(v uint32) predicate.User {
 	return predicate.User(sql.FieldLTE(FieldStatus, v))
-}
-
-// StatusIsNil applies the IsNil predicate on the "status" field.
-func StatusIsNil() predicate.User {
-	return predicate.User(sql.FieldIsNull(FieldStatus))
-}
-
-// StatusNotNil applies the NotNil predicate on the "status" field.
-func StatusNotNil() predicate.User {
-	return predicate.User(sql.FieldNotNull(FieldStatus))
 }
 
 // DeletedAtEQ applies the EQ predicate on the "deleted_at" field.

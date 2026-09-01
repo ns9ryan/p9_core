@@ -50,13 +50,13 @@ func (_c *DictionaryDetailCreate) SetNillableUpdatedAt(v *time.Time) *Dictionary
 }
 
 // SetStatus sets the "status" field.
-func (_c *DictionaryDetailCreate) SetStatus(v uint8) *DictionaryDetailCreate {
+func (_c *DictionaryDetailCreate) SetStatus(v uint32) *DictionaryDetailCreate {
 	_c.mutation.SetStatus(v)
 	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_c *DictionaryDetailCreate) SetNillableStatus(v *uint8) *DictionaryDetailCreate {
+func (_c *DictionaryDetailCreate) SetNillableStatus(v *uint32) *DictionaryDetailCreate {
 	if v != nil {
 		_c.SetStatus(*v)
 	}
@@ -195,6 +195,9 @@ func (_c *DictionaryDetailCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "DictionaryDetail.updated_at"`)}
 	}
+	if _, ok := _c.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "DictionaryDetail.status"`)}
+	}
 	if _, ok := _c.mutation.Sort(); !ok {
 		return &ValidationError{Name: "sort", err: errors.New(`ent: missing required field "DictionaryDetail.sort"`)}
 	}
@@ -248,7 +251,7 @@ func (_c *DictionaryDetailCreate) createSpec() (*DictionaryDetail, *sqlgraph.Cre
 		_node.UpdatedAt = value
 	}
 	if value, ok := _c.mutation.Status(); ok {
-		_spec.SetField(dictionarydetail.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(dictionarydetail.FieldStatus, field.TypeUint32, value)
 		_node.Status = value
 	}
 	if value, ok := _c.mutation.Sort(); ok {

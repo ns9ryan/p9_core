@@ -23,7 +23,7 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 	}
 }
 
-// 更新角色
+// Update 更新角色
 func (l *UpdateLogic) Update(in *role.UpdateRoleRequest) (*role.UpdateRoleResponse, error) {
 	// todo: add your logic here and delete this line
 

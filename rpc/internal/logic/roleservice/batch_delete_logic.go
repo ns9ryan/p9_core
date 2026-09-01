@@ -23,7 +23,7 @@ func NewBatchDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Batch
 	}
 }
 
-// 批量删除角色
+// BatchDelete 批量删除角色
 func (l *BatchDeleteLogic) BatchDelete(in *role.BatchDeleteRolesRequest) (*role.BatchDeleteRolesResponse, error) {
 	// todo: add your logic here and delete this line
 

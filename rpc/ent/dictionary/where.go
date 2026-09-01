@@ -66,7 +66,7 @@ func UpdatedAt(v time.Time) predicate.Dictionary {
 }
 
 // Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
-func Status(v uint8) predicate.Dictionary {
+func Status(v uint32) predicate.Dictionary {
 	return predicate.Dictionary(sql.FieldEQ(FieldStatus, v))
 }
 
@@ -171,53 +171,43 @@ func UpdatedAtLTE(v time.Time) predicate.Dictionary {
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.
-func StatusEQ(v uint8) predicate.Dictionary {
+func StatusEQ(v uint32) predicate.Dictionary {
 	return predicate.Dictionary(sql.FieldEQ(FieldStatus, v))
 }
 
 // StatusNEQ applies the NEQ predicate on the "status" field.
-func StatusNEQ(v uint8) predicate.Dictionary {
+func StatusNEQ(v uint32) predicate.Dictionary {
 	return predicate.Dictionary(sql.FieldNEQ(FieldStatus, v))
 }
 
 // StatusIn applies the In predicate on the "status" field.
-func StatusIn(vs ...uint8) predicate.Dictionary {
+func StatusIn(vs ...uint32) predicate.Dictionary {
 	return predicate.Dictionary(sql.FieldIn(FieldStatus, vs...))
 }
 
 // StatusNotIn applies the NotIn predicate on the "status" field.
-func StatusNotIn(vs ...uint8) predicate.Dictionary {
+func StatusNotIn(vs ...uint32) predicate.Dictionary {
 	return predicate.Dictionary(sql.FieldNotIn(FieldStatus, vs...))
 }
 
 // StatusGT applies the GT predicate on the "status" field.
-func StatusGT(v uint8) predicate.Dictionary {
+func StatusGT(v uint32) predicate.Dictionary {
 	return predicate.Dictionary(sql.FieldGT(FieldStatus, v))
 }
 
 // StatusGTE applies the GTE predicate on the "status" field.
-func StatusGTE(v uint8) predicate.Dictionary {
+func StatusGTE(v uint32) predicate.Dictionary {
 	return predicate.Dictionary(sql.FieldGTE(FieldStatus, v))
 }
 
 // StatusLT applies the LT predicate on the "status" field.
-func StatusLT(v uint8) predicate.Dictionary {
+func StatusLT(v uint32) predicate.Dictionary {
 	return predicate.Dictionary(sql.FieldLT(FieldStatus, v))
 }
 
 // StatusLTE applies the LTE predicate on the "status" field.
-func StatusLTE(v uint8) predicate.Dictionary {
+func StatusLTE(v uint32) predicate.Dictionary {
 	return predicate.Dictionary(sql.FieldLTE(FieldStatus, v))
-}
-
-// StatusIsNil applies the IsNil predicate on the "status" field.
-func StatusIsNil() predicate.Dictionary {
-	return predicate.Dictionary(sql.FieldIsNull(FieldStatus))
-}
-
-// StatusNotNil applies the NotNil predicate on the "status" field.
-func StatusNotNil() predicate.Dictionary {
-	return predicate.Dictionary(sql.FieldNotNull(FieldStatus))
 }
 
 // TitleEQ applies the EQ predicate on the "title" field.

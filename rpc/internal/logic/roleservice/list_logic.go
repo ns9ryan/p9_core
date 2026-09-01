@@ -23,7 +23,7 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 	}
 }
 
-// 获取角色列表
+// List 获取角色列表
 func (l *ListLogic) List(in *role.ListRolesRequest) (*role.ListRolesResponse, error) {
 	// todo: add your logic here and delete this line
 

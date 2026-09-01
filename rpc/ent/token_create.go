@@ -50,13 +50,13 @@ func (_c *TokenCreate) SetNillableUpdatedAt(v *time.Time) *TokenCreate {
 }
 
 // SetStatus sets the "status" field.
-func (_c *TokenCreate) SetStatus(v uint8) *TokenCreate {
+func (_c *TokenCreate) SetStatus(v uint32) *TokenCreate {
 	_c.mutation.SetStatus(v)
 	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_c *TokenCreate) SetNillableStatus(v *uint8) *TokenCreate {
+func (_c *TokenCreate) SetNillableStatus(v *uint32) *TokenCreate {
 	if v != nil {
 		_c.SetStatus(*v)
 	}
@@ -180,6 +180,9 @@ func (_c *TokenCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Token.updated_at"`)}
 	}
+	if _, ok := _c.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Token.status"`)}
+	}
 	if _, ok := _c.mutation.UUID(); !ok {
 		return &ValidationError{Name: "uuid", err: errors.New(`ent: missing required field "Token.uuid"`)}
 	}
@@ -239,7 +242,7 @@ func (_c *TokenCreate) createSpec() (*Token, *sqlgraph.CreateSpec) {
 		_node.UpdatedAt = value
 	}
 	if value, ok := _c.mutation.Status(); ok {
-		_spec.SetField(token.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(token.FieldStatus, field.TypeUint32, value)
 		_node.Status = value
 	}
 	if value, ok := _c.mutation.UUID(); ok {

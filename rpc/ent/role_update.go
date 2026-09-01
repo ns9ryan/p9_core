@@ -38,14 +38,14 @@ func (_u *RoleUpdate) SetUpdatedAt(v time.Time) *RoleUpdate {
 }
 
 // SetStatus sets the "status" field.
-func (_u *RoleUpdate) SetStatus(v uint8) *RoleUpdate {
+func (_u *RoleUpdate) SetStatus(v uint32) *RoleUpdate {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *RoleUpdate) SetNillableStatus(v *uint8) *RoleUpdate {
+func (_u *RoleUpdate) SetNillableStatus(v *uint32) *RoleUpdate {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -53,14 +53,8 @@ func (_u *RoleUpdate) SetNillableStatus(v *uint8) *RoleUpdate {
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *RoleUpdate) AddStatus(v int8) *RoleUpdate {
+func (_u *RoleUpdate) AddStatus(v int32) *RoleUpdate {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *RoleUpdate) ClearStatus() *RoleUpdate {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -240,7 +234,25 @@ func (_u *RoleUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *RoleUpdate) check() error {
+	if v, ok := _u.mutation.Name(); ok {
+		if err := role.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Role.name": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Code(); ok {
+		if err := role.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Role.code": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (_u *RoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(role.Table, role.Columns, sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -253,13 +265,10 @@ func (_u *RoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.SetField(role.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(role.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(role.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(role.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(role.FieldStatus, field.TypeUint8)
+		_spec.AddField(role.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.Sort(); ok {
 		_spec.SetField(role.FieldSort, field.TypeUint32, value)
@@ -393,14 +402,14 @@ func (_u *RoleUpdateOne) SetUpdatedAt(v time.Time) *RoleUpdateOne {
 }
 
 // SetStatus sets the "status" field.
-func (_u *RoleUpdateOne) SetStatus(v uint8) *RoleUpdateOne {
+func (_u *RoleUpdateOne) SetStatus(v uint32) *RoleUpdateOne {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *RoleUpdateOne) SetNillableStatus(v *uint8) *RoleUpdateOne {
+func (_u *RoleUpdateOne) SetNillableStatus(v *uint32) *RoleUpdateOne {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -408,14 +417,8 @@ func (_u *RoleUpdateOne) SetNillableStatus(v *uint8) *RoleUpdateOne {
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *RoleUpdateOne) AddStatus(v int8) *RoleUpdateOne {
+func (_u *RoleUpdateOne) AddStatus(v int32) *RoleUpdateOne {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *RoleUpdateOne) ClearStatus() *RoleUpdateOne {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -608,7 +611,25 @@ func (_u *RoleUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *RoleUpdateOne) check() error {
+	if v, ok := _u.mutation.Name(); ok {
+		if err := role.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Role.name": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Code(); ok {
+		if err := role.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Role.code": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (_u *RoleUpdateOne) sqlSave(ctx context.Context) (_node *Role, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(role.Table, role.Columns, sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64))
 	id, ok := _u.mutation.ID()
 	if !ok {
@@ -638,13 +659,10 @@ func (_u *RoleUpdateOne) sqlSave(ctx context.Context) (_node *Role, err error) {
 		_spec.SetField(role.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(role.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(role.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(role.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(role.FieldStatus, field.TypeUint8)
+		_spec.AddField(role.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.Sort(); ok {
 		_spec.SetField(role.FieldSort, field.TypeUint32, value)

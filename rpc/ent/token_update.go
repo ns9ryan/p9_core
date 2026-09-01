@@ -36,14 +36,14 @@ func (_u *TokenUpdate) SetUpdatedAt(v time.Time) *TokenUpdate {
 }
 
 // SetStatus sets the "status" field.
-func (_u *TokenUpdate) SetStatus(v uint8) *TokenUpdate {
+func (_u *TokenUpdate) SetStatus(v uint32) *TokenUpdate {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *TokenUpdate) SetNillableStatus(v *uint8) *TokenUpdate {
+func (_u *TokenUpdate) SetNillableStatus(v *uint32) *TokenUpdate {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -51,14 +51,8 @@ func (_u *TokenUpdate) SetNillableStatus(v *uint8) *TokenUpdate {
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *TokenUpdate) AddStatus(v int8) *TokenUpdate {
+func (_u *TokenUpdate) AddStatus(v int32) *TokenUpdate {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *TokenUpdate) ClearStatus() *TokenUpdate {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -186,13 +180,10 @@ func (_u *TokenUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.SetField(token.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(token.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(token.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(token.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(token.FieldStatus, field.TypeUint8)
+		_spec.AddField(token.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.UUID(); ok {
 		_spec.SetField(token.FieldUUID, field.TypeUUID, value)
@@ -236,14 +227,14 @@ func (_u *TokenUpdateOne) SetUpdatedAt(v time.Time) *TokenUpdateOne {
 }
 
 // SetStatus sets the "status" field.
-func (_u *TokenUpdateOne) SetStatus(v uint8) *TokenUpdateOne {
+func (_u *TokenUpdateOne) SetStatus(v uint32) *TokenUpdateOne {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *TokenUpdateOne) SetNillableStatus(v *uint8) *TokenUpdateOne {
+func (_u *TokenUpdateOne) SetNillableStatus(v *uint32) *TokenUpdateOne {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -251,14 +242,8 @@ func (_u *TokenUpdateOne) SetNillableStatus(v *uint8) *TokenUpdateOne {
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *TokenUpdateOne) AddStatus(v int8) *TokenUpdateOne {
+func (_u *TokenUpdateOne) AddStatus(v int32) *TokenUpdateOne {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *TokenUpdateOne) ClearStatus() *TokenUpdateOne {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -416,13 +401,10 @@ func (_u *TokenUpdateOne) sqlSave(ctx context.Context) (_node *Token, err error)
 		_spec.SetField(token.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(token.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(token.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(token.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(token.FieldStatus, field.TypeUint8)
+		_spec.AddField(token.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.UUID(); ok {
 		_spec.SetField(token.FieldUUID, field.TypeUUID, value)

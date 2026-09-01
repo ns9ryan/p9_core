@@ -53,13 +53,13 @@ func (_c *UserCreate) SetNillableUpdatedAt(v *time.Time) *UserCreate {
 }
 
 // SetStatus sets the "status" field.
-func (_c *UserCreate) SetStatus(v uint8) *UserCreate {
+func (_c *UserCreate) SetStatus(v uint32) *UserCreate {
 	_c.mutation.SetStatus(v)
 	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_c *UserCreate) SetNillableStatus(v *uint8) *UserCreate {
+func (_c *UserCreate) SetNillableStatus(v *uint32) *UserCreate {
 	if v != nil {
 		_c.SetStatus(*v)
 	}
@@ -340,6 +340,9 @@ func (_c *UserCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "User.updated_at"`)}
 	}
+	if _, ok := _c.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "User.status"`)}
+	}
 	if _, ok := _c.mutation.Username(); !ok {
 		return &ValidationError{Name: "username", err: errors.New(`ent: missing required field "User.username"`)}
 	}
@@ -396,7 +399,7 @@ func (_c *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_node.UpdatedAt = value
 	}
 	if value, ok := _c.mutation.Status(); ok {
-		_spec.SetField(user.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(user.FieldStatus, field.TypeUint32, value)
 		_node.Status = value
 	}
 	if value, ok := _c.mutation.DeletedAt(); ok {

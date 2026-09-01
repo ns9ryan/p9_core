@@ -38,14 +38,14 @@ func (_u *UserUpdate) SetUpdatedAt(v time.Time) *UserUpdate {
 }
 
 // SetStatus sets the "status" field.
-func (_u *UserUpdate) SetStatus(v uint8) *UserUpdate {
+func (_u *UserUpdate) SetStatus(v uint32) *UserUpdate {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *UserUpdate) SetNillableStatus(v *uint8) *UserUpdate {
+func (_u *UserUpdate) SetNillableStatus(v *uint32) *UserUpdate {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -53,14 +53,8 @@ func (_u *UserUpdate) SetNillableStatus(v *uint8) *UserUpdate {
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *UserUpdate) AddStatus(v int8) *UserUpdate {
+func (_u *UserUpdate) AddStatus(v int32) *UserUpdate {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *UserUpdate) ClearStatus() *UserUpdate {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -417,13 +411,10 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(user.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(user.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(user.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(user.FieldStatus, field.TypeUint8)
+		_spec.AddField(user.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.DeletedAt(); ok {
 		_spec.SetField(user.FieldDeletedAt, field.TypeTime, value)
@@ -619,14 +610,14 @@ func (_u *UserUpdateOne) SetUpdatedAt(v time.Time) *UserUpdateOne {
 }
 
 // SetStatus sets the "status" field.
-func (_u *UserUpdateOne) SetStatus(v uint8) *UserUpdateOne {
+func (_u *UserUpdateOne) SetStatus(v uint32) *UserUpdateOne {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *UserUpdateOne) SetNillableStatus(v *uint8) *UserUpdateOne {
+func (_u *UserUpdateOne) SetNillableStatus(v *uint32) *UserUpdateOne {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -634,14 +625,8 @@ func (_u *UserUpdateOne) SetNillableStatus(v *uint8) *UserUpdateOne {
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *UserUpdateOne) AddStatus(v int8) *UserUpdateOne {
+func (_u *UserUpdateOne) AddStatus(v int32) *UserUpdateOne {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *UserUpdateOne) ClearStatus() *UserUpdateOne {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -1028,13 +1013,10 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(user.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(user.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(user.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(user.FieldStatus, field.TypeUint8)
+		_spec.AddField(user.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.DeletedAt(); ok {
 		_spec.SetField(user.FieldDeletedAt, field.TypeTime, value)

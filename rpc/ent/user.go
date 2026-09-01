@@ -25,7 +25,7 @@ type User struct {
 	// 更新时间
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// 状态：1 正常，2 停用
-	Status uint8 `json:"status,omitempty"`
+	Status uint32 `json:"status,omitempty"`
 	// 删除时间
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// 登录名
@@ -146,7 +146,7 @@ func (_m *User) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				_m.Status = uint8(value.Int64)
+				_m.Status = uint32(value.Int64)
 			}
 		case user.FieldDeletedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {

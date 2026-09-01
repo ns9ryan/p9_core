@@ -127,9 +127,9 @@ type CreateRoleRequest struct {
 	// 状态
 	Status *uint32 `protobuf:"varint,1,opt,name=status,proto3,oneof" json:"status,omitempty"`
 	// 角色名称
-	Name *string `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// 角色编码
-	Code *string `protobuf:"bytes,3,opt,name=code,proto3,oneof" json:"code,omitempty"`
+	Code string `protobuf:"bytes,3,opt,name=code,proto3" json:"code,omitempty"`
 	// 备注
 	Remark *string `protobuf:"bytes,4,opt,name=remark,proto3,oneof" json:"remark,omitempty"`
 	// 排序
@@ -176,15 +176,15 @@ func (x *CreateRoleRequest) GetStatus() uint32 {
 }
 
 func (x *CreateRoleRequest) GetName() string {
-	if x != nil && x.Name != nil {
-		return *x.Name
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
 func (x *CreateRoleRequest) GetCode() string {
-	if x != nil && x.Code != nil {
-		return *x.Code
+	if x != nil {
+		return x.Code
 	}
 	return ""
 }
@@ -701,16 +701,14 @@ const file_types_role_proto_rawDesc = "" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x12\n" +
 	"\x04code\x18\x05 \x01(\tR\x04code\x12\x16\n" +
 	"\x06remark\x18\x06 \x01(\tR\x06remark\x12\x12\n" +
-	"\x04sort\x18\a \x01(\rR\x04sort\"\xc9\x01\n" +
+	"\x04sort\x18\a \x01(\rR\x04sort\"\xad\x01\n" +
 	"\x11CreateRoleRequest\x12\x1b\n" +
-	"\x06status\x18\x01 \x01(\rH\x00R\x06status\x88\x01\x01\x12\x17\n" +
-	"\x04name\x18\x02 \x01(\tH\x01R\x04name\x88\x01\x01\x12\x17\n" +
-	"\x04code\x18\x03 \x01(\tH\x02R\x04code\x88\x01\x01\x12\x1b\n" +
-	"\x06remark\x18\x04 \x01(\tH\x03R\x06remark\x88\x01\x01\x12\x17\n" +
-	"\x04sort\x18\x05 \x01(\rH\x04R\x04sort\x88\x01\x01B\t\n" +
-	"\a_statusB\a\n" +
-	"\x05_nameB\a\n" +
-	"\x05_codeB\t\n" +
+	"\x06status\x18\x01 \x01(\rH\x00R\x06status\x88\x01\x01\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
+	"\x04code\x18\x03 \x01(\tR\x04code\x12\x1b\n" +
+	"\x06remark\x18\x04 \x01(\tH\x01R\x06remark\x88\x01\x01\x12\x17\n" +
+	"\x04sort\x18\x05 \x01(\rH\x02R\x04sort\x88\x01\x01B\t\n" +
+	"\a_statusB\t\n" +
 	"\a_remarkB\a\n" +
 	"\x05_sort\"$\n" +
 	"\x12CreateRoleResponse\x12\x0e\n" +

@@ -37,14 +37,14 @@ func (_u *PositionUpdate) SetUpdatedAt(v time.Time) *PositionUpdate {
 }
 
 // SetStatus sets the "status" field.
-func (_u *PositionUpdate) SetStatus(v uint8) *PositionUpdate {
+func (_u *PositionUpdate) SetStatus(v uint32) *PositionUpdate {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *PositionUpdate) SetNillableStatus(v *uint8) *PositionUpdate {
+func (_u *PositionUpdate) SetNillableStatus(v *uint32) *PositionUpdate {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -52,14 +52,8 @@ func (_u *PositionUpdate) SetNillableStatus(v *uint8) *PositionUpdate {
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *PositionUpdate) AddStatus(v int8) *PositionUpdate {
+func (_u *PositionUpdate) AddStatus(v int32) *PositionUpdate {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *PositionUpdate) ClearStatus() *PositionUpdate {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -222,13 +216,10 @@ func (_u *PositionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.SetField(position.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(position.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(position.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(position.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(position.FieldStatus, field.TypeUint8)
+		_spec.AddField(position.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.Sort(); ok {
 		_spec.SetField(position.FieldSort, field.TypeUint32, value)
@@ -320,14 +311,14 @@ func (_u *PositionUpdateOne) SetUpdatedAt(v time.Time) *PositionUpdateOne {
 }
 
 // SetStatus sets the "status" field.
-func (_u *PositionUpdateOne) SetStatus(v uint8) *PositionUpdateOne {
+func (_u *PositionUpdateOne) SetStatus(v uint32) *PositionUpdateOne {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *PositionUpdateOne) SetNillableStatus(v *uint8) *PositionUpdateOne {
+func (_u *PositionUpdateOne) SetNillableStatus(v *uint32) *PositionUpdateOne {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -335,14 +326,8 @@ func (_u *PositionUpdateOne) SetNillableStatus(v *uint8) *PositionUpdateOne {
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *PositionUpdateOne) AddStatus(v int8) *PositionUpdateOne {
+func (_u *PositionUpdateOne) AddStatus(v int32) *PositionUpdateOne {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *PositionUpdateOne) ClearStatus() *PositionUpdateOne {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -535,13 +520,10 @@ func (_u *PositionUpdateOne) sqlSave(ctx context.Context) (_node *Position, err 
 		_spec.SetField(position.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(position.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(position.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(position.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(position.FieldStatus, field.TypeUint8)
+		_spec.AddField(position.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.Sort(); ok {
 		_spec.SetField(position.FieldSort, field.TypeUint32, value)

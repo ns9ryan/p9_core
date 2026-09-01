@@ -66,7 +66,7 @@ func UpdatedAt(v time.Time) predicate.Department {
 }
 
 // Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
-func Status(v uint8) predicate.Department {
+func Status(v uint32) predicate.Department {
 	return predicate.Department(sql.FieldEQ(FieldStatus, v))
 }
 
@@ -191,53 +191,43 @@ func UpdatedAtLTE(v time.Time) predicate.Department {
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.
-func StatusEQ(v uint8) predicate.Department {
+func StatusEQ(v uint32) predicate.Department {
 	return predicate.Department(sql.FieldEQ(FieldStatus, v))
 }
 
 // StatusNEQ applies the NEQ predicate on the "status" field.
-func StatusNEQ(v uint8) predicate.Department {
+func StatusNEQ(v uint32) predicate.Department {
 	return predicate.Department(sql.FieldNEQ(FieldStatus, v))
 }
 
 // StatusIn applies the In predicate on the "status" field.
-func StatusIn(vs ...uint8) predicate.Department {
+func StatusIn(vs ...uint32) predicate.Department {
 	return predicate.Department(sql.FieldIn(FieldStatus, vs...))
 }
 
 // StatusNotIn applies the NotIn predicate on the "status" field.
-func StatusNotIn(vs ...uint8) predicate.Department {
+func StatusNotIn(vs ...uint32) predicate.Department {
 	return predicate.Department(sql.FieldNotIn(FieldStatus, vs...))
 }
 
 // StatusGT applies the GT predicate on the "status" field.
-func StatusGT(v uint8) predicate.Department {
+func StatusGT(v uint32) predicate.Department {
 	return predicate.Department(sql.FieldGT(FieldStatus, v))
 }
 
 // StatusGTE applies the GTE predicate on the "status" field.
-func StatusGTE(v uint8) predicate.Department {
+func StatusGTE(v uint32) predicate.Department {
 	return predicate.Department(sql.FieldGTE(FieldStatus, v))
 }
 
 // StatusLT applies the LT predicate on the "status" field.
-func StatusLT(v uint8) predicate.Department {
+func StatusLT(v uint32) predicate.Department {
 	return predicate.Department(sql.FieldLT(FieldStatus, v))
 }
 
 // StatusLTE applies the LTE predicate on the "status" field.
-func StatusLTE(v uint8) predicate.Department {
+func StatusLTE(v uint32) predicate.Department {
 	return predicate.Department(sql.FieldLTE(FieldStatus, v))
-}
-
-// StatusIsNil applies the IsNil predicate on the "status" field.
-func StatusIsNil() predicate.Department {
-	return predicate.Department(sql.FieldIsNull(FieldStatus))
-}
-
-// StatusNotNil applies the NotNil predicate on the "status" field.
-func StatusNotNil() predicate.Department {
-	return predicate.Department(sql.FieldNotNull(FieldStatus))
 }
 
 // SortEQ applies the EQ predicate on the "sort" field.

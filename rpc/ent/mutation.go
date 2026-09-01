@@ -1608,8 +1608,8 @@ type DepartmentMutation struct {
 	id              *uint64
 	created_at      *time.Time
 	updated_at      *time.Time
-	status          *uint8
-	addstatus       *int8
+	status          *uint32
+	addstatus       *int32
 	sort            *uint32
 	addsort         *int32
 	name            *string
@@ -1809,13 +1809,13 @@ func (m *DepartmentMutation) ResetUpdatedAt() {
 }
 
 // SetStatus sets the "status" field.
-func (m *DepartmentMutation) SetStatus(u uint8) {
+func (m *DepartmentMutation) SetStatus(u uint32) {
 	m.status = &u
 	m.addstatus = nil
 }
 
 // Status returns the value of the "status" field in the mutation.
-func (m *DepartmentMutation) Status() (r uint8, exists bool) {
+func (m *DepartmentMutation) Status() (r uint32, exists bool) {
 	v := m.status
 	if v == nil {
 		return
@@ -1826,7 +1826,7 @@ func (m *DepartmentMutation) Status() (r uint8, exists bool) {
 // OldStatus returns the old "status" field's value of the Department entity.
 // If the Department object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DepartmentMutation) OldStatus(ctx context.Context) (v uint8, err error) {
+func (m *DepartmentMutation) OldStatus(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
@@ -1841,7 +1841,7 @@ func (m *DepartmentMutation) OldStatus(ctx context.Context) (v uint8, err error)
 }
 
 // AddStatus adds u to the "status" field.
-func (m *DepartmentMutation) AddStatus(u int8) {
+func (m *DepartmentMutation) AddStatus(u int32) {
 	if m.addstatus != nil {
 		*m.addstatus += u
 	} else {
@@ -1850,7 +1850,7 @@ func (m *DepartmentMutation) AddStatus(u int8) {
 }
 
 // AddedStatus returns the value that was added to the "status" field in this mutation.
-func (m *DepartmentMutation) AddedStatus() (r int8, exists bool) {
+func (m *DepartmentMutation) AddedStatus() (r int32, exists bool) {
 	v := m.addstatus
 	if v == nil {
 		return
@@ -1858,24 +1858,10 @@ func (m *DepartmentMutation) AddedStatus() (r int8, exists bool) {
 	return *v, true
 }
 
-// ClearStatus clears the value of the "status" field.
-func (m *DepartmentMutation) ClearStatus() {
-	m.status = nil
-	m.addstatus = nil
-	m.clearedFields[department.FieldStatus] = struct{}{}
-}
-
-// StatusCleared returns if the "status" field was cleared in this mutation.
-func (m *DepartmentMutation) StatusCleared() bool {
-	_, ok := m.clearedFields[department.FieldStatus]
-	return ok
-}
-
 // ResetStatus resets all changes to the "status" field.
 func (m *DepartmentMutation) ResetStatus() {
 	m.status = nil
 	m.addstatus = nil
-	delete(m.clearedFields, department.FieldStatus)
 }
 
 // SetSort sets the "sort" field.
@@ -2552,7 +2538,7 @@ func (m *DepartmentMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedAt(v)
 		return nil
 	case department.FieldStatus:
-		v, ok := value.(uint8)
+		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -2650,7 +2636,7 @@ func (m *DepartmentMutation) AddedField(name string) (ent.Value, bool) {
 func (m *DepartmentMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case department.FieldStatus:
-		v, ok := value.(int8)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -2671,9 +2657,6 @@ func (m *DepartmentMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *DepartmentMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(department.FieldStatus) {
-		fields = append(fields, department.FieldStatus)
-	}
 	if m.FieldCleared(department.FieldParentID) {
 		fields = append(fields, department.FieldParentID)
 	}
@@ -2706,9 +2689,6 @@ func (m *DepartmentMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *DepartmentMutation) ClearField(name string) error {
 	switch name {
-	case department.FieldStatus:
-		m.ClearStatus()
-		return nil
 	case department.FieldParentID:
 		m.ClearParentID()
 		return nil
@@ -2908,8 +2888,8 @@ type DictionaryMutation struct {
 	id                        *uint64
 	created_at                *time.Time
 	updated_at                *time.Time
-	status                    *uint8
-	addstatus                 *int8
+	status                    *uint32
+	addstatus                 *int32
 	title                     *string
 	name                      *string
 	desc                      *string
@@ -3100,13 +3080,13 @@ func (m *DictionaryMutation) ResetUpdatedAt() {
 }
 
 // SetStatus sets the "status" field.
-func (m *DictionaryMutation) SetStatus(u uint8) {
+func (m *DictionaryMutation) SetStatus(u uint32) {
 	m.status = &u
 	m.addstatus = nil
 }
 
 // Status returns the value of the "status" field in the mutation.
-func (m *DictionaryMutation) Status() (r uint8, exists bool) {
+func (m *DictionaryMutation) Status() (r uint32, exists bool) {
 	v := m.status
 	if v == nil {
 		return
@@ -3117,7 +3097,7 @@ func (m *DictionaryMutation) Status() (r uint8, exists bool) {
 // OldStatus returns the old "status" field's value of the Dictionary entity.
 // If the Dictionary object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DictionaryMutation) OldStatus(ctx context.Context) (v uint8, err error) {
+func (m *DictionaryMutation) OldStatus(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
@@ -3132,7 +3112,7 @@ func (m *DictionaryMutation) OldStatus(ctx context.Context) (v uint8, err error)
 }
 
 // AddStatus adds u to the "status" field.
-func (m *DictionaryMutation) AddStatus(u int8) {
+func (m *DictionaryMutation) AddStatus(u int32) {
 	if m.addstatus != nil {
 		*m.addstatus += u
 	} else {
@@ -3141,7 +3121,7 @@ func (m *DictionaryMutation) AddStatus(u int8) {
 }
 
 // AddedStatus returns the value that was added to the "status" field in this mutation.
-func (m *DictionaryMutation) AddedStatus() (r int8, exists bool) {
+func (m *DictionaryMutation) AddedStatus() (r int32, exists bool) {
 	v := m.addstatus
 	if v == nil {
 		return
@@ -3149,24 +3129,10 @@ func (m *DictionaryMutation) AddedStatus() (r int8, exists bool) {
 	return *v, true
 }
 
-// ClearStatus clears the value of the "status" field.
-func (m *DictionaryMutation) ClearStatus() {
-	m.status = nil
-	m.addstatus = nil
-	m.clearedFields[dictionary.FieldStatus] = struct{}{}
-}
-
-// StatusCleared returns if the "status" field was cleared in this mutation.
-func (m *DictionaryMutation) StatusCleared() bool {
-	_, ok := m.clearedFields[dictionary.FieldStatus]
-	return ok
-}
-
 // ResetStatus resets all changes to the "status" field.
 func (m *DictionaryMutation) ResetStatus() {
 	m.status = nil
 	m.addstatus = nil
-	delete(m.clearedFields, dictionary.FieldStatus)
 }
 
 // SetTitle sets the "title" field.
@@ -3505,7 +3471,7 @@ func (m *DictionaryMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedAt(v)
 		return nil
 	case dictionary.FieldStatus:
-		v, ok := value.(uint8)
+		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -3570,7 +3536,7 @@ func (m *DictionaryMutation) AddedField(name string) (ent.Value, bool) {
 func (m *DictionaryMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case dictionary.FieldStatus:
-		v, ok := value.(int8)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -3584,9 +3550,6 @@ func (m *DictionaryMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *DictionaryMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(dictionary.FieldStatus) {
-		fields = append(fields, dictionary.FieldStatus)
-	}
 	if m.FieldCleared(dictionary.FieldDesc) {
 		fields = append(fields, dictionary.FieldDesc)
 	}
@@ -3604,9 +3567,6 @@ func (m *DictionaryMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *DictionaryMutation) ClearField(name string) error {
 	switch name {
-	case dictionary.FieldStatus:
-		m.ClearStatus()
-		return nil
 	case dictionary.FieldDesc:
 		m.ClearDesc()
 		return nil
@@ -3735,8 +3695,8 @@ type DictionaryDetailMutation struct {
 	id                  *uint64
 	created_at          *time.Time
 	updated_at          *time.Time
-	status              *uint8
-	addstatus           *int8
+	status              *uint32
+	addstatus           *int32
 	sort                *uint32
 	addsort             *int32
 	title               *string
@@ -3927,13 +3887,13 @@ func (m *DictionaryDetailMutation) ResetUpdatedAt() {
 }
 
 // SetStatus sets the "status" field.
-func (m *DictionaryDetailMutation) SetStatus(u uint8) {
+func (m *DictionaryDetailMutation) SetStatus(u uint32) {
 	m.status = &u
 	m.addstatus = nil
 }
 
 // Status returns the value of the "status" field in the mutation.
-func (m *DictionaryDetailMutation) Status() (r uint8, exists bool) {
+func (m *DictionaryDetailMutation) Status() (r uint32, exists bool) {
 	v := m.status
 	if v == nil {
 		return
@@ -3944,7 +3904,7 @@ func (m *DictionaryDetailMutation) Status() (r uint8, exists bool) {
 // OldStatus returns the old "status" field's value of the DictionaryDetail entity.
 // If the DictionaryDetail object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DictionaryDetailMutation) OldStatus(ctx context.Context) (v uint8, err error) {
+func (m *DictionaryDetailMutation) OldStatus(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
@@ -3959,7 +3919,7 @@ func (m *DictionaryDetailMutation) OldStatus(ctx context.Context) (v uint8, err 
 }
 
 // AddStatus adds u to the "status" field.
-func (m *DictionaryDetailMutation) AddStatus(u int8) {
+func (m *DictionaryDetailMutation) AddStatus(u int32) {
 	if m.addstatus != nil {
 		*m.addstatus += u
 	} else {
@@ -3968,7 +3928,7 @@ func (m *DictionaryDetailMutation) AddStatus(u int8) {
 }
 
 // AddedStatus returns the value that was added to the "status" field in this mutation.
-func (m *DictionaryDetailMutation) AddedStatus() (r int8, exists bool) {
+func (m *DictionaryDetailMutation) AddedStatus() (r int32, exists bool) {
 	v := m.addstatus
 	if v == nil {
 		return
@@ -3976,24 +3936,10 @@ func (m *DictionaryDetailMutation) AddedStatus() (r int8, exists bool) {
 	return *v, true
 }
 
-// ClearStatus clears the value of the "status" field.
-func (m *DictionaryDetailMutation) ClearStatus() {
-	m.status = nil
-	m.addstatus = nil
-	m.clearedFields[dictionarydetail.FieldStatus] = struct{}{}
-}
-
-// StatusCleared returns if the "status" field was cleared in this mutation.
-func (m *DictionaryDetailMutation) StatusCleared() bool {
-	_, ok := m.clearedFields[dictionarydetail.FieldStatus]
-	return ok
-}
-
 // ResetStatus resets all changes to the "status" field.
 func (m *DictionaryDetailMutation) ResetStatus() {
 	m.status = nil
 	m.addstatus = nil
-	delete(m.clearedFields, dictionarydetail.FieldStatus)
 }
 
 // SetSort sets the "sort" field.
@@ -4381,7 +4327,7 @@ func (m *DictionaryDetailMutation) SetField(name string, value ent.Value) error 
 		m.SetUpdatedAt(v)
 		return nil
 	case dictionarydetail.FieldStatus:
-		v, ok := value.(uint8)
+		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -4458,7 +4404,7 @@ func (m *DictionaryDetailMutation) AddedField(name string) (ent.Value, bool) {
 func (m *DictionaryDetailMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case dictionarydetail.FieldStatus:
-		v, ok := value.(int8)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -4479,9 +4425,6 @@ func (m *DictionaryDetailMutation) AddField(name string, value ent.Value) error 
 // mutation.
 func (m *DictionaryDetailMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(dictionarydetail.FieldStatus) {
-		fields = append(fields, dictionarydetail.FieldStatus)
-	}
 	if m.FieldCleared(dictionarydetail.FieldDictionaryID) {
 		fields = append(fields, dictionarydetail.FieldDictionaryID)
 	}
@@ -4499,9 +4442,6 @@ func (m *DictionaryDetailMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *DictionaryDetailMutation) ClearField(name string) error {
 	switch name {
-	case dictionarydetail.FieldStatus:
-		m.ClearStatus()
-		return nil
 	case dictionarydetail.FieldDictionaryID:
 		m.ClearDictionaryID()
 		return nil
@@ -8107,8 +8047,8 @@ type PositionMutation struct {
 	id            *uint64
 	created_at    *time.Time
 	updated_at    *time.Time
-	status        *uint8
-	addstatus     *int8
+	status        *uint32
+	addstatus     *int32
 	sort          *uint32
 	addsort       *int32
 	name          *string
@@ -8300,13 +8240,13 @@ func (m *PositionMutation) ResetUpdatedAt() {
 }
 
 // SetStatus sets the "status" field.
-func (m *PositionMutation) SetStatus(u uint8) {
+func (m *PositionMutation) SetStatus(u uint32) {
 	m.status = &u
 	m.addstatus = nil
 }
 
 // Status returns the value of the "status" field in the mutation.
-func (m *PositionMutation) Status() (r uint8, exists bool) {
+func (m *PositionMutation) Status() (r uint32, exists bool) {
 	v := m.status
 	if v == nil {
 		return
@@ -8317,7 +8257,7 @@ func (m *PositionMutation) Status() (r uint8, exists bool) {
 // OldStatus returns the old "status" field's value of the Position entity.
 // If the Position object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PositionMutation) OldStatus(ctx context.Context) (v uint8, err error) {
+func (m *PositionMutation) OldStatus(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
@@ -8332,7 +8272,7 @@ func (m *PositionMutation) OldStatus(ctx context.Context) (v uint8, err error) {
 }
 
 // AddStatus adds u to the "status" field.
-func (m *PositionMutation) AddStatus(u int8) {
+func (m *PositionMutation) AddStatus(u int32) {
 	if m.addstatus != nil {
 		*m.addstatus += u
 	} else {
@@ -8341,7 +8281,7 @@ func (m *PositionMutation) AddStatus(u int8) {
 }
 
 // AddedStatus returns the value that was added to the "status" field in this mutation.
-func (m *PositionMutation) AddedStatus() (r int8, exists bool) {
+func (m *PositionMutation) AddedStatus() (r int32, exists bool) {
 	v := m.addstatus
 	if v == nil {
 		return
@@ -8349,24 +8289,10 @@ func (m *PositionMutation) AddedStatus() (r int8, exists bool) {
 	return *v, true
 }
 
-// ClearStatus clears the value of the "status" field.
-func (m *PositionMutation) ClearStatus() {
-	m.status = nil
-	m.addstatus = nil
-	m.clearedFields[position.FieldStatus] = struct{}{}
-}
-
-// StatusCleared returns if the "status" field was cleared in this mutation.
-func (m *PositionMutation) StatusCleared() bool {
-	_, ok := m.clearedFields[position.FieldStatus]
-	return ok
-}
-
 // ResetStatus resets all changes to the "status" field.
 func (m *PositionMutation) ResetStatus() {
 	m.status = nil
 	m.addstatus = nil
-	delete(m.clearedFields, position.FieldStatus)
 }
 
 // SetSort sets the "sort" field.
@@ -8725,7 +8651,7 @@ func (m *PositionMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedAt(v)
 		return nil
 	case position.FieldStatus:
-		v, ok := value.(uint8)
+		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -8795,7 +8721,7 @@ func (m *PositionMutation) AddedField(name string) (ent.Value, bool) {
 func (m *PositionMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case position.FieldStatus:
-		v, ok := value.(int8)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -8816,9 +8742,6 @@ func (m *PositionMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *PositionMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(position.FieldStatus) {
-		fields = append(fields, position.FieldStatus)
-	}
 	if m.FieldCleared(position.FieldRemark) {
 		fields = append(fields, position.FieldRemark)
 	}
@@ -8836,9 +8759,6 @@ func (m *PositionMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *PositionMutation) ClearField(name string) error {
 	switch name {
-	case position.FieldStatus:
-		m.ClearStatus()
-		return nil
 	case position.FieldRemark:
 		m.ClearRemark()
 		return nil
@@ -8967,8 +8887,8 @@ type RoleMutation struct {
 	id            *uint64
 	created_at    *time.Time
 	updated_at    *time.Time
-	status        *uint8
-	addstatus     *int8
+	status        *uint32
+	addstatus     *int32
 	sort          *uint32
 	addsort       *int32
 	name          *string
@@ -9163,13 +9083,13 @@ func (m *RoleMutation) ResetUpdatedAt() {
 }
 
 // SetStatus sets the "status" field.
-func (m *RoleMutation) SetStatus(u uint8) {
+func (m *RoleMutation) SetStatus(u uint32) {
 	m.status = &u
 	m.addstatus = nil
 }
 
 // Status returns the value of the "status" field in the mutation.
-func (m *RoleMutation) Status() (r uint8, exists bool) {
+func (m *RoleMutation) Status() (r uint32, exists bool) {
 	v := m.status
 	if v == nil {
 		return
@@ -9180,7 +9100,7 @@ func (m *RoleMutation) Status() (r uint8, exists bool) {
 // OldStatus returns the old "status" field's value of the Role entity.
 // If the Role object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RoleMutation) OldStatus(ctx context.Context) (v uint8, err error) {
+func (m *RoleMutation) OldStatus(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
@@ -9195,7 +9115,7 @@ func (m *RoleMutation) OldStatus(ctx context.Context) (v uint8, err error) {
 }
 
 // AddStatus adds u to the "status" field.
-func (m *RoleMutation) AddStatus(u int8) {
+func (m *RoleMutation) AddStatus(u int32) {
 	if m.addstatus != nil {
 		*m.addstatus += u
 	} else {
@@ -9204,7 +9124,7 @@ func (m *RoleMutation) AddStatus(u int8) {
 }
 
 // AddedStatus returns the value that was added to the "status" field in this mutation.
-func (m *RoleMutation) AddedStatus() (r int8, exists bool) {
+func (m *RoleMutation) AddedStatus() (r int32, exists bool) {
 	v := m.addstatus
 	if v == nil {
 		return
@@ -9212,24 +9132,10 @@ func (m *RoleMutation) AddedStatus() (r int8, exists bool) {
 	return *v, true
 }
 
-// ClearStatus clears the value of the "status" field.
-func (m *RoleMutation) ClearStatus() {
-	m.status = nil
-	m.addstatus = nil
-	m.clearedFields[role.FieldStatus] = struct{}{}
-}
-
-// StatusCleared returns if the "status" field was cleared in this mutation.
-func (m *RoleMutation) StatusCleared() bool {
-	_, ok := m.clearedFields[role.FieldStatus]
-	return ok
-}
-
 // ResetStatus resets all changes to the "status" field.
 func (m *RoleMutation) ResetStatus() {
 	m.status = nil
 	m.addstatus = nil
-	delete(m.clearedFields, role.FieldStatus)
 }
 
 // SetSort sets the "sort" field.
@@ -9629,7 +9535,7 @@ func (m *RoleMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedAt(v)
 		return nil
 	case role.FieldStatus:
-		v, ok := value.(uint8)
+		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -9699,7 +9605,7 @@ func (m *RoleMutation) AddedField(name string) (ent.Value, bool) {
 func (m *RoleMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case role.FieldStatus:
-		v, ok := value.(int8)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -9719,11 +9625,7 @@ func (m *RoleMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *RoleMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(role.FieldStatus) {
-		fields = append(fields, role.FieldStatus)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -9736,11 +9638,6 @@ func (m *RoleMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *RoleMutation) ClearField(name string) error {
-	switch name {
-	case role.FieldStatus:
-		m.ClearStatus()
-		return nil
-	}
 	return fmt.Errorf("unknown Role nullable field %s", name)
 }
 
@@ -9891,8 +9788,8 @@ type TokenMutation struct {
 	id            *uuid.UUID
 	created_at    *time.Time
 	updated_at    *time.Time
-	status        *uint8
-	addstatus     *int8
+	status        *uint32
+	addstatus     *int32
 	uuid          *uuid.UUID
 	username      *string
 	token         *string
@@ -10081,13 +9978,13 @@ func (m *TokenMutation) ResetUpdatedAt() {
 }
 
 // SetStatus sets the "status" field.
-func (m *TokenMutation) SetStatus(u uint8) {
+func (m *TokenMutation) SetStatus(u uint32) {
 	m.status = &u
 	m.addstatus = nil
 }
 
 // Status returns the value of the "status" field in the mutation.
-func (m *TokenMutation) Status() (r uint8, exists bool) {
+func (m *TokenMutation) Status() (r uint32, exists bool) {
 	v := m.status
 	if v == nil {
 		return
@@ -10098,7 +9995,7 @@ func (m *TokenMutation) Status() (r uint8, exists bool) {
 // OldStatus returns the old "status" field's value of the Token entity.
 // If the Token object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TokenMutation) OldStatus(ctx context.Context) (v uint8, err error) {
+func (m *TokenMutation) OldStatus(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
@@ -10113,7 +10010,7 @@ func (m *TokenMutation) OldStatus(ctx context.Context) (v uint8, err error) {
 }
 
 // AddStatus adds u to the "status" field.
-func (m *TokenMutation) AddStatus(u int8) {
+func (m *TokenMutation) AddStatus(u int32) {
 	if m.addstatus != nil {
 		*m.addstatus += u
 	} else {
@@ -10122,7 +10019,7 @@ func (m *TokenMutation) AddStatus(u int8) {
 }
 
 // AddedStatus returns the value that was added to the "status" field in this mutation.
-func (m *TokenMutation) AddedStatus() (r int8, exists bool) {
+func (m *TokenMutation) AddedStatus() (r int32, exists bool) {
 	v := m.addstatus
 	if v == nil {
 		return
@@ -10130,24 +10027,10 @@ func (m *TokenMutation) AddedStatus() (r int8, exists bool) {
 	return *v, true
 }
 
-// ClearStatus clears the value of the "status" field.
-func (m *TokenMutation) ClearStatus() {
-	m.status = nil
-	m.addstatus = nil
-	m.clearedFields[token.FieldStatus] = struct{}{}
-}
-
-// StatusCleared returns if the "status" field was cleared in this mutation.
-func (m *TokenMutation) StatusCleared() bool {
-	_, ok := m.clearedFields[token.FieldStatus]
-	return ok
-}
-
 // ResetStatus resets all changes to the "status" field.
 func (m *TokenMutation) ResetStatus() {
 	m.status = nil
 	m.addstatus = nil
-	delete(m.clearedFields, token.FieldStatus)
 }
 
 // SetUUID sets the "uuid" field.
@@ -10462,7 +10345,7 @@ func (m *TokenMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedAt(v)
 		return nil
 	case token.FieldStatus:
-		v, ok := value.(uint8)
+		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -10534,7 +10417,7 @@ func (m *TokenMutation) AddedField(name string) (ent.Value, bool) {
 func (m *TokenMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case token.FieldStatus:
-		v, ok := value.(int8)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -10547,11 +10430,7 @@ func (m *TokenMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *TokenMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(token.FieldStatus) {
-		fields = append(fields, token.FieldStatus)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -10564,11 +10443,6 @@ func (m *TokenMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *TokenMutation) ClearField(name string) error {
-	switch name {
-	case token.FieldStatus:
-		m.ClearStatus()
-		return nil
-	}
 	return fmt.Errorf("unknown Token nullable field %s", name)
 }
 
@@ -10660,8 +10534,8 @@ type UserMutation struct {
 	id                 *uuid.UUID
 	created_at         *time.Time
 	updated_at         *time.Time
-	status             *uint8
-	addstatus          *int8
+	status             *uint32
+	addstatus          *int32
 	deleted_at         *time.Time
 	username           *string
 	password           *string
@@ -10863,13 +10737,13 @@ func (m *UserMutation) ResetUpdatedAt() {
 }
 
 // SetStatus sets the "status" field.
-func (m *UserMutation) SetStatus(u uint8) {
+func (m *UserMutation) SetStatus(u uint32) {
 	m.status = &u
 	m.addstatus = nil
 }
 
 // Status returns the value of the "status" field in the mutation.
-func (m *UserMutation) Status() (r uint8, exists bool) {
+func (m *UserMutation) Status() (r uint32, exists bool) {
 	v := m.status
 	if v == nil {
 		return
@@ -10880,7 +10754,7 @@ func (m *UserMutation) Status() (r uint8, exists bool) {
 // OldStatus returns the old "status" field's value of the User entity.
 // If the User object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldStatus(ctx context.Context) (v uint8, err error) {
+func (m *UserMutation) OldStatus(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
@@ -10895,7 +10769,7 @@ func (m *UserMutation) OldStatus(ctx context.Context) (v uint8, err error) {
 }
 
 // AddStatus adds u to the "status" field.
-func (m *UserMutation) AddStatus(u int8) {
+func (m *UserMutation) AddStatus(u int32) {
 	if m.addstatus != nil {
 		*m.addstatus += u
 	} else {
@@ -10904,7 +10778,7 @@ func (m *UserMutation) AddStatus(u int8) {
 }
 
 // AddedStatus returns the value that was added to the "status" field in this mutation.
-func (m *UserMutation) AddedStatus() (r int8, exists bool) {
+func (m *UserMutation) AddedStatus() (r int32, exists bool) {
 	v := m.addstatus
 	if v == nil {
 		return
@@ -10912,24 +10786,10 @@ func (m *UserMutation) AddedStatus() (r int8, exists bool) {
 	return *v, true
 }
 
-// ClearStatus clears the value of the "status" field.
-func (m *UserMutation) ClearStatus() {
-	m.status = nil
-	m.addstatus = nil
-	m.clearedFields[user.FieldStatus] = struct{}{}
-}
-
-// StatusCleared returns if the "status" field was cleared in this mutation.
-func (m *UserMutation) StatusCleared() bool {
-	_, ok := m.clearedFields[user.FieldStatus]
-	return ok
-}
-
 // ResetStatus resets all changes to the "status" field.
 func (m *UserMutation) ResetStatus() {
 	m.status = nil
 	m.addstatus = nil
-	delete(m.clearedFields, user.FieldStatus)
 }
 
 // SetDeletedAt sets the "deleted_at" field.
@@ -11741,7 +11601,7 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedAt(v)
 		return nil
 	case user.FieldStatus:
-		v, ok := value.(uint8)
+		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -11855,7 +11715,7 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 func (m *UserMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case user.FieldStatus:
-		v, ok := value.(int8)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -11869,9 +11729,6 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *UserMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(user.FieldStatus) {
-		fields = append(fields, user.FieldStatus)
-	}
 	if m.FieldCleared(user.FieldDeletedAt) {
 		fields = append(fields, user.FieldDeletedAt)
 	}
@@ -11907,9 +11764,6 @@ func (m *UserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *UserMutation) ClearField(name string) error {
 	switch name {
-	case user.FieldStatus:
-		m.ClearStatus()
-		return nil
 	case user.FieldDeletedAt:
 		m.ClearDeletedAt()
 		return nil

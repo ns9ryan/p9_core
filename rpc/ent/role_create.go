@@ -52,13 +52,13 @@ func (_c *RoleCreate) SetNillableUpdatedAt(v *time.Time) *RoleCreate {
 }
 
 // SetStatus sets the "status" field.
-func (_c *RoleCreate) SetStatus(v uint8) *RoleCreate {
+func (_c *RoleCreate) SetStatus(v uint32) *RoleCreate {
 	_c.mutation.SetStatus(v)
 	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_c *RoleCreate) SetNillableStatus(v *uint8) *RoleCreate {
+func (_c *RoleCreate) SetNillableStatus(v *uint32) *RoleCreate {
 	if v != nil {
 		_c.SetStatus(*v)
 	}
@@ -206,14 +206,27 @@ func (_c *RoleCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Role.updated_at"`)}
 	}
+	if _, ok := _c.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Role.status"`)}
+	}
 	if _, ok := _c.mutation.Sort(); !ok {
 		return &ValidationError{Name: "sort", err: errors.New(`ent: missing required field "Role.sort"`)}
 	}
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Role.name"`)}
 	}
+	if v, ok := _c.mutation.Name(); ok {
+		if err := role.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Role.name": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.Code(); !ok {
 		return &ValidationError{Name: "code", err: errors.New(`ent: missing required field "Role.code"`)}
+	}
+	if v, ok := _c.mutation.Code(); ok {
+		if err := role.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Role.code": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.Remark(); !ok {
 		return &ValidationError{Name: "remark", err: errors.New(`ent: missing required field "Role.remark"`)}
@@ -259,7 +272,7 @@ func (_c *RoleCreate) createSpec() (*Role, *sqlgraph.CreateSpec) {
 		_node.UpdatedAt = value
 	}
 	if value, ok := _c.mutation.Status(); ok {
-		_spec.SetField(role.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(role.FieldStatus, field.TypeUint32, value)
 		_node.Status = value
 	}
 	if value, ok := _c.mutation.Sort(); ok {

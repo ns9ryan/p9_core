@@ -36,14 +36,14 @@ func (_u *DictionaryDetailUpdate) SetUpdatedAt(v time.Time) *DictionaryDetailUpd
 }
 
 // SetStatus sets the "status" field.
-func (_u *DictionaryDetailUpdate) SetStatus(v uint8) *DictionaryDetailUpdate {
+func (_u *DictionaryDetailUpdate) SetStatus(v uint32) *DictionaryDetailUpdate {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *DictionaryDetailUpdate) SetNillableStatus(v *uint8) *DictionaryDetailUpdate {
+func (_u *DictionaryDetailUpdate) SetNillableStatus(v *uint32) *DictionaryDetailUpdate {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -51,14 +51,8 @@ func (_u *DictionaryDetailUpdate) SetNillableStatus(v *uint8) *DictionaryDetailU
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *DictionaryDetailUpdate) AddStatus(v int8) *DictionaryDetailUpdate {
+func (_u *DictionaryDetailUpdate) AddStatus(v int32) *DictionaryDetailUpdate {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *DictionaryDetailUpdate) ClearStatus() *DictionaryDetailUpdate {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -224,13 +218,10 @@ func (_u *DictionaryDetailUpdate) sqlSave(ctx context.Context) (_node int, err e
 		_spec.SetField(dictionarydetail.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(dictionarydetail.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(dictionarydetail.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(dictionarydetail.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(dictionarydetail.FieldStatus, field.TypeUint8)
+		_spec.AddField(dictionarydetail.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.Sort(); ok {
 		_spec.SetField(dictionarydetail.FieldSort, field.TypeUint32, value)
@@ -303,14 +294,14 @@ func (_u *DictionaryDetailUpdateOne) SetUpdatedAt(v time.Time) *DictionaryDetail
 }
 
 // SetStatus sets the "status" field.
-func (_u *DictionaryDetailUpdateOne) SetStatus(v uint8) *DictionaryDetailUpdateOne {
+func (_u *DictionaryDetailUpdateOne) SetStatus(v uint32) *DictionaryDetailUpdateOne {
 	_u.mutation.ResetStatus()
 	_u.mutation.SetStatus(v)
 	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_u *DictionaryDetailUpdateOne) SetNillableStatus(v *uint8) *DictionaryDetailUpdateOne {
+func (_u *DictionaryDetailUpdateOne) SetNillableStatus(v *uint32) *DictionaryDetailUpdateOne {
 	if v != nil {
 		_u.SetStatus(*v)
 	}
@@ -318,14 +309,8 @@ func (_u *DictionaryDetailUpdateOne) SetNillableStatus(v *uint8) *DictionaryDeta
 }
 
 // AddStatus adds value to the "status" field.
-func (_u *DictionaryDetailUpdateOne) AddStatus(v int8) *DictionaryDetailUpdateOne {
+func (_u *DictionaryDetailUpdateOne) AddStatus(v int32) *DictionaryDetailUpdateOne {
 	_u.mutation.AddStatus(v)
-	return _u
-}
-
-// ClearStatus clears the value of the "status" field.
-func (_u *DictionaryDetailUpdateOne) ClearStatus() *DictionaryDetailUpdateOne {
-	_u.mutation.ClearStatus()
 	return _u
 }
 
@@ -521,13 +506,10 @@ func (_u *DictionaryDetailUpdateOne) sqlSave(ctx context.Context) (_node *Dictio
 		_spec.SetField(dictionarydetail.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Status(); ok {
-		_spec.SetField(dictionarydetail.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(dictionarydetail.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
-		_spec.AddField(dictionarydetail.FieldStatus, field.TypeUint8, value)
-	}
-	if _u.mutation.StatusCleared() {
-		_spec.ClearField(dictionarydetail.FieldStatus, field.TypeUint8)
+		_spec.AddField(dictionarydetail.FieldStatus, field.TypeUint32, value)
 	}
 	if value, ok := _u.mutation.Sort(); ok {
 		_spec.SetField(dictionarydetail.FieldSort, field.TypeUint32, value)

@@ -51,13 +51,13 @@ func (_c *DepartmentCreate) SetNillableUpdatedAt(v *time.Time) *DepartmentCreate
 }
 
 // SetStatus sets the "status" field.
-func (_c *DepartmentCreate) SetStatus(v uint8) *DepartmentCreate {
+func (_c *DepartmentCreate) SetStatus(v uint32) *DepartmentCreate {
 	_c.mutation.SetStatus(v)
 	return _c
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (_c *DepartmentCreate) SetNillableStatus(v *uint8) *DepartmentCreate {
+func (_c *DepartmentCreate) SetNillableStatus(v *uint32) *DepartmentCreate {
 	if v != nil {
 		_c.SetStatus(*v)
 	}
@@ -274,6 +274,9 @@ func (_c *DepartmentCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Department.updated_at"`)}
 	}
+	if _, ok := _c.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Department.status"`)}
+	}
 	if _, ok := _c.mutation.Sort(); !ok {
 		return &ValidationError{Name: "sort", err: errors.New(`ent: missing required field "Department.sort"`)}
 	}
@@ -321,7 +324,7 @@ func (_c *DepartmentCreate) createSpec() (*Department, *sqlgraph.CreateSpec) {
 		_node.UpdatedAt = value
 	}
 	if value, ok := _c.mutation.Status(); ok {
-		_spec.SetField(department.FieldStatus, field.TypeUint8, value)
+		_spec.SetField(department.FieldStatus, field.TypeUint32, value)
 		_node.Status = value
 	}
 	if value, ok := _c.mutation.Sort(); ok {

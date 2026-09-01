@@ -66,7 +66,7 @@ func UpdatedAt(v time.Time) predicate.Role {
 }
 
 // Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
-func Status(v uint8) predicate.Role {
+func Status(v uint32) predicate.Role {
 	return predicate.Role(sql.FieldEQ(FieldStatus, v))
 }
 
@@ -171,53 +171,43 @@ func UpdatedAtLTE(v time.Time) predicate.Role {
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.
-func StatusEQ(v uint8) predicate.Role {
+func StatusEQ(v uint32) predicate.Role {
 	return predicate.Role(sql.FieldEQ(FieldStatus, v))
 }
 
 // StatusNEQ applies the NEQ predicate on the "status" field.
-func StatusNEQ(v uint8) predicate.Role {
+func StatusNEQ(v uint32) predicate.Role {
 	return predicate.Role(sql.FieldNEQ(FieldStatus, v))
 }
 
 // StatusIn applies the In predicate on the "status" field.
-func StatusIn(vs ...uint8) predicate.Role {
+func StatusIn(vs ...uint32) predicate.Role {
 	return predicate.Role(sql.FieldIn(FieldStatus, vs...))
 }
 
 // StatusNotIn applies the NotIn predicate on the "status" field.
-func StatusNotIn(vs ...uint8) predicate.Role {
+func StatusNotIn(vs ...uint32) predicate.Role {
 	return predicate.Role(sql.FieldNotIn(FieldStatus, vs...))
 }
 
 // StatusGT applies the GT predicate on the "status" field.
-func StatusGT(v uint8) predicate.Role {
+func StatusGT(v uint32) predicate.Role {
 	return predicate.Role(sql.FieldGT(FieldStatus, v))
 }
 
 // StatusGTE applies the GTE predicate on the "status" field.
-func StatusGTE(v uint8) predicate.Role {
+func StatusGTE(v uint32) predicate.Role {
 	return predicate.Role(sql.FieldGTE(FieldStatus, v))
 }
 
 // StatusLT applies the LT predicate on the "status" field.
-func StatusLT(v uint8) predicate.Role {
+func StatusLT(v uint32) predicate.Role {
 	return predicate.Role(sql.FieldLT(FieldStatus, v))
 }
 
 // StatusLTE applies the LTE predicate on the "status" field.
-func StatusLTE(v uint8) predicate.Role {
+func StatusLTE(v uint32) predicate.Role {
 	return predicate.Role(sql.FieldLTE(FieldStatus, v))
-}
-
-// StatusIsNil applies the IsNil predicate on the "status" field.
-func StatusIsNil() predicate.Role {
-	return predicate.Role(sql.FieldIsNull(FieldStatus))
-}
-
-// StatusNotNil applies the NotNil predicate on the "status" field.
-func StatusNotNil() predicate.Role {
-	return predicate.Role(sql.FieldNotNull(FieldStatus))
 }
 
 // SortEQ applies the EQ predicate on the "sort" field.

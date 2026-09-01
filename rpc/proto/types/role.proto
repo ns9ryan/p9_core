@@ -27,9 +27,9 @@ message CreateRoleRequest {
   // 状态
   optional uint32 status = 1;
   // 角色名称
-  optional string name = 2;
+  string name = 2;
   // 角色编码
-  optional string code = 3;
+  string code = 3;
   // 备注
   optional string remark = 4;
   // 排序

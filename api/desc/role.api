@@ -47,7 +47,8 @@ type (
 
     // 创建角色响应
     CreateRoleResponse {
-        BaseResponse
+        // 角色ID
+        Id uint64 `json:"id"`
     }
 
     // 更新角色请求

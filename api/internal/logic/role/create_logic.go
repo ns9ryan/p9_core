@@ -8,7 +8,6 @@ import (
 
 	"github.com/ns9ryan/p9_core/api/internal/svc"
 	"github.com/ns9ryan/p9_core/api/internal/types"
-	"github.com/ns9ryan/p9_core/pkg/i18nkey"
 	"github.com/ns9ryan/p9_core/rpc/pb/core/role"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +27,7 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 }
 
 func (l *CreateLogic) Create(req *types.CreateRoleRequest) (resp *types.CreateRoleResponse, err error) {
-	_, err = l.svcCtx.RoleRpc.Create(l.ctx,
+	data, err := l.svcCtx.RoleRpc.Create(l.ctx,
 		&role.CreateRoleRequest{
 			Status: req.Status, // 状态
 			Name:   req.Name,   // 角色名称
@@ -39,9 +38,8 @@ func (l *CreateLogic) Create(req *types.CreateRoleRequest) (resp *types.CreateRo
 	if err != nil {
 		return nil, err
 	}
+	// 返回创建后的角色ID
 	return &types.CreateRoleResponse{
-		BaseResponse: types.BaseResponse{
-			Msg: l.svcCtx.Trans.Trans(l.ctx, i18nkey.CreateSuccess),
-		},
+		Id: data.Id,
 	}, nil
 }

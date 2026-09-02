@@ -10,6 +10,7 @@ import (
 	"github.com/ns9ryan/p9_core/api/internal/config"
 	"github.com/ns9ryan/p9_core/api/internal/errorhandler"
 	"github.com/ns9ryan/p9_core/api/internal/handler"
+	"github.com/ns9ryan/p9_core/api/internal/response"
 	"github.com/ns9ryan/p9_core/api/internal/svc"
 	"github.com/ns9ryan/p9_core/pkg/validate"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -40,10 +41,13 @@ func main() {
 	// 创建服务上下文
 	ctx := svc.NewServiceContext(c)
 
-	// 注册全局错误处理器
+	// 注册全局错误响应处理器
 	httpx.SetErrorHandlerCtx(
 		errorhandler.New(ctx.Trans, c.Debug).Handle,
 	)
+
+	// 注册全局成功响应处理器
+	httpx.SetOkHandler(response.Ok)
 
 	// 注册全局语言中间件
 	server.Use(ctx.Language)

@@ -30,7 +30,7 @@ type CreateRoleRequest struct {
 }
 
 type CreateRoleResponse struct {
-	BaseResponse
+	Id uint64 `json:"id"`
 }
 
 type DeleteRoleResponse struct {

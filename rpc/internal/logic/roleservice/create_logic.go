@@ -33,7 +33,7 @@ func (l *CreateLogic) Create(in *role.CreateRoleRequest) (*role.CreateRoleRespon
 		SetNillableSort(in.Sort).
 		Save(l.ctx)
 	if err != nil {
-		return nil, enterror.HandleEnt(l.Logger, err)
+		return nil, enterror.Handle(l.Logger, err)
 	}
 
 	return &role.CreateRoleResponse{Id: result.ID}, nil

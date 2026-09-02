@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/ns9ryan/p9_core/api/internal/apierror"
 	"github.com/ns9ryan/p9_core/api/internal/rpcerror"
 	"github.com/ns9ryan/p9_core/api/internal/types"
 	"github.com/ns9ryan/p9_core/pkg/i18n"
@@ -31,14 +32,31 @@ func New(trans *i18n.Translator, debug bool) *Handler {
 
 // Handle 处理API错误
 func (h *Handler) Handle(ctx context.Context, err error) (int, any) {
-	// 处理参数校验错误
+	// 参数校验错误直接返回HTTP 400
 	var validationError *validate.Error
 	if errors.As(err, &validationError) {
-		return h.response(
-			http.StatusBadRequest,
-			validationError.Error(),
-			h.debugDetail("api", "", err),
-		)
+		// Debug开启时附加原始校验错误
+		detail := h.debugDetail("api", "", err)
+
+		// 创建统一参数错误响应
+		return h.response(http.StatusBadRequest, validationError.Error(), detail)
+	}
+
+	// 处理API内部主动标记的错误
+	if apiErr, ok := apierror.FromError(err); ok {
+		// HTTP 500及以上属于服务端错误，需要记录内部错误日志
+		if apiErr.HTTPStatus >= http.StatusInternalServerError {
+			h.logInternal(ctx, "api", "", err)
+		}
+
+		// 将消息Key翻译成当前请求语言
+		message := h.trans.Trans(ctx, apiErr.MessageKey)
+
+		// Debug开启时附加API内部错误
+		detail := h.debugDetail("api", "", err)
+
+		// 创建统一API错误响应
+		return h.response(apiErr.HTTPStatus, message, detail)
 	}
 
 	// 获取RPC调用来源
@@ -56,14 +74,14 @@ func (h *Handler) Handle(ctx context.Context, err error) (int, any) {
 		return h.handleGRPC(ctx, err, grpcStatus, source, rpcMethod)
 	}
 
-	// 未分类错误
-	h.logInternal(ctx, source, rpcMethod, err)
+	// 剩余普通错误按请求解析错误处理，例如JSON、path、form格式错误
+	message := h.trans.Trans(ctx, i18nkey.InvalidRequest)
 
-	return h.response(
-		http.StatusInternalServerError,
-		h.trans.Trans(ctx, i18nkey.InternalError),
-		h.debugDetail(source, rpcMethod, err),
-	)
+	// Debug开启时附加具体请求解析错误
+	detail := h.debugDetail("api", "", err)
+
+	// 请求格式错误统一返回HTTP 400
+	return h.response(http.StatusBadRequest, message, detail)
 }
 
 // handleGRPC 处理gRPC错误
@@ -85,12 +103,11 @@ func (h *Handler) handleGRPC(
 		h.logInternal(ctx, source, rpcMethod, err)
 	}
 
-	// 创建统一错误响应
-	return h.response(
-		httpStatus,
-		message,
-		h.debugDetail(source, rpcMethod, err),
-	)
+	// Debug开启时附加错误来源和具体RPC方法
+	detail := h.debugDetail(source, rpcMethod, err)
+
+	// 创建统一gRPC错误响应
+	return h.response(httpStatus, message, detail)
 }
 
 // grpcMessage 获取gRPC错误提示
@@ -100,15 +117,15 @@ func (h *Handler) grpcMessage(ctx context.Context, grpcStatus *status.Status) st
 	case codes.ResourceExhausted:
 		return h.trans.Trans(ctx, i18nkey.TooManyRequests)
 
-	// 服务不可用，例如RPC服务未启动或连接失败
+	// RPC服务不可用，例如服务未启动或连接失败
 	case codes.Unavailable:
 		return h.trans.Trans(ctx, i18nkey.ServiceUnavailable)
 
-	// 请求超时
+	// RPC调用超过截止时间
 	case codes.DeadlineExceeded:
 		return h.trans.Trans(ctx, i18nkey.RequestTimeout)
 
-	// 请求被取消
+	// RPC请求被取消
 	case codes.Canceled:
 		return h.trans.Trans(ctx, i18nkey.RequestTimeout)
 
@@ -120,7 +137,7 @@ func (h *Handler) grpcMessage(ctx context.Context, grpcStatus *status.Status) st
 	// 将RPC返回的消息Key翻译成当前请求语言
 	message := h.trans.Trans(ctx, grpcStatus.Message())
 
-	// Internal代表服务内部错误，翻译不到时不直接暴露原始错误信息
+	// Internal代表服务内部错误，翻译不到时不暴露原始错误信息
 	if grpcStatus.Code() == codes.Internal && message == grpcStatus.Message() {
 		return h.trans.Trans(ctx, i18nkey.InternalError)
 	}
@@ -178,18 +195,27 @@ func (h *Handler) response(code int, message string, detail *types.ErrorDetail) 
 // grpcCodeToHTTPStatus 将gRPC状态码转换为HTTP状态码
 func grpcCodeToHTTPStatus(code codes.Code) int {
 	switch code {
-	// 参数错误、资源已存在、前置条件不满足、参数超出范围
-	case codes.InvalidArgument,
-		codes.AlreadyExists,
-		codes.FailedPrecondition,
-		codes.OutOfRange:
+	// 请求参数无效
+	case codes.InvalidArgument:
 		return http.StatusBadRequest
 
-	// 未认证，例如Token无效或未登录
+	// 请求创建的资源已经存在
+	case codes.AlreadyExists:
+		return http.StatusBadRequest
+
+	// 当前状态不满足执行操作的前置条件
+	case codes.FailedPrecondition:
+		return http.StatusBadRequest
+
+	// 请求参数超出允许范围
+	case codes.OutOfRange:
+		return http.StatusBadRequest
+
+	// 未认证，例如未登录或Token无效
 	case codes.Unauthenticated:
 		return http.StatusUnauthorized
 
-	// 已认证但没有操作权限
+	// 已认证，但没有执行当前操作的权限
 	case codes.PermissionDenied:
 		return http.StatusForbidden
 
@@ -197,7 +223,7 @@ func grpcCodeToHTTPStatus(code codes.Code) int {
 	case codes.NotFound:
 		return http.StatusNotFound
 
-	// 请求过多或资源配额耗尽
+	// 请求过多或服务资源配额耗尽
 	case codes.ResourceExhausted:
 		return http.StatusTooManyRequests
 
@@ -205,11 +231,11 @@ func grpcCodeToHTTPStatus(code codes.Code) int {
 	case codes.Canceled:
 		return http.StatusRequestTimeout
 
-	// 操作冲突，例如并发事务被中止
+	// 操作被中止，例如并发操作发生冲突
 	case codes.Aborted:
 		return http.StatusConflict
 
-	// RPC方法未实现
+	// RPC方法尚未实现
 	case codes.Unimplemented:
 		return http.StatusNotImplemented
 

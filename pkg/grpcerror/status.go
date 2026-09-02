@@ -1,4 +1,4 @@
-package rpcerror
+package grpcerror
 
 import (
 	"google.golang.org/grpc/codes"

@@ -1,4 +1,4 @@
-package dberror
+package enterror
 
 import (
 	"github.com/ns9ryan/p9_core/pkg/grpcerror"

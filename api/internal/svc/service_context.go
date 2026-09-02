@@ -27,7 +27,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	trans, err := i18n.New(c.I18n, locales.FS)
 	logx.Must(err)
 
-	// 创建Core RPC客户端
+	// 创建Core RPC客户端，并注册RPC错误拦截器
 	coreRpc := zrpc.MustNewClient(
 		c.CoreRpc,
 		zrpc.WithUnaryClientInterceptor(rpcerror.UnaryClientInterceptor),
@@ -35,7 +35,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	return &ServiceContext{
 		Config: c,
-		//RoleRpc:  roleservice.NewRoleService(zrpc.MustNewClient(c.CoreRpc)),
+		// RoleRpc:  roleservice.NewRoleService(zrpc.MustNewClient(c.CoreRpc)),
 		RoleRpc:  roleservice.NewRoleService(coreRpc),
 		Trans:    trans,
 		Language: middleware.NewLanguageMiddleware().Handle,

@@ -31,14 +31,16 @@ func main() {
 	v, err := validate.New(c.I18n.DefaultLanguage)
 	logx.Must(err)
 
+	// 注册全局参数校验器
 	httpx.SetValidator(v)
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
+	// 创建服务上下文
 	ctx := svc.NewServiceContext(c)
 
-	// 注册统一错误处理器
+	// 注册全局错误处理器
 	httpx.SetErrorHandlerCtx(
 		errorhandler.New(ctx.Trans, c.Debug).Handle,
 	)

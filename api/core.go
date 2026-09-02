@@ -7,10 +7,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/ns9ryan/common/validate"
 	"github.com/ns9ryan/p9_core/api/internal/config"
 	"github.com/ns9ryan/p9_core/api/internal/handler"
 	"github.com/ns9ryan/p9_core/api/internal/svc"
+	"github.com/ns9ryan/p9_core/pkg/validate"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 
@@ -26,7 +26,8 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	v, err := validate.New()
+	// 创建参数校验器
+	v, err := validate.New(c.I18n.DefaultLanguage)
 	logx.Must(err)
 
 	httpx.SetValidator(v)

@@ -9,6 +9,4 @@ message InitDatabaseRequest {}
 
 // 初始化数据库响应
 message InitDatabaseResponse {
-  // 响应消息
-  string msg = 1;
 }

@@ -118,9 +118,7 @@ func (l *InitDatabaseLogic) InitDatabase(in *base.InitDatabaseRequest) (*base.In
 			return nil, rpcerror.NewInternal(i18n.RedisError)
 		}
 
-		return &base.InitDatabaseResponse{
-			Msg: i18n.AlreadyInit,
-		}, nil
+		return &base.InitDatabaseResponse{}, nil
 	}
 
 	// 初始化 Redis 状态

@@ -117,6 +117,10 @@ func (h *Handler) grpcMessage(
 	case codes.Canceled:
 		return h.trans.Trans(ctx, i18nkey.RequestTimeout)
 
+	// RPC方法不存在或尚未实现
+	case codes.Unimplemented:
+		return h.trans.Trans(ctx, i18nkey.InternalError)
+
 	// 未明确分类的gRPC错误
 	case codes.Unknown:
 		return h.trans.Trans(ctx, i18nkey.InternalError)

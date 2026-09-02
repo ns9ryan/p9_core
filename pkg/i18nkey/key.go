@@ -1,9 +1,6 @@
 package i18nkey
 
 const (
-	CreateSuccess   = "common.create_success"   // 创建成功
-	UpdateSuccess   = "common.update_success"   // 更新成功
-	DeleteSuccess   = "common.delete_success"   // 删除成功
 	InvalidRequest  = "common.invalid_request"  // 请求参数格式错误
 	DataNotFound    = "common.data_not_found"   // 数据不存在
 	ConstraintError = "common.constraint_error" // 数据约束冲突

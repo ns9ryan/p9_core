@@ -5,7 +5,6 @@ import "types/common.api"
 
 // 初始化数据库响应
 type InitDatabaseResponse {
-    BaseResponse
 }
 
 @server (

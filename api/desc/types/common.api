@@ -58,34 +58,6 @@ type (
         UpdatedAt *int64 `json:"updatedAt,optional"`
     }
 )
-
-// 公共响应
-type (
-    // 基础响应
-    BaseResponse {
-        // 状态码
-        Code int `json:"code"`
-
-        // 提示信息
-        Msg string `json:"msg"`
-
-        // 调试信息
-        Detail *ErrorDetail `json:"detail,omitempty"`
-    }
-
-    // 错误调试信息
-    ErrorDetail {
-        // 错误来源
-        Source string `json:"source"`
-
-        // RPC方法
-        Rpc string `json:"rpc,omitempty"`
-
-        // 原始错误
-        Error string `json:"error"`
-    }
-)
-
 // 分页
 type (
     // 分页请求

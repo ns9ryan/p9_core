@@ -9,12 +9,6 @@ type BaseIDInfo struct {
 	UpdatedAt *int64  `json:"updatedAt,optional"`
 }
 
-type BaseResponse struct {
-	Code   int          `json:"code"`
-	Msg    string       `json:"msg"`
-	Detail *ErrorDetail `json:"detail,omitempty"`
-}
-
 type BaseUUIDInfo struct {
 	Id        *string `json:"id,optional"`
 	CreatedAt *int64  `json:"createdAt,optional"`
@@ -34,17 +28,9 @@ type CreateRoleResponse struct {
 }
 
 type DeleteRoleResponse struct {
-	BaseResponse
-}
-
-type ErrorDetail struct {
-	Source string `json:"source"`
-	Rpc    string `json:"rpc,omitempty"`
-	Error  string `json:"error"`
 }
 
 type GetRoleResponse struct {
-	BaseResponse
 	Data RoleInfo `json:"data"`
 }
 
@@ -61,7 +47,6 @@ type IDsRequest struct {
 }
 
 type InitDatabaseResponse struct {
-	BaseResponse
 }
 
 type ListRolesRequest struct {
@@ -70,7 +55,6 @@ type ListRolesRequest struct {
 }
 
 type ListRolesResponse struct {
-	BaseResponse
 	PageInfo
 	List []RoleInfo `json:"list"`
 }
@@ -116,5 +100,4 @@ type UpdateRoleRequest struct {
 }
 
 type UpdateRoleResponse struct {
-	BaseResponse
 }

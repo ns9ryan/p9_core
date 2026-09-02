@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/ns9ryan/p9_core/api/internal/response"
 	"github.com/ns9ryan/p9_core/api/internal/rpcerror"
-	"github.com/ns9ryan/p9_core/api/internal/types"
 	"github.com/ns9ryan/p9_core/pkg/i18n"
 	"github.com/ns9ryan/p9_core/pkg/i18nkey"
 	"github.com/ns9ryan/p9_core/pkg/validate"
@@ -139,12 +139,12 @@ func (h *Handler) debugDetail(
 	source string,
 	rpcMethod string,
 	err error,
-) *types.ErrorDetail {
+) *response.ErrorDetail {
 	if !h.debug {
 		return nil
 	}
 
-	return &types.ErrorDetail{
+	return &response.ErrorDetail{
 		Source: source,
 		Rpc:    rpcMethod,
 		Error:  err.Error(),
@@ -181,9 +181,9 @@ func (h *Handler) logInternal(
 func (h *Handler) response(
 	code int,
 	message string,
-	detail *types.ErrorDetail,
+	detail *response.ErrorDetail,
 ) (int, any) {
-	return code, &types.BaseResponse{
+	return code, &response.ErrorResponse{
 		Code:   code,
 		Msg:    message,
 		Detail: detail,

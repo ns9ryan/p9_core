@@ -73,13 +73,11 @@ type (
 
     // 更新角色响应
     UpdateRoleResponse {
-        BaseResponse
     }
 
 
     // 删除角色响应
     DeleteRoleResponse {
-        BaseResponse
     }
 
     // 角色列表请求
@@ -92,7 +90,6 @@ type (
 
     // 角色列表响应
     ListRolesResponse {
-        BaseResponse
         PageInfo
 
         // 角色列表
@@ -101,8 +98,6 @@ type (
 
     // 角色详情响应
     GetRoleResponse {
-        BaseResponse
-
         // 角色信息
         Data RoleInfo `json:"data"`
     }

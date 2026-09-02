@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/ns9ryan/p9_core/rpc/internal/svc"
-	"github.com/ns9ryan/p9_core/rpc/pb/core"
+	"github.com/ns9ryan/p9_core/rpc/pb/core/ping"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,8 +23,8 @@ func NewPingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PingLogic {
 	}
 }
 
-func (l *PingLogic) Ping(in *core.PingRequest) (*core.PingResponse, error) {
+func (l *PingLogic) Ping(in *ping.PingRequest) (*ping.PingResponse, error) {
 	// todo: add your logic here and delete this line
 
-	return &core.PingResponse{}, nil
+	return &ping.PingResponse{}, nil
 }

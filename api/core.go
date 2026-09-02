@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	"github.com/ns9ryan/p9_core/api/internal/config"
+	"github.com/ns9ryan/p9_core/api/internal/errorhandler"
 	"github.com/ns9ryan/p9_core/api/internal/handler"
 	"github.com/ns9ryan/p9_core/api/internal/svc"
 	"github.com/ns9ryan/p9_core/pkg/validate"
@@ -36,6 +37,9 @@ func main() {
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
+
+	// 注册统一错误处理器
+	httpx.SetErrorHandlerCtx(errorhandler.New(ctx.Trans).Handle)
 
 	// 注册全局语言中间件
 	server.Use(ctx.Language)

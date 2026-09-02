@@ -33,10 +33,10 @@ type (
         Status *uint32 `json:"status,optional" validate:"omitempty,lt=20"`
 
         // 角色名称
-        Name *string `json:"name,optional" validate:"omitempty,max=30"`
+        Name string `json:"name,optional" validate:"omitempty,max=30"`
 
         // 角色编码
-        Code *string `json:"code,optional" validate:"omitempty,max=15,alphanum"`
+        Code string `json:"code,optional" validate:"omitempty,max=15,alphanum"`
 
         // 备注
         Remark *string `json:"remark,optional" validate:"omitempty,max=200"`

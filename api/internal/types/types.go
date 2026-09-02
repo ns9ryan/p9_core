@@ -23,8 +23,8 @@ type BaseUUIDInfo struct {
 
 type CreateRoleRequest struct {
 	Status *uint32 `json:"status,optional" validate:"omitempty,lt=20"`
-	Name   *string `json:"name,optional" validate:"omitempty,max=30"`
-	Code   *string `json:"code,optional" validate:"omitempty,max=15,alphanum"`
+	Name   string  `json:"name,optional" validate:"omitempty,max=30"`
+	Code   string  `json:"code,optional" validate:"omitempty,max=15,alphanum"`
 	Remark *string `json:"remark,optional" validate:"omitempty,max=200"`
 	Sort   *uint32 `json:"sort,optional" validate:"omitempty,lt=10000"`
 }

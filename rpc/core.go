@@ -7,6 +7,7 @@ import (
 	"github.com/ns9ryan/p9_core/rpc/internal/config"
 	baseserviceServer "github.com/ns9ryan/p9_core/rpc/internal/server/baseservice"
 	pingserviceServer "github.com/ns9ryan/p9_core/rpc/internal/server/pingservice"
+	roleserviceServer "github.com/ns9ryan/p9_core/rpc/internal/server/roleservice"
 	"github.com/ns9ryan/p9_core/rpc/internal/svc"
 	"github.com/ns9ryan/p9_core/rpc/pb/core"
 
@@ -29,6 +30,7 @@ func main() {
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		core.RegisterPingServiceServer(grpcServer, pingserviceServer.NewPingServiceServer(ctx))
 		core.RegisterBaseServiceServer(grpcServer, baseserviceServer.NewBaseServiceServer(ctx))
+		core.RegisterRoleServiceServer(grpcServer, roleserviceServer.NewRoleServiceServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

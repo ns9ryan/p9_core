@@ -6,13 +6,13 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// Error RPC 调用错误
+// Error RPC调用错误
 type Error struct {
-	Method string // RPC 方法
+	Method string // RPC方法
 	err    error  // 原始错误
 }
 
-// Wrap 包装 RPC 调用错误
+// Wrap 包装RPC调用错误
 func Wrap(method string, err error) error {
 	if err == nil {
 		return nil
@@ -24,7 +24,7 @@ func Wrap(method string, err error) error {
 	}
 }
 
-// Error 返回原始错误信息
+// Error 返回错误信息
 func (e *Error) Error() string {
 	return e.err.Error()
 }
@@ -34,12 +34,12 @@ func (e *Error) Unwrap() error {
 	return e.err
 }
 
-// GRPCStatus 返回 gRPC 状态 - gRPC 状态
+// GRPCStatus 返回gRPC状态 - gRPC 状态
 func (e *Error) GRPCStatus() *status.Status {
 	return status.Convert(e.err)
 }
 
-// FromError 获取 RPC 调用错误
+// FromError 获取RPC调用错误
 func FromError(err error) (*Error, bool) {
 	var rpcErr *Error
 	if !errors.As(err, &rpcErr) {

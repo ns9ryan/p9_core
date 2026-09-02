@@ -39,7 +39,9 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	// 注册统一错误处理器
-	httpx.SetErrorHandlerCtx(errorhandler.New(ctx.Trans).Handle)
+	httpx.SetErrorHandlerCtx(
+		errorhandler.New(ctx.Trans, c.Debug).Handle,
+	)
 
 	// 注册全局语言中间件
 	server.Use(ctx.Language)

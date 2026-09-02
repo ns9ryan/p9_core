@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// UnaryClientInterceptor 记录 RPC 调用来源
+// UnaryClientInterceptor RPC客户端错误拦截器
 func UnaryClientInterceptor(
 	ctx context.Context,
 	method string,

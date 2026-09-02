@@ -10,8 +10,9 @@ type BaseIDInfo struct {
 }
 
 type BaseResponse struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
+	Code   int          `json:"code"`
+	Msg    string       `json:"msg"`
+	Detail *ErrorDetail `json:"detail,omitempty"`
 }
 
 type BaseUUIDInfo struct {
@@ -34,6 +35,12 @@ type CreateRoleResponse struct {
 
 type DeleteRoleResponse struct {
 	BaseResponse
+}
+
+type ErrorDetail struct {
+	Source string `json:"source"`
+	Rpc    string `json:"rpc,omitempty"`
+	Error  string `json:"error"`
 }
 
 type GetRoleResponse struct {

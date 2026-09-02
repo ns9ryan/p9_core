@@ -73,7 +73,7 @@ type (
         Detail *ErrorDetail `json:"detail,omitempty"`
     }
 
-        // 错误调试信息
+    // 错误调试信息
     ErrorDetail {
         // 错误来源
         Source string `json:"source"`

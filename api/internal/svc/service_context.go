@@ -27,7 +27,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	trans, err := i18n.New(c.I18n, locales.FS)
 	logx.Must(err)
 
-	// 创建 Core RPC 客户端
+	// 创建Core RPC客户端
 	coreRpc := zrpc.MustNewClient(
 		c.CoreRpc,
 		zrpc.WithUnaryClientInterceptor(rpcerror.UnaryClientInterceptor),

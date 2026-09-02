@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/ns9ryan/p9_core/api/internal/apierror"
 	"github.com/ns9ryan/p9_core/api/internal/rpcerror"
 	"github.com/ns9ryan/p9_core/api/internal/types"
 	"github.com/ns9ryan/p9_core/pkg/i18n"
@@ -32,56 +31,42 @@ func New(trans *i18n.Translator, debug bool) *Handler {
 
 // Handle 处理API错误
 func (h *Handler) Handle(ctx context.Context, err error) (int, any) {
-	// 参数校验错误直接返回HTTP 400
+	// 参数校验错误已经由Validator完成多语言翻译
 	var validationError *validate.Error
 	if errors.As(err, &validationError) {
-		// Debug开启时附加原始校验错误
-		detail := h.debugDetail("api", "", err)
-
-		// 创建统一参数错误响应
-		return h.response(http.StatusBadRequest, validationError.Error(), detail)
+		return h.response(
+			http.StatusBadRequest,
+			validationError.Error(),
+			h.debugDetail("api", "", err),
+		)
 	}
 
-	// 处理API内部主动标记的错误
-	if apiErr, ok := apierror.FromError(err); ok {
-		// HTTP 500及以上属于服务端错误，需要记录内部错误日志
-		if apiErr.HTTPStatus >= http.StatusInternalServerError {
-			h.logInternal(ctx, "api", "", err)
-		}
-
-		// 将消息Key翻译成当前请求语言
-		message := h.trans.Trans(ctx, apiErr.MessageKey)
-
-		// Debug开启时附加API内部错误
-		detail := h.debugDetail("api", "", err)
-
-		// 创建统一API错误响应
-		return h.response(apiErr.HTTPStatus, message, detail)
-	}
-
-	// 获取RPC调用来源
 	source := "api"
 	rpcMethod := ""
 
-	// 判断错误是否来自RPC调用，并记录具体RPC方法
+	// 判断错误是否来自RPC调用，并获取具体RPC方法
 	if rpcErr, ok := rpcerror.FromError(err); ok {
 		source = "rpc"
 		rpcMethod = rpcErr.Method
 	}
 
-	// 解析gRPC错误并转换为统一HTTP错误响应
+	// gRPC错误按照状态码转换并翻译
 	if grpcStatus, ok := status.FromError(err); ok {
-		return h.handleGRPC(ctx, err, grpcStatus, source, rpcMethod)
+		return h.handleGRPC(
+			ctx,
+			err,
+			grpcStatus,
+			source,
+			rpcMethod,
+		)
 	}
 
-	// 剩余普通错误按请求解析错误处理，例如JSON、path、form格式错误
-	message := h.trans.Trans(ctx, i18nkey.InvalidRequest)
-
-	// Debug开启时附加具体请求解析错误
-	detail := h.debugDetail("api", "", err)
-
-	// 请求格式错误统一返回HTTP 400
-	return h.response(http.StatusBadRequest, message, detail)
+	// 普通错误主要来自JSON、path、form等请求解析失败
+	return h.response(
+		http.StatusBadRequest,
+		h.trans.Trans(ctx, i18nkey.InvalidRequest),
+		h.debugDetail("api", "", err),
+	)
 }
 
 // handleGRPC 处理gRPC错误
@@ -95,7 +80,7 @@ func (h *Handler) handleGRPC(
 	// 将gRPC状态码转换为对应的HTTP状态码
 	httpStatus := grpcCodeToHTTPStatus(grpcStatus.Code())
 
-	// 根据gRPC状态获取最终返回给前端的提示信息
+	// 获取最终返回给前端的错误提示
 	message := h.grpcMessage(ctx, grpcStatus)
 
 	// HTTP 500及以上属于服务端错误，需要记录内部错误日志
@@ -103,17 +88,20 @@ func (h *Handler) handleGRPC(
 		h.logInternal(ctx, source, rpcMethod, err)
 	}
 
-	// Debug开启时附加错误来源和具体RPC方法
-	detail := h.debugDetail(source, rpcMethod, err)
-
-	// 创建统一gRPC错误响应
-	return h.response(httpStatus, message, detail)
+	return h.response(
+		httpStatus,
+		message,
+		h.debugDetail(source, rpcMethod, err),
+	)
 }
 
 // grpcMessage 获取gRPC错误提示
-func (h *Handler) grpcMessage(ctx context.Context, grpcStatus *status.Status) string {
+func (h *Handler) grpcMessage(
+	ctx context.Context,
+	grpcStatus *status.Status,
+) string {
 	switch grpcStatus.Code() {
-	// 资源耗尽，例如限流或配额不足
+	// 请求过多或服务资源配额耗尽
 	case codes.ResourceExhausted:
 		return h.trans.Trans(ctx, i18nkey.TooManyRequests)
 
@@ -134,11 +122,12 @@ func (h *Handler) grpcMessage(ctx context.Context, grpcStatus *status.Status) st
 		return h.trans.Trans(ctx, i18nkey.InternalError)
 	}
 
-	// 将RPC返回的消息Key翻译成当前请求语言
+	// RPC业务错误使用Message中的i18n Key进行翻译
 	message := h.trans.Trans(ctx, grpcStatus.Message())
 
-	// Internal代表服务内部错误，翻译不到时不暴露原始错误信息
-	if grpcStatus.Code() == codes.Internal && message == grpcStatus.Message() {
+	// Internal错误翻译不到时，不直接向前端暴露原始错误信息
+	if grpcStatus.Code() == codes.Internal &&
+		message == grpcStatus.Message() {
 		return h.trans.Trans(ctx, i18nkey.InternalError)
 	}
 
@@ -146,7 +135,11 @@ func (h *Handler) grpcMessage(ctx context.Context, grpcStatus *status.Status) st
 }
 
 // debugDetail 创建调试信息
-func (h *Handler) debugDetail(source string, rpcMethod string, err error) *types.ErrorDetail {
+func (h *Handler) debugDetail(
+	source string,
+	rpcMethod string,
+	err error,
+) *types.ErrorDetail {
 	if !h.debug {
 		return nil
 	}
@@ -167,6 +160,7 @@ func (h *Handler) logInternal(
 ) {
 	logger := logx.WithContext(ctx)
 
+	// RPC错误额外记录具体RPC方法
 	if rpcMethod != "" {
 		logger.Errorw(
 			"RPC调用失败",
@@ -183,8 +177,12 @@ func (h *Handler) logInternal(
 	)
 }
 
-// response 创建错误响应
-func (h *Handler) response(code int, message string, detail *types.ErrorDetail) (int, any) {
+// response 创建统一错误响应
+func (h *Handler) response(
+	code int,
+	message string,
+	detail *types.ErrorDetail,
+) (int, any) {
 	return code, &types.BaseResponse{
 		Code:   code,
 		Msg:    message,
@@ -195,27 +193,17 @@ func (h *Handler) response(code int, message string, detail *types.ErrorDetail) 
 // grpcCodeToHTTPStatus 将gRPC状态码转换为HTTP状态码
 func grpcCodeToHTTPStatus(code codes.Code) int {
 	switch code {
-	// 请求参数无效
-	case codes.InvalidArgument:
-		return http.StatusBadRequest
-
-	// 请求创建的资源已经存在
-	case codes.AlreadyExists:
-		return http.StatusBadRequest
-
-	// 当前状态不满足执行操作的前置条件
-	case codes.FailedPrecondition:
-		return http.StatusBadRequest
-
-	// 请求参数超出允许范围
-	case codes.OutOfRange:
+	// 参数错误
+	case codes.InvalidArgument,
+		codes.FailedPrecondition,
+		codes.OutOfRange:
 		return http.StatusBadRequest
 
 	// 未认证，例如未登录或Token无效
 	case codes.Unauthenticated:
 		return http.StatusUnauthorized
 
-	// 已认证，但没有执行当前操作的权限
+	// 已认证，但没有操作权限
 	case codes.PermissionDenied:
 		return http.StatusForbidden
 
@@ -223,15 +211,19 @@ func grpcCodeToHTTPStatus(code codes.Code) int {
 	case codes.NotFound:
 		return http.StatusNotFound
 
-	// 请求过多或服务资源配额耗尽
+	// 请求创建的资源已经存在
+	case codes.AlreadyExists:
+		return http.StatusConflict
+
+	// 请求过多或资源配额耗尽
 	case codes.ResourceExhausted:
 		return http.StatusTooManyRequests
 
-	// 请求被客户端或上游主动取消
+	// 请求被取消
 	case codes.Canceled:
 		return http.StatusRequestTimeout
 
-	// 操作被中止，例如并发操作发生冲突
+	// 操作被中止，例如并发冲突
 	case codes.Aborted:
 		return http.StatusConflict
 
@@ -247,7 +239,7 @@ func grpcCodeToHTTPStatus(code codes.Code) int {
 	case codes.DeadlineExceeded:
 		return http.StatusGatewayTimeout
 
-	// 未明确映射的错误统一按服务器内部错误处理
+	// 其他错误统一按服务器内部错误处理
 	default:
 		return http.StatusInternalServerError
 	}

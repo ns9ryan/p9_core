@@ -5,20 +5,31 @@ package svc
 
 import (
 	"github.com/ns9ryan/p9_core/api/internal/config"
+	"github.com/ns9ryan/p9_core/api/internal/locales"
+	"github.com/ns9ryan/p9_core/api/internal/middleware"
+	"github.com/ns9ryan/p9_core/pkg/i18n"
 	"github.com/ns9ryan/p9_core/rpc/client/roleservice"
-	"github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
-	Config  config.Config
-	RoleRpc roleservice.RoleService
-	Trans   *i18n.Translator
+	Config   config.Config
+	RoleRpc  roleservice.RoleService
+	Trans    *i18n.Translator
+	Language rest.Middleware
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	// 创建翻译器
+	trans, err := i18n.New(c.I18n, locales.FS)
+	logx.Must(err)
+
 	return &ServiceContext{
-		Config:  c,
-		RoleRpc: roleservice.NewRoleService(zrpc.MustNewClient(c.CoreRpc)),
+		Config:   c,
+		RoleRpc:  roleservice.NewRoleService(zrpc.MustNewClient(c.CoreRpc)),
+		Trans:    trans,
+		Language: middleware.NewLanguageMiddleware().Handle,
 	}
 }

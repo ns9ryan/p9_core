@@ -26,11 +26,11 @@ func New(config Config, localeFS fs.FS) (*Translator, error) {
 		return nil, fmt.Errorf("无效的默认语言 %q: %w", config.DefaultLanguage, err)
 	}
 
-	// 创建语言资源包,并注册 JSON 语言文件解析方式
+	// 创建语言资源包，并注册 JSON 语言文件解析方式
 	bundle := goi18n.NewBundle(defaultTag)
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
 
-	// 加载语言资源目录中的所有 JSON 文件
+	// 加载所有 JSON 语言文件
 	err = fs.WalkDir(localeFS, ".", func(filePath string, entry fs.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -57,16 +57,16 @@ func New(config Config, localeFS fs.FS) (*Translator, error) {
 }
 
 // Translate 根据指定语言翻译消息
-func (t *Translator) Translate(languageCode, key string) string {
+func (t *Translator) Translate(language, key string) string {
 	// 未指定语言时使用默认语言
-	if languageCode == "" {
-		languageCode = t.defaultLanguage
+	if language == "" {
+		language = t.defaultLanguage
 	}
 
 	// 创建当前语言的本地化器，并使用默认语言作为回退语言
 	localizer := goi18n.NewLocalizer(
 		t.bundle,
-		languageCode,
+		language,
 		t.defaultLanguage,
 	)
 

@@ -4,6 +4,7 @@
 package config
 
 import (
+	"github.com/ns9ryan/p9_core/pkg/i18n"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 )
@@ -11,4 +12,5 @@ import (
 type Config struct {
 	rest.RestConf
 	CoreRpc zrpc.RpcClientConf
+	I18n    i18n.Config
 }

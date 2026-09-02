@@ -3,11 +3,6 @@
 
 package types
 
-type BaseDataResponse struct {
-	BaseResponse
-	Data string `json:"data,omitempty"`
-}
-
 type BaseIDInfo struct {
 	Id        *uint64 `json:"id,optional"`
 	CreatedAt *int64  `json:"createdAt,optional"`
@@ -78,8 +73,8 @@ type PageInfo struct {
 }
 
 type PageRequest struct {
-	Page     uint64 `json:"page" validate:"required,number,gt=0"`
-	PageSize uint64 `json:"pageSize" validate:"required,number,lt=100000"`
+	Page     uint64 `json:"page" validate:"omitempty,gte=1"`
+	PageSize uint64 `json:"page_size" validate:"omitempty,lte=100"`
 }
 
 type PingResponse struct {

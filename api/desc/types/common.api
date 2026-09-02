@@ -61,21 +61,13 @@ type (
 
 // 公共响应
 type (
-    // 基础无数据响应
+    // 基础响应
     BaseResponse {
-        // 错误码
+        // 状态码
         Code int `json:"code"`
 
         // 提示信息
         Msg string `json:"msg"`
-    }
-
-    // 基础带数据响应
-    BaseDataResponse {
-        BaseResponse
-
-        // 数据
-        Data string `json:"data,omitempty"`
     }
 )
 
@@ -84,10 +76,10 @@ type (
     // 分页请求
     PageRequest {
         // 页码
-        Page uint64 `json:"page" validate:"required,number,gt=0"`
+        Page uint64 `json:"page" validate:"omitempty,gte=1"`
 
         // 每页数量
-        PageSize uint64 `json:"pageSize" validate:"required,number,lt=100000"`
+        PageSize uint64 `json:"page_size" validate:"omitempty,lte=100"`
     }
 
     // 分页信息

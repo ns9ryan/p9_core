@@ -18,7 +18,8 @@ func NewLanguageMiddleware() *LanguageMiddleware {
 func (m *LanguageMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// 获取请求语言并写入上下文
-		language := r.Header.Get("Accept-Language")
+		//language := r.Header.Get("Accept-Language")
+		language := r.Header.Get("X-Lang")
 		ctx := i18n.WithLanguage(r.Context(), language)
 
 		next(w, r.WithContext(ctx))

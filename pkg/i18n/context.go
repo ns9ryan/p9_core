@@ -2,6 +2,7 @@ package i18n
 
 import "context"
 
+// languageContextKey 用于在上下文中保存语言
 type languageContextKey struct{}
 
 // WithLanguage 将语言写入上下文

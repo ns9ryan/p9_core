@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
-	"path/filepath"
+	"path"
 	"strings"
 
 	goi18n "github.com/nicksnyder/go-i18n/v2/i18n"
@@ -14,31 +14,34 @@ import (
 
 // Translator 翻译器
 type Translator struct {
-	bundle          *goi18n.Bundle
-	defaultLanguage string
+	bundle          *goi18n.Bundle // 语言资源包
+	defaultLanguage string         // 默认语言
 }
 
 // New 创建翻译器
 func New(config Config, localeFS fs.FS) (*Translator, error) {
+	// 解析默认语言
 	defaultTag, err := language.Parse(config.DefaultLanguage)
 	if err != nil {
 		return nil, fmt.Errorf("无效的默认语言 %q: %w", config.DefaultLanguage, err)
 	}
 
+	// 创建语言资源包,并注册 JSON 语言文件解析方式
 	bundle := goi18n.NewBundle(defaultTag)
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
 
-	err = fs.WalkDir(localeFS, ".", func(path string, entry fs.DirEntry, err error) error {
+	// 加载语言资源目录中的所有 JSON 文件
+	err = fs.WalkDir(localeFS, ".", func(filePath string, entry fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 
-		if entry.IsDir() || !strings.EqualFold(filepath.Ext(path), ".json") {
+		if entry.IsDir() || !strings.EqualFold(path.Ext(filePath), ".json") {
 			return nil
 		}
 
-		if _, err := bundle.LoadMessageFileFS(localeFS, path); err != nil {
-			return fmt.Errorf("加载语言文件 %q 失败: %w", path, err)
+		if _, err := bundle.LoadMessageFileFS(localeFS, filePath); err != nil {
+			return fmt.Errorf("加载语言文件 %q 失败: %w", filePath, err)
 		}
 
 		return nil
@@ -53,18 +56,21 @@ func New(config Config, localeFS fs.FS) (*Translator, error) {
 	}, nil
 }
 
-// Translate 翻译消息
-func (t *Translator) Translate(language, key string) string {
-	if language == "" {
-		language = t.defaultLanguage
+// Translate 根据指定语言翻译消息
+func (t *Translator) Translate(languageCode, key string) string {
+	// 未指定语言时使用默认语言
+	if languageCode == "" {
+		languageCode = t.defaultLanguage
 	}
 
+	// 创建当前语言的本地化器，并使用默认语言作为回退语言
 	localizer := goi18n.NewLocalizer(
 		t.bundle,
-		language,
+		languageCode,
 		t.defaultLanguage,
 	)
 
+	// 根据消息 Key 获取对应翻译
 	message, err := localizer.Localize(&goi18n.LocalizeConfig{
 		MessageID: key,
 	})
@@ -75,7 +81,7 @@ func (t *Translator) Translate(language, key string) string {
 	return message
 }
 
-// Trans 根据上下文语言翻译消息
+// Trans 根据上下文中的语言翻译消息
 func (t *Translator) Trans(ctx context.Context, key string) string {
 	return t.Translate(LanguageFromContext(ctx), key)
 }

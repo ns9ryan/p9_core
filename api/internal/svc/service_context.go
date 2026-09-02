@@ -5,15 +5,20 @@ package svc
 
 import (
 	"github.com/ns9ryan/p9_core/api/internal/config"
+	"github.com/ns9ryan/p9_core/rpc/client/roleservice"
+	"github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
-	Config config.Config
-	// CoreRpc coreclient.Core
+	Config  config.Config
+	RoleRpc roleservice.RoleService
+	Trans   *i18n.Translator
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
-		Config: c,
+		Config:  c,
+		RoleRpc: roleservice.NewRoleService(zrpc.MustNewClient(c.CoreRpc)),
 	}
 }

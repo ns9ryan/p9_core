@@ -1,0 +1,12 @@
+{
+  "common": {
+    "create_success": "Created successfully",
+    "update_success": "Updated successfully",
+    "delete_success": "Deleted successfully",
+    "data_not_found": "Data not found",
+    "constraint_error": "Data conflict",
+    "validation_error": "Validation failed",
+    "database_error": "Database operation failed",
+    "service_unavailable": "Service unavailable"
+  }
+}

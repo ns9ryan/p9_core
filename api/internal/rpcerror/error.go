@@ -29,12 +29,12 @@ func (e *Error) Error() string {
 	return e.err.Error()
 }
 
-// Unwrap 返回原始错误
+// Unwrap 返回原始错误 - Go 错误链
 func (e *Error) Unwrap() error {
 	return e.err
 }
 
-// GRPCStatus 返回 gRPC 状态
+// GRPCStatus 返回 gRPC 状态 - gRPC 状态
 func (e *Error) GRPCStatus() *status.Status {
 	return status.Convert(e.err)
 }

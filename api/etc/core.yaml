@@ -2,6 +2,8 @@ Name: core
 Host: 0.0.0.0
 Port: 18000
 
+Debug: true
+
 Log:
   ServiceName: coreApiLogger
   Mode: console

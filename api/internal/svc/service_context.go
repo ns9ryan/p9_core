@@ -7,6 +7,7 @@ import (
 	"github.com/ns9ryan/p9_core/api/internal/config"
 	"github.com/ns9ryan/p9_core/api/internal/locales"
 	"github.com/ns9ryan/p9_core/api/internal/middleware"
+	"github.com/ns9ryan/p9_core/api/internal/rpcerror"
 	"github.com/ns9ryan/p9_core/pkg/i18n"
 	"github.com/ns9ryan/p9_core/rpc/client/roleservice"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -26,9 +27,16 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	trans, err := i18n.New(c.I18n, locales.FS)
 	logx.Must(err)
 
+	// 创建 Core RPC 客户端
+	coreRpc := zrpc.MustNewClient(
+		c.CoreRpc,
+		zrpc.WithUnaryClientInterceptor(rpcerror.UnaryClientInterceptor),
+	)
+
 	return &ServiceContext{
-		Config:   c,
-		RoleRpc:  roleservice.NewRoleService(zrpc.MustNewClient(c.CoreRpc)),
+		Config: c,
+		//RoleRpc:  roleservice.NewRoleService(zrpc.MustNewClient(c.CoreRpc)),
+		RoleRpc:  roleservice.NewRoleService(coreRpc),
 		Trans:    trans,
 		Language: middleware.NewLanguageMiddleware().Handle,
 	}

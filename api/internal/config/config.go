@@ -11,6 +11,9 @@ import (
 
 type Config struct {
 	rest.RestConf
+
+	Debug bool `json:",default=false"`
+
 	CoreRpc zrpc.RpcClientConf
 	I18n    i18n.Config
 }

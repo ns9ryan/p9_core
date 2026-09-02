@@ -68,6 +68,21 @@ type (
 
         // 提示信息
         Msg string `json:"msg"`
+
+        // 调试信息
+        Detail *ErrorDetail `json:"detail,omitempty"`
+    }
+
+        // 错误调试信息
+    ErrorDetail {
+        // 错误来源
+        Source string `json:"source"`
+
+        // RPC方法
+        Rpc string `json:"rpc,omitempty"`
+
+        // 原始错误
+        Error string `json:"error"`
     }
 )
 
